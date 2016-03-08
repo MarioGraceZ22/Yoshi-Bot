@@ -119,12 +119,13 @@ bot.on("message", function (msg) {
                 else {
                     tagesto = msg.content.substring(6, msg.content.length);
                 }
-                request("https://e621.net/post/index.json?tags=order:random+" + tagesto,
+                request("https://e621.net/post/index.json?limit=1&tags=order:random+" + tagesto,
                 function (error, response, body) {
                     if (!error && response.statusCode == 200) {
                         var estoThing = JSON.parse(body);
                         if (typeof (estoThing[0]) != "undefined") {
                             bot.sendMessage(msg.channel, estoThing[0].file_url.toString());
+                            bot.sendMessage(msg.channel, "https://e621.net/post/show/" + estoThing[0].id.toString());
                         }
                         else {
                             bot.sendMessage(msg.channel, "[](/derpshrug) No images found. Try different tags.")
@@ -151,8 +152,8 @@ bot.on("message", function (msg) {
                     else {
                         tagesto = msg.content.substring(6, msg.content.length);
                     }
-                    if ((tagesto.indexOf("rating:explicit") === -1) && (tagesto.indexOf("penis") === -1) && (tagesto.indexOf("pussy") === -1) && (tagesto.indexOf("anus") === -1) && (tagesto.indexOf("dick") === -1) && tagesto.indexOf("rating:questionable") === -1) {
-                        request("https://e621.net/post/index.json?tags=order:random+" + tagesto + "+rating:safe",
+                    if ((tagesto.indexOf("rating:explicit") === -1) && (tagesto.indexOf("penis") === -1) && (tagesto.indexOf("pussy") === -1) && (tagesto.indexOf("anus") === -1) && (tagesto.indexOf("dick") === -1) && tagesto.indexOf("rating:questionable") === -1 && tagesto.indexOf("genitalia") === -1 && tagesto.indexOf("genitals") === -1 && tagesto.indexOf("genital") === -1) {
+                        request("https://e621.net/post/index.json?limit=1&tags=order:random+" + tagesto + "+rating:safe",
                         function (error, response, body) {
                             if (!error && response.statusCode == 200) {
                                 var estoThing = JSON.parse(body);
