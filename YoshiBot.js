@@ -46,77 +46,45 @@ bot.on("message", function (msg) {
                 if (msg.content.indexOf("dead") === -1 && msg.content.indexOf("retard") === -1 && msg.content.indexOf("gore") === -1 && msg.content.indexOf("retarded") === -1) {
                     var tagesto = "";
                     var tagestosplit = msg.content.substring((msg.content.indexOf(',') + 1), msg.content.length).split(",");
-                    if (msg.channel.name.indexOf("nsfw") != -1 || msg.channel.name.indexOf("furry") != -1 || msg.channel.name.indexOf("2am") != -1) {
-                        if (msg.content.indexOf(',') != -1) {
-                            tagesto = (msg.content.substring(6, msg.content.indexOf(',')) + "+");
-                            for (var i = 0; i < tagestosplit.length; i++) {
-                                if (i === (tagestosplit.length - 1)) {
-                                    tagesto += tagestosplit[i].substring(1, tagestosplit[i].length);
-                                }
-                                else {
-                                    tagesto += tagestosplit[i].substring(1, tagestosplit[i].length) + "+";
-                                }
-                            }
-                        }
-                        else {
-                            tagesto = msg.content.substring(6, msg.content.length);
-                        }
-                        request("https://e621.net/post/index.json?limit=1&tags=order:random+" + tagesto,
-                        function (error, response, body) {
-                            if (!error && response.statusCode == 200) {
-                                var estoThing = JSON.parse(body);
-                                if (typeof (estoThing[0]) != "undefined") {
-                                    bot.sendMessage(msg.channel, estoThing[0].file_url.toString());
-                                    bot.sendMessage(msg.channel, "https://e621.net/post/show/" + estoThing[0].id.toString());
-                                }
-                                else {
-                                    bot.sendMessage(msg.channel, "[](/derpshrug) No images found. Try different tags.")
-                                }
+                    if (msg.content.indexOf(',') != -1) {
+                        tagesto = (msg.content.substring(6, msg.content.indexOf(',')) + "+");
+                        for (var i = 0; i < tagestosplit.length; i++) {
+                            if (i === (tagestosplit.length - 1)) {
+                                tagesto += tagestosplit[i].substring(1, tagestosplit[i].length);
                             }
                             else {
-                                console.log(error);
-                                bot.sendMessage(msg.channel, error);
+                                tagesto += tagestosplit[i].substring(1, tagestosplit[i].length) + "+";
                             }
-                        });
+                        }
                     }
                     else {
-                        if (msg.content.indexOf(',') != -1) {
-                            tagesto = (msg.content.substring(6, msg.content.indexOf(',')) + "+");
-                            for (var i = 0; i < tagestosplit.length; i++) {
-                                if (i === (tagestosplit.length - 1)) {
-                                    tagesto += tagestosplit[i].substring(1, tagestosplit[i].length);
-                                }
-                                else {
-                                    tagesto += tagestosplit[i].substring(1, tagestosplit[i].length) + "+";
-                                }
+                        tagesto = msg.content.substring(6, msg.content.length);
+                    }
+
+                    if (msg.channel.name.indexOf("nsfw") === -1 && msg.channel.name.indexOf("furry") === -1 && msg.channel.name.indexOf("2am") === -1) {
+                        tagesto += "+rating:safe";
+                        if ((tagesto.indexOf("rating:explicit") != -1) || (tagesto.indexOf("penis") != -1) || (tagesto.indexOf("pussy") != -1) || (tagesto.indexOf("anus") != -1) || (tagesto.indexOf("dick") != -1) || tagesto.indexOf("rating:questionable") != -1 || tagesto.indexOf("genitalia") != -1 || tagesto.indexOf("genitals") != -1 || tagesto.indexOf("genital") != -1 || tagesto.indexOf("vagina") != -1 || tagesto.indexOf("cunt") != -1 || tagesto.indexOf("vaginal") != -1 || tagesto.indexOf("vaginal_penetration") != -1 || tagesto.indexOf("sex") != -1) {
+                            bot.sendMessage(msg.channel, "[](/twiglare) That content isn't appropiate for this channel. Go be naughty elsewhere.");
+                            break;
+                        }
+                    }
+                    request("https://e621.net/post/index.json?limit=1&tags=order:random+" + tagesto,
+                    function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
+                            var estoThing = JSON.parse(body);
+                            if (typeof (estoThing[0]) != "undefined") {
+                                bot.sendMessage(msg.channel, estoThing[0].file_url.toString());
+                                bot.sendMessage(msg.channel, "https://e621.net/post/show/" + estoThing[0].id.toString());
+                            }
+                            else {
+                                bot.sendMessage(msg.channel, "[](/derpshrug) No images found. Try different tags.")
                             }
                         }
                         else {
-                            tagesto = msg.content.substring(6, msg.content.length);
+                            console.log(error);
+                            bot.sendMessage(msg.channel, error);
                         }
-                        if ((tagesto.indexOf("rating:explicit") === -1) && (tagesto.indexOf("penis") === -1) && (tagesto.indexOf("pussy") === -1) && (tagesto.indexOf("anus") === -1) && (tagesto.indexOf("dick") === -1) && tagesto.indexOf("rating:questionable") === -1 && tagesto.indexOf("genitalia") === -1 && tagesto.indexOf("genitals") === -1 && tagesto.indexOf("genital") === -1 && tagesto.indexOf("vagina") === -1 && tagesto.indexOf("cunt") === -1 && tagesto.indexOf("vaginal") === -1 && tagesto.indexOf("vaginal_penetration") === -1 && tagesto.indexOf("sex") === -1) {
-                            request("https://e621.net/post/index.json?limit=1&tags=order:random+" + tagesto + "+rating:safe",
-                            function (error, response, body) {
-                                if (!error && response.statusCode == 200) {
-                                    var estoThing = JSON.parse(body);
-                                    if (typeof (estoThing[0]) != "undefined") {
-                                        bot.sendMessage(msg.channel, estoThing[0].file_url.toString());
-                                        bot.sendMessage(msg.channel, "https://e621.net/post/show/" + estoThing[0].id.toString());
-                                    }
-                                    else {
-                                        bot.sendMessage(msg.channel, "[](/derpshrug) No images found. Try different tags.")
-                                    }
-                                }
-                                else {
-                                    console.log(error);
-                                    bot.sendMessage(msg.channel, error);
-                                }
-                            });
-                        }
-                        else {
-                            bot.sendMessage(msg.channel, "[](/twiglare) That content isn't appropiate for this channel. Go be naughty elsewhere.");
-                        }
-                    }
+                    });
                 }
                 else {
                     bot.sendMessage(msg.channel, "No. Stop it.");
