@@ -180,11 +180,13 @@ bot.on("message", function (msg) {
             case "!avie": //Returns the avatar of author.
                 
                 if (msg.content.length > 5) {
-                    var avget = msg.content.substring(6, msg.content.length);
-                    if (bot.users.get("username", avget) != null) {
-                        bot.sendMessage(msg.channel, "https://discordapp.com/api/users/" + bot.users.get("username", avget).id + "/avatars/" + bot.users.get("username", avget).avatar + ".jpg");
+                    var avget = msg.content.substring(msg.content.indexOf('@') + 1, msg.content.length - 1);
+                    if (bot.users.get("id", avget) != null) {
+                        console.log(avget);
+                        bot.sendMessage(msg.channel, "https://discordapp.com/api/users/" + avget + "/avatars/" + bot.users.get("id", avget).avatar + ".jpg");
                     }
                     else {
+                        console.log(avget);
                         bot.sendMessage(msg.channel, "I couldn't find the user you requested.");
                     }
                 }
