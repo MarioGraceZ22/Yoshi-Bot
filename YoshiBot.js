@@ -179,8 +179,14 @@ bot.on("message", function (msg) {
             
             case "!avie": //Returns the avatar of author.
                 
-                if (msg.content.length > 6) {
-                    var avget = msg.content.substring(7, msg.content.length);
+                if (msg.content.length > 5) {
+                    var avget = msg.content.substring(6, msg.content.length);
+                    if (bot.users.get("username", avget).avatar != "null") {
+                        bot.sendMessage(msg.channel, "https://discordapp.com/api/users/" + bot.users.get("username", avget).id + "/avatars/" + bot.users.get("username", avget).avatar + ".jpg");
+                    }
+                    else {
+                        bot.sendMessage("I couldn't find the user you requested.");
+                    }
                 }
                 else {
                     bot.sendMessage(msg.channel, msg.author.avatarURL);
