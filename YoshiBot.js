@@ -10,11 +10,6 @@ catch (e) {
 
 var auth = require("./auth.json");
 
-var readline = require("readline");
-var rl = rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
 
 var qs = require("querystring");
 var request = require("request");
@@ -38,12 +33,11 @@ bot.on("message", function (msg) {
     //check if message is a command
     if (msg.author.id != bot.user.id && (msg.content[0] === '!')) {
         console.log("treating " + msg.content + " from " + msg.author + " as command");
-        // JavaScript source code
-        var msgesto = msg.content.substring(0, 5);
+        var msgcmd = msg.content.substring(0, 5);
 
-        switch (msgesto) {
+        switch (msgcmd.toLowerCase()) {
             case "!e621": //Returns image from e621
-                if (msg.content.indexOf("dead") === -1 && msg.content.indexOf("retard") === -1 && msg.content.indexOf("gore") === -1 && msg.content.indexOf("retarded") === -1) {
+                if (msg.content.indexOf("dead") === -1 && msg.content.indexOf("retard") === -1 && msg.content.indexOf("gore") === -1 && msg.content.indexOf("retarded") === -1 && msg.content.indexOf("cancer") === -1 && msg.content.indexOf("cancerous") === -1 && msg.content.indexOf("scat") === -1 && msg.content.indexOf("shit") === -1 && msg.content.indexOf("crap") === -1 && msg.content.indexOf("poop") === -1 && msg.content.indexOf("feces") === -1 && msg.content.indexOf("defecation") === - 1 && msg.content.indexOf("child") === -1 && msg.content.indexOf("kid") === -1 && msg.content.indexOf("tod") === -1 && msg.content.indexOf("toddler") === -1) {
                     var tagesto = "";
                     var tagestosplit = msg.content.substring((msg.content.indexOf(',') + 1), msg.content.length).split(",");
                     if (msg.content.indexOf(',') != -1) {
@@ -61,7 +55,7 @@ bot.on("message", function (msg) {
                         tagesto = msg.content.substring(6, msg.content.length);
                     }
 
-                    if (msg.channel.name.indexOf("nsfw") === -1 && msg.channel.name.indexOf("furry") === -1 && msg.channel.name.indexOf("2am") === -1) {
+                    if (msg.channel.name.indexOf("nsfw") === -1 && msg.channel.name.indexOf("furry") === -1 && msg.channel.name.indexOf("2am") === -1 && msg.channel.isPrivate === false) {
                         tagesto += "+rating:safe";
                         if ((tagesto.indexOf("rating:explicit") != -1) || (tagesto.indexOf("penis") != -1) || (tagesto.indexOf("pussy") != -1) || (tagesto.indexOf("anus") != -1) || (tagesto.indexOf("dick") != -1) || tagesto.indexOf("rating:questionable") != -1 || tagesto.indexOf("genitalia") != -1 || tagesto.indexOf("genitals") != -1 || tagesto.indexOf("genital") != -1 || tagesto.indexOf("vagina") != -1 || tagesto.indexOf("cunt") != -1 || tagesto.indexOf("vaginal") != -1 || tagesto.indexOf("vaginal_penetration") != -1 || tagesto.indexOf("sex") != -1) {
                             bot.sendMessage(msg.channel, "[](/twiglare) That content isn't appropiate for this channel. Go be naughty elsewhere.");
@@ -181,6 +175,24 @@ bot.on("message", function (msg) {
                         bot.sendMessage(msg.channel, "I am now part of " + server);
                     }
                 });
+                break;
+            
+            case "!avie": //Returns the avatar of author.
+                
+                if (msg.content.length > 5) {
+                    var avget = msg.content.substring(msg.content.indexOf('@') + 1, msg.content.length - 1);
+                    if (bot.users.get("id", avget) != null) {
+                        console.log(avget);
+                        bot.sendMessage(msg.channel, "https://discordapp.com/api/users/" + avget + "/avatars/" + bot.users.get("id", avget).avatar + ".jpg");
+                    }
+                    else {
+                        console.log(avget);
+                        bot.sendMessage(msg.channel, "I couldn't find the user you requested.");
+                    }
+                }
+                else {
+                    bot.sendMessage(msg.channel, msg.author.avatarURL);
+                }
                 break;
         }
     }
