@@ -181,7 +181,7 @@ bot.on("message", function (msg) {
                 
                 if (msg.content.length > 5) {
                     var avget = msg.content.substring(6, msg.content.length);
-                    if (bot.users.get("username", avget).avatar != "null") {
+                    if (bot.users.get("username", avget) != "null") {
                         bot.sendMessage(msg.channel, "https://discordapp.com/api/users/" + bot.users.get("username", avget).id + "/avatars/" + bot.users.get("username", avget).avatar + ".jpg");
                     }
                     else {
