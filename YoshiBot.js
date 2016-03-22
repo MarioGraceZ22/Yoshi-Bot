@@ -55,12 +55,15 @@ bot.on("message", function (msg) {
                         tagesto = msg.content.substring(6, msg.content.length);
                     }
 
-                    if (msg.channel.name.indexOf("nsfw") === -1 && msg.channel.name.indexOf("furry") === -1 && msg.channel.name.indexOf("2am") === -1 && msg.channel.isPrivate === false) {
+                    if (msg.channel.isPrivate === true || msg.channel.name.indexOf("nsfw") === 1 || msg.channel.name.indexOf("furry") === 1 || msg.channel.name.indexOf("2am") === 1) {
+                        console.log("Safe to post NSFW content.");
+                    }
+                    else{
                         tagesto += "+rating:safe";
                         if ((tagesto.indexOf("rating:explicit") != -1) || (tagesto.indexOf("penis") != -1) || (tagesto.indexOf("pussy") != -1) || (tagesto.indexOf("anus") != -1) || (tagesto.indexOf("dick") != -1) || tagesto.indexOf("rating:questionable") != -1 || tagesto.indexOf("genitalia") != -1 || tagesto.indexOf("genitals") != -1 || tagesto.indexOf("genital") != -1 || tagesto.indexOf("vagina") != -1 || tagesto.indexOf("cunt") != -1 || tagesto.indexOf("vaginal") != -1 || tagesto.indexOf("vaginal_penetration") != -1 || tagesto.indexOf("sex") != -1) {
                             bot.sendMessage(msg.channel, "[](/twiglare) That content isn't appropiate for this channel. Go be naughty elsewhere.");
                             break;
-                        }
+                    }
                     }
                     request("https://e621.net/post/index.json?limit=1&tags=order:random+" + tagesto,
                     function (error, response, body) {
@@ -237,6 +240,9 @@ bot.on("message", function (msg) {
             if (choice === 3) {
                 bot.reply(msg, "no problem, buddy!");
             }
+        }
+        else if (msg.content.toLowerCase().indexOf("yo ") != -1) {
+            bot.reply(msg, "what's up?");
         }
         else { //General.
             if (choice === 1) {
