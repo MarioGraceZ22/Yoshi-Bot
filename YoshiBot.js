@@ -182,12 +182,30 @@ bot.on("message", function (msg) {
                 if (msg.content.length > 5) {
                     var avget = msg.content.substring(6, msg.content.length);
                     if (bot.users.get("username", avget) != null) {
-                        console.log(avget);
                         bot.sendMessage(msg.channel, "https://discordapp.com/api/users/" + bot.users.get("username", avget).id + "/avatars/" + bot.users.get("username", avget).avatar + ".jpg");
                     }
                     else {
-                        console.log(avget);
-                        bot.sendMessage(msg.channel, "I couldn't find the user you requested.");
+                        var regst = /^[^\s]+/;
+                        var regend = /[^\s]+$/;
+                        var match = true;
+                        for (var i = 0; i < bot.users.length ; i++) {
+                            if (regst.exec(bot.users[i].username)[0] === avget) {
+                                match = true;
+                                bot.sendMessage(msg.channel, "https://discordapp.com/api/users/" + bot.users[i].id + "/avatars/" + bot.users[i].avatar + ".jpg");
+                                break;
+                            }
+                            else if (regend.exec(bot.users[i].username)[0] === avget) {
+                                match = true;
+                                bot.sendMessage(msg.channel, "https://discordapp.com/api/users/" + bot.users[i].id + "/avatars/" + bot.users[i].avatar + ".jpg");
+                                break;
+                            }
+                            else {
+                                match = false;
+                            }
+                        }
+                        if (match === false) {
+                            bot.sendMessage(msg.channel, "I couldn't find the user you requested.");
+                        }
                     }
                 }
                 else {
