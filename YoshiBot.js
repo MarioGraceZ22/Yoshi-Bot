@@ -127,7 +127,7 @@ bot.on("message", function (msg) {
 
             case "!help": //Displays help message.
                 if (msg.content === "!help " + bot.user.mention()) {
-                    bot.sendMessage(msg.channel, "These are the commands I can use: \n!ping - I'll respond with a \"pong.\" Useful for checking if I'm alive.\n!pong - Similar to !ping. Kind of.\n!join - I'll attempt to join the server you invite me to.\n!server - List of servers I am in.\n!mlfw - Returns a pony reaction image based on tags (separated by a comma and a space) given. (Ex. !mlfw happy, twilight sparkle)\n!e621 - It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given. (Ex. !e621 anthro, canine)")
+                    bot.sendMessage(msg.channel, "These are the commands I can use: \n!ping - I'll respond with a \"pong.\" Useful for checking if I'm alive.\n!pong - Similar to !ping. Kind of.\n!join - I'll attempt to join the server you invite me to.\n!server - List of servers I am in.\n!mlfw - Returns a pony reaction image based on tags (separated by a comma and a space) given. (Ex. !mlfw happy, twilight sparkle)\n!e621 - It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given. (Ex. !e621 anthro, canine)\n!avie - Returns the avatar image of the specified user. If no user is specified, returns the avatar image of the author.")
                 }
                 break;
 
