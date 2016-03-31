@@ -37,7 +37,7 @@ bot.on("message", function (msg) {
 
         switch (msgcmd.toLowerCase()) {
             case "!e621": //Returns image from e621
-                if (msg.content.indexOf("dead") === -1 && msg.content.indexOf("retard") === -1 && msg.content.indexOf("gore") === -1 && msg.content.indexOf("retarded") === -1 && msg.content.indexOf("cancer") === -1 && msg.content.indexOf("cancerous") === -1 && msg.content.indexOf("scat") === -1 && msg.content.indexOf("shit") === -1 && msg.content.indexOf("crap") === -1 && msg.content.indexOf("poop") === -1 && msg.content.indexOf("feces") === -1 && msg.content.indexOf("defecation") === - 1 && msg.content.indexOf("child") === -1 && msg.content.indexOf("kid") === -1 && msg.content.indexOf("tod") === -1 && msg.content.indexOf("toddler") === -1) {
+                if (msg.content.indexOf("murder") === -1 && msg.content.indexOf("suicidal") === -1 && msg.content.indexOf("suicide") === -1 && msg.content.indexOf("dead") === -1 && msg.content.indexOf("retard") === -1 && msg.content.indexOf("gore") === -1 && msg.content.indexOf("retarded") === -1 && msg.content.indexOf("cancer") === -1 && msg.content.indexOf("cancerous") === -1 && msg.content.indexOf("scat") === -1 && msg.content.indexOf("shit") === -1 && msg.content.indexOf("crap") === -1 && msg.content.indexOf("poop") === -1 && msg.content.indexOf("feces") === -1 && msg.content.indexOf("defecation") === -1 && msg.content.indexOf("child") === -1 && msg.content.indexOf("kid") === -1 && msg.content.indexOf("tod") === -1 && msg.content.indexOf("toddler") === -1) {
                     var tagesto = "";
                     var tagestosplit = msg.content.substring((msg.content.indexOf(',') + 1), msg.content.length).split(",");
                     if (msg.content.indexOf(',') != -1) {
@@ -55,12 +55,12 @@ bot.on("message", function (msg) {
                         tagesto = msg.content.substring(6, msg.content.length);
                     }
 
-                    if (msg.channel.isPrivate === true || msg.channel.name.indexOf("nsfw") === 1 || msg.channel.name.indexOf("furry") === 1 || msg.channel.name.indexOf("2am") === 1) {
+                    if (msg.channel.isPrivate === true || msg.channel.name.indexOf("nsfw") != -1 || msg.channel.name.indexOf("furry") != -1 || msg.channel.name.indexOf("2am") != -1) {
                         console.log("Safe to post NSFW content.");
                     }
                     else{
                         tagesto += "+rating:safe";
-                        if ((tagesto.indexOf("rating:explicit") != -1) || (tagesto.indexOf("penis") != -1) || (tagesto.indexOf("pussy") != -1) || (tagesto.indexOf("anus") != -1) || (tagesto.indexOf("dick") != -1) || tagesto.indexOf("rating:questionable") != -1 || tagesto.indexOf("genitalia") != -1 || tagesto.indexOf("genitals") != -1 || tagesto.indexOf("genital") != -1 || tagesto.indexOf("vagina") != -1 || tagesto.indexOf("cunt") != -1 || tagesto.indexOf("vaginal") != -1 || tagesto.indexOf("vaginal_penetration") != -1 || tagesto.indexOf("sex") != -1) {
+                        if ((tagesto.indexOf("rating:explicit") != -1) || (tagesto.indexOf("penis") != -1) || (tagesto.indexOf("pussy") != -1) || (tagesto.indexOf("anus") != -1) || (tagesto.indexOf("dick") != -1) || tagesto.indexOf("rating:questionable") != -1 || tagesto.indexOf("genitalia") != -1 || tagesto.indexOf("genitals") != -1 || tagesto.indexOf("genital") != -1 || tagesto.indexOf("vagina") != -1 || tagesto.indexOf("cunt") != -1 || tagesto.indexOf("vaginal") != -1 || tagesto.indexOf("vaginal_penetration") != -1 || tagesto.indexOf("sex") != -1 || tagesto.indexOf("fuck") != -1 || tagesto.indexOf("intercourse") != -1) {
                             bot.sendMessage(msg.channel, "[](/twiglare) That content isn't appropiate for this channel. Go be naughty elsewhere.");
                             break;
                     }
@@ -241,7 +241,7 @@ bot.on("message", function (msg) {
                 bot.reply(msg, "no problem, buddy!");
             }
         }
-        else if (msg.content.toLowerCase().indexOf("yo ") != -1) {
+        else if (msg.content.toLowerCase().indexOf("yo") != -1) {
             bot.reply(msg, "what's up?");
         }
         else { //General.
