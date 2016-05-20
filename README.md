@@ -17,3 +17,5 @@ A bot for the Discord app based on [Discord.js](https://github.com/hydrabolt/dis
 **!e621** - It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given. (Ex. !e621 anthro, canine)
 
 **!avie** - Returns the avatar image of the specified user. If no user is specified, it returns the avatar of the author.
+
+**!pick** - Will randomly pick from the number of options given by the user, separated by commas and spaces. (Ex. !pick option1, option2, option3).
