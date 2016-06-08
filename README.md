@@ -19,3 +19,7 @@ A bot for the Discord app based on [Discord.js](https://github.com/hydrabolt/dis
 **!avie** - Returns the avatar image of the specified user. If no user is specified, it returns the avatar of the author.
 
 **!pick** - Will randomly pick from the number of options given by the user, separated by commas and spaces. (Ex. !pick option1, option2, option3).
+
+**!woof** - Returns a random woof image.
+
+**!meow** - Returns a random meow image.
