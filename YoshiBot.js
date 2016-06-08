@@ -32,18 +32,23 @@ bot.loginWithToken(auth.token, function (error, token) {
 bot.on("ready", function () {
     console.log("Bot is live and ready!");
     bot.sendMessage("168188374023274496", "Hiya, everyone!")
+    bot.setStatus("online", "with Ian.")
+});
+
+bot.on("serverNewMember", function (server, user) {
+    bot.sendMessage("136609300700332032", "Welcome, " + user + ", to our little piece of Discord: Shitpost Central - Live. We're really glad to have ya and we hope that you will enjoy your time here to the fullest. We encourage you to head on to #rules to ensure you know all the rules and become informed in the extents of each channel. If you have any questions, feel free to ask the admin or the mods, they'll be happy to answer. Cya around!");
 });
 
 bot.on("message", function (msg) {
     //check if message is a command
     if (msg.author.id != bot.user.id && (msg.content[0] === '!') && msg.channel.name != "living_room") {
-        if (msg.channel.isPrivate === true || msg.channel.name === "media_and_memes" || msg.channel.name === "2am_sharing" || msg.channel.name.indexOf("bot") != -1 || msg.channel.name === "playground" || msg.channel.name === "furryiguess") {
+        if (msg.channel.isPrivate === true || msg.channel.name === "media_and_memes" || msg.channel.name === "2am_sharing" || msg.channel.name.indexOf("bot") != -1 || msg.channel.name === "playground" || msg.channel.name === "furryiguess" || msg.channel.name.indexOf("art") != -1) {
             console.log("treating " + msg.content + " from " + msg.author + " as command");
             var msgcmd = msg.content.substring(0, 5);
 
             switch (msgcmd.toLowerCase()) {
                 case "!e621": //Returns image from e621
-                    if (msg.content.indexOf("murder") === -1 && msg.content.indexOf("suicidal") === -1 && msg.content.indexOf("suicide") === -1 && msg.content.indexOf("dead") === -1 && msg.content.indexOf("retard") === -1 && msg.content.indexOf("gore") === -1 && msg.content.indexOf("retarded") === -1 && msg.content.indexOf("cancer") === -1 && msg.content.indexOf("cancerous") === -1 && msg.content.indexOf("scat") === -1 && msg.content.indexOf("shit") === -1 && msg.content.indexOf("crap") === -1 && msg.content.indexOf("poop") === -1 && msg.content.indexOf("feces") === -1 && msg.content.indexOf("defecation") === -1 && msg.content.indexOf("child") === -1 && msg.content.indexOf("kid") === -1 && msg.content.indexOf("tod") === -1 && msg.content.indexOf("toddler") === -1) {
+                    if (msg.content.indexOf("murder") === -1 && msg.content.indexOf("suicidal") === -1 && msg.content.indexOf("suicide") === -1 && msg.content.indexOf("dead") === -1 && msg.content.indexOf("retard") === -1 && msg.content.indexOf("gore") === -1 && msg.content.indexOf("retarded") === -1 && msg.content.indexOf("cancer") === -1 && msg.content.indexOf("cancerous") === -1 && msg.content.indexOf("scat") === -1 && msg.content.indexOf("shit") === -1 && msg.content.indexOf("crap") === -1 && msg.content.indexOf("poo") === -1 && msg.content.indexOf("pee") == -1 && msg.content.indexOf("feces") === -1 && msg.content.indexOf("urin") == -1 && msg.content.indexOf("piss") == -1 && msg.content.indexOf("diaper") == -1 && msg.content.indexOf("baby") == -1 && msg.content.indexOf("babies") == -1 && msg.content.indexOf("defecation") === -1 && msg.content.indexOf("child") === -1 && msg.content.indexOf("kid") === -1 && msg.content.indexOf("tod") === -1 && msg.content.indexOf("toddler") === -1 && msg.content.indexOf("cake_farts") == -1 && msg.content.indexOf("diarrhea") == -1 && msg.content.indexOf("soiled") == -1) {
                         var tagesto = "";
                         var tagestosplit = msg.content.substring((msg.content.indexOf(',') + 1), msg.content.length).split(",");
                         if (msg.content.indexOf(',') != -1) {
@@ -61,20 +66,26 @@ bot.on("message", function (msg) {
                             tagesto = msg.content.substring(6, msg.content.length);
                         }
 
-                        if (msg.channel.isPrivate === true || msg.channel.name.indexOf("nsfw") != -1 || msg.channel.name.indexOf("furry") != -1 || msg.channel.name.indexOf("2am") != -1) {
+                        if (msg.channel.isPrivate === true || msg.channel.name.indexOf("nsfw") != -1 || msg.channel.name.indexOf("art") != -1 || msg.channel.name.indexOf("furry") != -1 || msg.channel.name.indexOf("2am") != -1) {
                             console.log("Safe to post NSFW content.");
                         }
                         else {
                             tagesto += "+rating:safe";
-                            if ((tagesto.indexOf("rating:explicit") != -1) || (tagesto.indexOf("penis") != -1) || (tagesto.indexOf("pussy") != -1) || (tagesto.indexOf("anus") != -1) || (tagesto.indexOf("dick") != -1) || tagesto.indexOf("rating:questionable") != -1 || tagesto.indexOf("genitalia") != -1 || tagesto.indexOf("genitals") != -1 || tagesto.indexOf("genital") != -1 || tagesto.indexOf("vagina") != -1 || tagesto.indexOf("cunt") != -1 || tagesto.indexOf("vaginal") != -1 || tagesto.indexOf("vaginal_penetration") != -1 || tagesto.indexOf("sex") != -1 || tagesto.indexOf("fuck") != -1 || tagesto.indexOf("intercourse") != -1) {
+                            if ((tagesto.indexOf("rating:explicit") != -1) || (tagesto.indexOf("penis") != -1) || (tagesto.indexOf("pussy") != -1) || (tagesto.indexOf("anus") != -1) || (tagesto.indexOf("dick") != -1) || tagesto.indexOf("rating:questionable") != -1 || tagesto.indexOf("genitalia") != -1 || tagesto.indexOf("genitals") != -1 || tagesto.indexOf("genital") != -1 || tagesto.indexOf("vagina") != -1 || tagesto.indexOf("cunt") != -1 || tagesto.indexOf("vaginal") != -1 || tagesto.indexOf("vaginal_penetration") != -1 || tagesto.indexOf("sex") != -1 || tagesto.indexOf("fuck") != -1 || tagesto.indexOf("intercourse") != -1 || tagesto.indexOf("cock") != -1) {
                                 bot.sendMessage(msg.channel, "[](/twiglare) That content isn't appropiate for this channel. Go be naughty elsewhere.");
                                 break;
                             }
                         }
-                        request("https://e621.net/post/index.json?tags=order:random+" + tagesto,
+                        var estoHeader = {
+                            url: 'https://e621.net/post/index.json?tags=order:random+' + tagesto,
+                            headers: {
+                                'User-Agent': 'Yoshi-Bot/1.0 (by NeoNinetales on e621)'
+                            }
+                        }
+
+                        request(estoHeader,
                         function (error, response, body) {
-                            bot.sendMessage(msg.channel, response.statusCode.toString());
-                            /*if (!error && response.statusCode == 200) {
+                            if (!error && response.statusCode == 200) {
                                 var estoThing = JSON.parse(body);
                                 if (typeof (estoThing[0]) != "undefined") {
                                     bot.sendMessage(msg.channel, estoThing[0].file_url.toString());
@@ -87,8 +98,8 @@ bot.on("message", function (msg) {
                             else {
                                 console.log(error);
                                 bot.sendMessage(msg.channel, "The API isn't working and this is why I'm crashing.");
-                                //bot.sendMessage(msg.channel, error);
-                            }*/
+                                bot.sendMessage(msg.channel, error);
+                            }
                         });
                     }
                     else {
@@ -138,7 +149,7 @@ bot.on("message", function (msg) {
 
                 case "!help": //Displays help message.
                     if (msg.content === "!help " + bot.user.mention()) {
-                        bot.sendMessage(msg.channel, "```These are the commands I can use: \n!ping - I'll respond with a \"pong.\" Useful for checking if I'm alive.\n!pong - Similar to !ping. Kind of.\n!join - I'll attempt to join the server you invite me to.\n!server - List of servers I am in.\n!mlfw - Returns a pony reaction image based on tags (separated by a comma and a space) given. (Ex. !mlfw happy, twilight sparkle)\n!e621 - It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given. (Ex. !e621 anthro, canine)\n!avie - Returns the avatar image of the specified user. If no user is specified, returns the avatar image of the author.\n!pick - Will randomly pick from the number of options given by the user, separated by commas and spaces. (Ex. \"!pick option1, option2, option3\")```")
+                        bot.sendMessage(msg.channel, "```These are the commands I can use: \n!ping - I'll respond with a \"pong.\" Useful for checking if I'm alive.\n!pong - Similar to !ping. Kind of.\n!join - I'll attempt to join the server you invite me to.\n!server - List of servers I am in.\n!mlfw - Returns a pony reaction image based on tags (separated by a comma and a space) given. (Ex. !mlfw happy, twilight sparkle)\n!e621 - It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given. (Ex. !e621 anthro, canine)\n!avie - Returns the avatar image of the specified user. If no user is specified, returns the avatar image of the author.\n!pick - Will randomly pick from the number of options given by the user, separated by commas and spaces. (Ex. !pick option1, option2, option3)\n!woof - Returns a random woof image.\n!meow - Returns a random meow image.```")
                     }
                     break;
 
@@ -150,7 +161,13 @@ bot.on("message", function (msg) {
                 case "!bye": //Shut down bot.
                     if (msg.author.id === "110932722322505728") {
                         bot.sendMessage(msg.channel, "Goodbye, everyone!");
-                        bot.logout();
+                        bot.logout(function (error) {
+                            if (error) {
+                                console.log(error);
+                                bot.sendMessage(msg.channel, "Woops, errors! " + error);
+                            }
+
+                        });
                     }
                     else {
                         bot.reply(msg, "I can't really take that order from you. Sorry. :c");
@@ -228,7 +245,37 @@ bot.on("message", function (msg) {
                     var options = msg.content.substring(5, msg.content.length).split(",");
                     var randomChoice = Math.floor(Math.random() * options.length);
                     bot.sendMessage(msg.channel, "You must go with" + options[randomChoice] + ", " + msg.author + ".");
+                    break;
 
+                case "!woof":
+                    request("http://imgur.com/r/dog/top/year.json", function(error, response, body){
+                        if(!error && response.statusCode == 200){
+                            var woofThing = JSON.parse(body);
+                            var randWoof = Math.floor(Math.random() * woofThing.data.length);
+                            if (typeof (woofThing.data[0]) != "undefined") {
+                                bot.sendMessage(msg.channel, "http://i.imgur.com/" + woofThing.data[randWoof].hash + woofThing.data[randWoof].ext);
+                            }
+                            else {
+                                bot.sendMessage(msg.channel, "Things are going wrong all over.");
+                            }
+                        }
+                    })
+                    break;
+                case "!meow":
+                    request("http://imgur.com/r/cat/top/year.json", function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
+                            var meowThing = JSON.parse(body);
+                            var randMeow = Math.floor(Math.random() * meowThing.data.length);
+                            if (typeof (meowThing.data[0]) != "undefined") {
+                                bot.sendMessage(msg.channel, "http://i.imgur.com/" + meowThing.data[randMeow].hash + meowThing.data[randMeow].ext);
+                            }
+                            else {
+                                bot.sendMessage(msg.channel, "Things are going wrong all over.");
+                            }
+                        }
+                    })
+                    break;
+                    
             }
         }
         else {
