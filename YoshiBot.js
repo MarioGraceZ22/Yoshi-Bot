@@ -10,7 +10,7 @@ catch (e) {
 
 var auth = require("./auth.json");
 
-try{
+try {
     var request = require("request");
 }
 catch (e) {
@@ -32,17 +32,20 @@ bot.loginWithToken(auth.token, function (error, token) {
 bot.on("ready", function () {
     console.log("Bot is live and ready!");
     bot.sendMessage("168188374023274496", "Hiya, everyone!")
-    bot.setStatus("online", "with Ian.")
+    bot.setPlayingGame("with " + bot.users.length + " users!");
 });
 
 bot.on("serverNewMember", function (server, user) {
-    bot.sendMessage("136609300700332032", "Welcome, " + user + ", to our little piece of Discord: Shitpost Central - Live. We're really glad to have ya and we hope that you will enjoy your time here to the fullest. We encourage you to head on to #rules to ensure you know all the rules and become informed in the extents of each channel. If you have any questions, feel free to ask the admin or the mods, they'll be happy to answer. Cya around!");
+    bot.sendMessage("136609300700332032", "Welcome, " + user + ", to our little piece of Discord: Shitpost Central - Live. We're really glad to have ya and we hope that you will enjoy your time here to the fullest. We encourage you to head on to <#169511435347558400> to ensure you know all the rules and become informed in the extents of each channel. If you have any questions, feel free to ask the admin or the mods, they'll be happy to answer. Cya around!");
 });
 
 bot.on("message", function (msg) {
     //check if message is a command
-    if (msg.author.id != bot.user.id && (msg.content[0] === '!') && msg.channel.name != "living_room") {
-        if (msg.channel.isPrivate === true || msg.channel.name === "media_and_memes" || msg.channel.name === "2am_sharing" || msg.channel.name.indexOf("bot") != -1 || msg.channel.name === "playground" || msg.channel.name === "furryiguess" || msg.channel.name.indexOf("art") != -1) {
+    if (msg.author.id != bot.user.id && (msg.content[0] === '!')) {
+        if (msg.channel.server.id === "136609300700332032" && msg.channel.id != "168188374023274496") {
+            bot.sendMessage(msg.channel, "Use #bots_channel, please.");
+        }
+        else {
             console.log("treating " + msg.content + " from " + msg.author + " as command");
             var msgcmd = msg.content.substring(0, 5);
 
@@ -66,7 +69,7 @@ bot.on("message", function (msg) {
                             tagesto = msg.content.substring(6, msg.content.length);
                         }
 
-                        if (msg.channel.isPrivate === true || msg.channel.name.indexOf("nsfw") != -1 || msg.channel.name.indexOf("art") != -1 || msg.channel.name.indexOf("furry") != -1 || msg.channel.name.indexOf("2am") != -1) {
+                        if (msg.channel.isPrivate === true || msg.channel.name.indexOf("art") != -1 || msg.channel.name.indexOf("furry") != -1 || msg.channel.name.indexOf("2am") != -1) {
                             console.log("Safe to post NSFW content.");
                         }
                         else {
@@ -176,7 +179,7 @@ bot.on("message", function (msg) {
 
                 case "!leav": //Bot leaves server.
                     if (msg.author.id === "110932722322505728") {
-                        bot.leaveServer(msg.content.substring(7, msg.content.length), function (error) {
+                        bot.leaveServer(msg.content.substring(6, msg.content.length), function (error) {
                             if (error) {
                                 bot.sendMessage(msg.channel, "Am I even part of that? " + error);
                             }
@@ -248,8 +251,8 @@ bot.on("message", function (msg) {
                     break;
 
                 case "!woof":
-                    request("http://imgur.com/r/dog/top/year.json", function(error, response, body){
-                        if(!error && response.statusCode == 200){
+                    request("http://imgur.com/r/dog/top/year.json", function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
                             var woofThing = JSON.parse(body);
                             var randWoof = Math.floor(Math.random() * woofThing.data.length);
                             if (typeof (woofThing.data[0]) != "undefined") {
@@ -275,50 +278,82 @@ bot.on("message", function (msg) {
                         }
                     })
                     break;
-                    
+
             }
         }
-        else {
-            bot.sendMessage(msg.channel, "Use #bots_channel, please.");
-        }
-        }
-        else if (msg.content.indexOf(bot.user.mention()) != -1 && msg.content[0] != '!') { //Customized language responses.
-            var choice = Math.floor((Math.random() * 3) + 1);
-            if (msg.content.toLowerCase().indexOf("hello") != -1 || msg.content.toLowerCase().indexOf("hi") != -1 || msg.content.toLowerCase().indexOf("welcome") != -1) { //Greetings.
-                if (choice === 1) {
-                    bot.reply(msg, "hello to you!");
-                }
-                if (choice === 2) {
-                    bot.reply(msg, "greetings!");
-                }
-                if (choice === 3) {
-                    bot.reply(msg, "hi there!");
-                }
+    }
+    else if (msg.content.indexOf(bot.user.mention()) != -1 && msg.content[0] != '!') { //Customized language responses.
+        var choice = Math.floor((Math.random() * 6) + 1);
+        if (msg.content.toLowerCase().indexOf("hello") != -1 || msg.content.toLowerCase().indexOf("hi ") != -1 || msg.content.toLowerCase().indexOf("welcome") != -1) { //Greetings.
+            if (choice === 1) {
+                bot.sendMessage(msg.channel, "Hello to you, " + msg.author + "!");
             }
-            else if (msg.content.toLowerCase().indexOf("thank you") != -1 || msg.content.toLowerCase().indexOf("thanks") != -1 || msg.content.toLowerCase().indexOf("thank") != -1 || msg.content.toLowerCase().indexOf("thx") != -1 || msg.content.toLowerCase().indexOf("thank u") != -1) { //Gratitude
-                if (choice === 1) {
-                    bot.reply(msg, "my pleasure!");
-                }
-                if (choice === 2) {
-                    bot.reply(msg, "you're absolutely welcome.");
-                }
-                if (choice === 3) {
-                    bot.reply(msg, "no problem, buddy!");
-                }
+            else if (choice === 2) {
+                bot.sendMessage(msg.channel, "Greetings, " + msg.author + "!");
             }
-            else if (msg.content.toLowerCase().indexOf("yo") != -1) {
-                bot.reply(msg, "what's up?");
+            else if (choice === 3) {
+                bot.sendMessage(msg.channel, "Hi there, " + msg.author + "!");
             }
-            else { //General.
-                if (choice === 1) {
-                    bot.reply(msg, "may I help you? Use \"!help @Yoshi Bot\" to learn about my commands.");
-                }
-                if (choice === 2) {
-                    bot.reply(msg, "what can I do for you? Use \"!help @Yoshi Bot\" if you aren't aware of my options.");
-                }
-                if (choice === 3) {
-                    bot.reply(msg, "you called? Try \"!help @Yoshi Bot\" to see what you could ask me to do.");
-                }
+            else if (choice === 4) {
+                bot.sendMessage(msg.channel, "Hiya, " + msg.author + "!");
+            }
+            else if (choice === 5) {
+                bot.sendMessage(msg.channel, "Howdy, " + msg.author + "!");
+            }
+            else if (choice === 6) {
+                bot.sendMessage(msg.channel, "*Yoshi-yosh*, " + msg.author + "!");
             }
         }
+        else if (msg.content.toLowerCase().indexOf("thank you") != -1 || msg.content.toLowerCase().indexOf("thanks") != -1 || msg.content.toLowerCase().indexOf("thank") != -1 || msg.content.toLowerCase().indexOf("thx") != -1 || msg.content.toLowerCase().indexOf("thank u") != -1) { //Gratitude
+            if (choice === 1) {
+                bot.reply(msg, "my pleasure!");
+            }
+            else if (choice === 2) {
+                bot.reply(msg, "you're absolutely welcome.");
+            }
+            else if (choice === 3) {
+                bot.reply(msg, "no problem, buddy!");
+            }
+            else if (choice === 4) {
+                bot.reply(msg, "anytime!");
+            }
+            else if (choice === 5) {
+                bot.reply(msg, "glad to help!");
+            }
+            else if (choice === 6) {
+                bot.reply(msg, "it was nothing!");
+            }
+        }
+        else if (msg.content.length === 21) { //Only a mention.
+            if (choice === 1 || choice === 2) {
+                bot.reply(msg, "may I help you? Use \"!help @Yoshi Bot\" to learn about my commands.");
+            }
+            else if (choice === 3 || choice === 4) {
+                bot.reply(msg, "what can I do for you? Use \"!help @Yoshi Bot\" if you aren't aware of my options.");
+            }
+            else if (choice === 5 || choice === 6) {
+                bot.reply(msg, "you called? Try \"!help @Yoshi Bot\" to see what you could ask me to do.");
+            }
+        }
+        else { //Anything else.
+            if (choice === 1) {
+                bot.reply(msg, "no u");
+            }
+            if (choice === 2) {
+                bot.reply(msg, "Y- Yoshi..?");
+            }
+            if (choice === 3) {
+                bot.reply(msg, "isokay.");
+            }
+            if (choice === 4) {
+                bot.reply(msg, "Ian, my creator, is a ~~dirty furfag~~ nice guy.");
+            }
+            if (choice === 5) {
+                bot.reply(msg, "you must have called me here for a reason... right?");
+            }
+            if (choice === 6) {
+                bot.reply(msg, "fun fact: Ian only gave me 6 options in my random language responses.");
+            }
+        }
+    }
 });
