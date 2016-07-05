@@ -10,6 +10,8 @@ catch (e) {
 
 var LOADDIR = "C:/Users/Woof/Music/";
 
+const exec = require('child_process').exec;
+
 var auth = require("./auth.json");
 
 try {
@@ -332,6 +334,25 @@ bot.on("message", function (msg) {
                     bot.sendMessage(msg.channel, "Is playing? " + bot.internal.voiceConnection.playing);
                     bot.sendMessage(msg.channel, "Playing Intent: " + bot.internal.voiceConnection.playingIntent);
                     break;
+
+                case "!updt":
+                	if (msg.author.id === "110932722322505728"){
+                		bot.sendMessage(msg.channel, "Updating in just a second!");
+                		exec('node YoshiBot.js', (error, stdout, stderr) => {
+  							if (error) {
+    							console.error(`exec error: ${error}`);
+    							return;
+  								}
+  							console.log(`stdout: ${stdout}`);
+  							console.log(`stderr: ${stderr}`);
+							});
+                		bot.sendMessage(msg.channel, "Be right back!");
+                		bot.logout();
+                	}
+                	else{
+                		bot.reply(msg, "I can't really take that order from you. Sorry. :c");
+                	}
+                	break;
             }
         }
     }

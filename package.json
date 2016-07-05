@@ -1,0 +1,20 @@
+{
+  "name": "Yoshi-Bot",
+  "version": "0.1.9",
+  "description": "Simple bot for Discord",
+  "readme": "README.md",
+  "maintainers": [],
+  "author": "MarioGraceZ22",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarioGraceZ22/Yoshi-Bot.git"
+  },
+  "license": "GNU",
+  "dependencies": {
+    "d20": "^1.4.0",
+    "discord.js": "<=5.2.x",
+    "querystring": "0.2.x"
+	, "npm":""
+  },
+  "main": "YoshiBot.js"
+}
