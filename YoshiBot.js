@@ -8,6 +8,8 @@ catch (e) {
     process.exit();
 }
 
+var LOADDIR = "C:/Users/Woof/Music/";
+
 var auth = require("./auth.json");
 
 try {
@@ -42,7 +44,7 @@ bot.on("serverNewMember", function (server, user) {
 bot.on("message", function (msg) {
     //check if message is a command
     if (msg.author.id != bot.user.id && (msg.content[0] === '!')) {
-        if (msg.channel.server.id === "136609300700332032" && msg.channel.id != "168188374023274496") {
+        if (msg.channel.server.id === "136609300700332032" && (msg.channel.id != "168188374023274496" && msg.channel.id != "137676980387577857")) {
             bot.sendMessage(msg.channel, "Use #bots_channel, please.");
         }
         else {
@@ -152,7 +154,7 @@ bot.on("message", function (msg) {
 
                 case "!help": //Displays help message.
                     if (msg.content === "!help " + bot.user.mention()) {
-                        bot.sendMessage(msg.channel, "```These are the commands I can use: \n!ping - I'll respond with a \"pong.\" Useful for checking if I'm alive.\n!pong - Similar to !ping. Kind of.\n!join - I'll attempt to join the server you invite me to.\n!server - List of servers I am in.\n!mlfw - Returns a pony reaction image based on tags (separated by a comma and a space) given. (Ex. !mlfw happy, twilight sparkle)\n!e621 - It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given. (Ex. !e621 anthro, canine)\n!avie - Returns the avatar image of the specified user. If no user is specified, returns the avatar image of the author.\n!pick - Will randomly pick from the number of options given by the user, separated by commas and spaces. (Ex. !pick option1, option2, option3)\n!woof - Returns a random woof image.\n!meow - Returns a random meow image.```")
+                        bot.sendMessage(msg.channel, "```These are the commands I can use: \n!ping - I'll respond with a \"pong.\" Useful for checking if I'm alive.\n!pong - Similar to !ping. Kind of.\n!join - I'll attempt to join the server you invite me to.\n!server - List of servers I am in.\n!mlfw - Returns a pony reaction image based on tags (separated by a comma and a space) given. (Ex. !mlfw happy, twilight sparkle)\n!e621 - It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given. (Ex. !e621 anthro, canine)\n!avie - Returns the avatar image of the specified user. If no user is specified, returns the avatar image of the author.\n!pick - Will randomly pick from the number of options given by the user, separated by commas and spaces. (Ex. !pick option1, option2, option3)\n!subr - Will return a random post from the \"hot\" section of the user given subreddit. (Ex. !subr wheredidthesodago)\n!woof - Returns a random woof image.\n!meow - Returns a random meow image.```")
                     }
                     break;
 
@@ -250,6 +252,25 @@ bot.on("message", function (msg) {
                     bot.sendMessage(msg.channel, "You must go with" + options[randomChoice] + ", " + msg.author + ".");
                     break;
 
+                case "!subr":
+                    var subr = msg.content.substring(6);
+                    request("https://www.reddit.com/r/" + subr + "/hot/.json", function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
+                            var srThing = JSON.parse(body);
+                            var randPost = Math.floor(Math.random() * srThing.data.children.length);
+                            if (typeof (srThing.data.children) != "null") {
+                                bot.sendMessage(msg.channel, srThing.data.children[randPost].data.url);
+                            }
+                            else {
+                                bot.sendMessage(msg.channel, "I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
+                            }
+                        }
+                        else {
+                            console.log(error);
+                            bot.sendMessage(msg.channel, "I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
+                        }
+                    });
+                    break;
                 case "!woof":
                     request("http://imgur.com/r/dog/top/year.json", function (error, response, body) {
                         if (!error && response.statusCode == 200) {
@@ -278,7 +299,39 @@ bot.on("message", function (msg) {
                         }
                     })
                     break;
+                case "!play":
+                    if (!bot.internal.voiceConnection) {
+                        if (msg.channel.server.id === "136609300700332032") {
+                            var channelID = "198276772435984384";
+                        }
+                        else {
+                            var channelID = "198287699461931008";
+                        }
 
+                        bot.joinVoiceChannel(channelID);
+                        bot.sendMessage(msg.channel, "Voice channel joined.");
+                    }
+                    else {
+                        if (msg.content.length > 5) {
+                            if (bot.internal.voiceConnection) {
+                                var songName = msg.content.substring(6, msg.content.length);
+                                var connection = bot.internal.voiceConnection;
+                                var filePath = LOADDIR + songName;
+                                bot.sendMessage(msg.channel, "Playing that for you in a sec...");
+                                connection.playFile("C:/Users/Woof/Music/Ducktales OST - Moon Theme (Arcien Remix).mp3");
+                            }
+                        }
+                        else {
+                            bot.sendMessage(msg.channel, "I'm already in the voice channel. Give me something to play.");
+                        }
+                    }
+                    break;
+
+                case "!dbgt":
+                    bot.sendMessage(msg.channel, "Stream Time: " + bot.internal.voiceConnection.streamTime);
+                    bot.sendMessage(msg.channel, "Is playing? " + bot.internal.voiceConnection.playing);
+                    bot.sendMessage(msg.channel, "Playing Intent: " + bot.internal.voiceConnection.playingIntent);
+                    break;
             }
         }
     }
