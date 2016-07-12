@@ -351,8 +351,8 @@ bot.on("message", function (msg) {
                 		simpleGit().pull(function(error, update) {
             				if(update && update.summary.changes) {
             					bot.sendMessage(msg.channel, "Be right back!");
+            					exec('npm restart');
                 				bot.logout();
-               					exec('npm restart');
             				}
             				else{
             					bot.sendMessage(msg.channel, "Already up to date.");
