@@ -351,7 +351,7 @@ bot.on("message", function (msg) {
                 		simpleGit().pull(function(error, update) {
             				if(update && update.summary.changes) {
             					bot.sendMessage(msg.channel, "Be right back!");
-            					exec('npm restart');
+            					exec('node YoshiBot.js');
                 				bot.logout();
             				}
             				else{
