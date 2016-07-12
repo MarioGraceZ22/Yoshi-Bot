@@ -12,7 +12,7 @@ var LOADDIR = "C:/Users/Woof/Music/";
 
 var simpleGit = require('simple-git');
 
-const spawn = require('child_process').spawn;
+const exec = require('child_process').exec;
 
 var auth = require("./auth.json");
 
@@ -351,7 +351,14 @@ bot.on("message", function (msg) {
                 		simpleGit().pull(function(error, update) {
             				if(update && update.summary.changes) {
             					bot.sendMessage(msg.channel, "Be right back!");
-            					spawn('node YoshiBot.js');
+            					exec('node YoshiBot.js', (error, stdout, stderr) => {
+  									if (error) {
+    									console.error(`exec error: ${error}`);
+    									return;
+  									}
+  									console.log(`stdout: ${stdout}`);
+  									console.log(`stderr: ${stderr}`);
+								});
                 				bot.logout();
             				}
             				else{
