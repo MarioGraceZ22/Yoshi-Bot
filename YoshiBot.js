@@ -153,7 +153,7 @@ bot.on("message", function (msg) {
                     break;
 
                 case "!ping": //Checks if bot is alive.
-                    bot.sendMessage(msg.channel, "Po-ong!");
+                    bot.sendMessage(msg.channel, "Pong!");
                     break;
 
                 case "!help": //Displays help message.
@@ -371,6 +371,10 @@ bot.on("message", function (msg) {
                 		bot.reply(msg, "I can't really take that order from you. Sorry. :c");
                 	}
                 	break;
+
+                	case "!kms":
+                		bot.sendMessage(msg.channel, "You're dead, kiddo. ᕕ[•̀͜ʖ•́]︻̷┻̿═━一 ---");
+                		break;
             }
         }
     }
