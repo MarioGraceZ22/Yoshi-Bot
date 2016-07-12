@@ -348,7 +348,7 @@ bot.on("message", function (msg) {
                 		bot.sendMessage(msg.channel, "Be right back!");
                 		bot.logout();*/
                 		bot.sendMessage(msg.channel, "Checking for updates...");
-                		simpleGit.pull(function(error, update) {
+                		simpleGit().pull(function(error, update) {
             				if(update && update.summary.changes) {
             					bot.sendMessage(msg.channel, "Be right back!");
                 				bot.logout();
