@@ -48,7 +48,7 @@ bot.on("serverNewMember", function (server, user) {
 bot.on("message", function (msg) {
     //check if message is a command
     if (msg.author.id != bot.user.id && (msg.content[0] === '!')) {
-        if (msg.channel.server.id === "136609300700332032" && (msg.channel.id != "168188374023274496" && msg.channel.id != "137676980387577857")) {
+        if (msg.channel.isPrivate === false && msg.channel.server.id === "136609300700332032" && (msg.channel.id != "168188374023274496" && msg.channel.id != "137676980387577857")) {
             bot.sendMessage(msg.channel, "Use #bots_channel, please.");
         }
         else {
