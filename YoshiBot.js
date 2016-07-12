@@ -153,7 +153,7 @@ bot.on("message", function (msg) {
                     break;
 
                 case "!ping": //Checks if bot is alive.
-                    bot.sendMessage(msg.channel, "Poooooong!");
+                    bot.sendMessage(msg.channel, "Pong!");
                     break;
 
                 case "!help": //Displays help message.
