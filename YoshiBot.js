@@ -168,13 +168,7 @@ bot.on("message", function (msg) {
                 case "!bye": //Shut down bot.
                     if (msg.author.id === "110932722322505728") {
                         bot.sendMessage(msg.channel, "Goodbye, everyone!");
-                        bot.logout(function (error) {
-                            if (error) {
-                                console.log(error);
-                                bot.sendMessage(msg.channel, "Woops, errors! " + error);
-                            }
-
-                        });
+                        bot.logout();
                     }
                     else {
                         bot.reply(msg, "I can't really take that order from you. Sorry. :c");
@@ -320,7 +314,7 @@ bot.on("message", function (msg) {
                                 var connection = bot.internal.voiceConnection;
                                 var filePath = LOADDIR + songName;
                                 bot.sendMessage(msg.channel, "Playing that for you in a sec...");
-                                connection.playFile("C:/Users/Woof/Music/Ducktales OST - Moon Theme (Arcien Remix).mp3");
+                                connection.playFile(filePath);
                             }
                         }
                         else {
@@ -335,8 +329,11 @@ bot.on("message", function (msg) {
                     bot.sendMessage(msg.channel, "Playing Intent: " + bot.internal.voiceConnection.playingIntent);
                     break;
 
-                case "!updt":
+                case "!updt":            	
                 	if (msg.author.id === "110932722322505728"){
+                		if(bot.internal.voiceConnection){
+                			bot.internal.voiceConnection.destroy();
+                		}
                 		bot.sendMessage(msg.channel, "Updating in just a second!");
                 		exec('node YoshiBot.js', (error, stdout, stderr) => {
   							if (error) {
