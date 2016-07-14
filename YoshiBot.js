@@ -381,44 +381,12 @@ bot.on("message", function (msg) {
     else if (msg.content.indexOf(bot.user.mention()) != -1 && msg.content[0] != '!') { //Customized language responses.
         var choice = Math.floor((Math.random() * 6) + 1);
         if (msg.content.toLowerCase().indexOf("hello") != -1 || msg.content.toLowerCase().indexOf("hi ") != -1 || msg.content.toLowerCase().indexOf("welcome") != -1) { //Greetings.
-            if (choice === 1) {
-                bot.sendMessage(msg.channel, "Hello to you, " + msg.author + "!");
-            }
-            else if (choice === 2) {
-                bot.sendMessage(msg.channel, "Greetings, " + msg.author + "!");
-            }
-            else if (choice === 3) {
-                bot.sendMessage(msg.channel, "Hi there, " + msg.author + "!");
-            }
-            else if (choice === 4) {
-                bot.sendMessage(msg.channel, "Hiya, " + msg.author + "!");
-            }
-            else if (choice === 5) {
-                bot.sendMessage(msg.channel, "Howdy, " + msg.author + "!");
-            }
-            else if (choice === 6) {
-                bot.sendMessage(msg.channel, "*Yoshi-yosh*, " + msg.author + "!");
-            }
+            var response = ["Hello to you, ", "Greetings, ", "Hi there, ", "Hiya, ", "Howdy, ", "*Yoshi-yosh*, "];
+            bot.sendMessage(msg.channel, response[choice] + msg.author + "!");
         }
         else if (msg.content.toLowerCase().indexOf("thank you") != -1 || msg.content.toLowerCase().indexOf("thanks") != -1 || msg.content.toLowerCase().indexOf("thank") != -1 || msg.content.toLowerCase().indexOf("thx") != -1 || msg.content.toLowerCase().indexOf("thank u") != -1) { //Gratitude
-            if (choice === 1) {
-                bot.reply(msg, "my pleasure!");
-            }
-            else if (choice === 2) {
-                bot.reply(msg, "you're absolutely welcome.");
-            }
-            else if (choice === 3) {
-                bot.reply(msg, "no problem, buddy!");
-            }
-            else if (choice === 4) {
-                bot.reply(msg, "anytime!");
-            }
-            else if (choice === 5) {
-                bot.reply(msg, "glad to help!");
-            }
-            else if (choice === 6) {
-                bot.reply(msg, "it was nothing!");
-            }
+            var response = ["my pleasure!", "you're absolutely welcome.", "no problem, buddy!", "anytime!", "glad to help!", "it was nothing!"];
+            bot.reply(msg, response[choice]);
         }
         else if (msg.content.length === 21) { //Only a mention.
             if (choice === 1 || choice === 2) {
@@ -432,24 +400,8 @@ bot.on("message", function (msg) {
             }
         }
         else { //Anything else.
-            if (choice === 1) {
-                bot.reply(msg, "no u");
-            }
-            if (choice === 2) {
-                bot.reply(msg, "Y- Yoshi..?");
-            }
-            if (choice === 3) {
-                bot.reply(msg, "isokay.");
-            }
-            if (choice === 4) {
-                bot.reply(msg, "Ian, my creator, is a ~~dirty furfag~~ nice guy.");
-            }
-            if (choice === 5) {
-                bot.reply(msg, "you must have called me here for a reason... right?");
-            }
-            if (choice === 6) {
-                bot.reply(msg, "fun fact: Ian only gave me 6 options in my random language responses.");
-            }
+       	    var response = ["no u", "Y- Yoshi..?", "isokay.", "Ian, my creator, is a ~~dirty furfag~~ nice guy.", "you must have called me here for a reason... right?", "fun fact: Ian only gave me 6 options in my random language responses."];
+            bot.reply(msg, response[choice]);
         }
     }
 });
