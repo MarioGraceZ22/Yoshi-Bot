@@ -169,8 +169,14 @@ bot.on("message", function (msg) {
 
                 case "!bye": //Shut down bot.
                     if (msg.author.id === "110932722322505728") {
-                        bot.sendMessage(msg.channel, "Goodbye, everyone!");
-                        bot.logout();
+                        bot.sendMessage(msg.channel, "Goodbye, everyone!", function(error, message){
+                        	if(message){
+                        		bot.logout();
+                        	}
+                        	else{
+                        		console.log("I couldn't send the message before logging off.");
+                        	}
+                        });
                     }
                     else {
                         bot.reply(msg, "I can't really take that order from you. Sorry. :c");
@@ -350,8 +356,9 @@ bot.on("message", function (msg) {
                 		bot.sendMessage(msg.channel, "Checking for updates...");
                 		simpleGit().pull(function(error, update) {
             				if(update && update.summary.changes) {
-            					bot.sendMessage(msg.channel, "Be right back!");
-            					exec('node YoshiBot.js', (error, stdout, stderr) => {
+            					bot.sendMessage(msg.channel, "Be right back!", function(error, message){
+            						if(message){
+            							exec('node YoshiBot.js', (error, stdout, stderr) => {
   									if (error) {
     									console.error(`exec error: ${error}`);
     									return;
@@ -359,7 +366,12 @@ bot.on("message", function (msg) {
   									console.log(`stdout: ${stdout}`);
   									console.log(`stderr: ${stderr}`);
 								});
-                				bot.logout();
+                						bot.logout();
+            						}
+            						else{
+            							console.log("I couldn't send the message before logging off.");
+            						}
+            					});
             				}
             				else{
             					bot.sendMessage(msg.channel, "Already up to date.");
@@ -373,7 +385,7 @@ bot.on("message", function (msg) {
                 	break;
 
                 	case "!kms":
-                		bot.sendMessage(msg.channel, "You're dead, kiddo. ᕕ[•̀͜ʖ•́]︻̷┻̿═━一 ---");
+                		bot.sendTTSMessage(msg.channel, "You're dead, kiddo. ᕕ[•̀͜ʖ•́]︻̷┻̿═━一 ---");
                 		break;
             }
         }
