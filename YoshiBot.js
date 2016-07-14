@@ -342,17 +342,6 @@ bot.on("message", function (msg) {
                 		if(bot.internal.voiceConnection){
                 			bot.internal.voiceConnection.destroy();
                 		}
-                		/*bot.sendMessage(msg.channel, "Updating in just a second!");
-                		exec('node YoshiBot.js', (error, stdout, stderr) => {
-  							if (error) {
-    							console.error(`exec error: ${error}`);
-    							return;
-  								}
-  							console.log(`stdout: ${stdout}`);
-  							console.log(`stderr: ${stderr}`);
-							});
-                		bot.sendMessage(msg.channel, "Be right back!");
-                		bot.logout();*/
                 		bot.sendMessage(msg.channel, "Checking for updates...");
                 		simpleGit().pull(function(error, update) {
             				if(update && update.summary.changes) {
