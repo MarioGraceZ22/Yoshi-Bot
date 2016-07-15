@@ -25,7 +25,7 @@ catch (e) {
 var qs = require("querystring");
 var password = "";
 
-var bot = new Discord.Client();
+var bot = new Discord.Client({autoReconnect: true});
 
 bot.loginWithToken(auth.token, function (error, token) {
     if (error) {
