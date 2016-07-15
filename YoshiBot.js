@@ -380,7 +380,7 @@ bot.on("message", function (msg) {
         }
     }
     else if (msg.content.indexOf(bot.user.mention()) != -1 && msg.content[0] != '!') { //Customized language responses.
-        var choice = Math.floor((Math.random() * 6) + 1);
+        var choice = Math.floor((Math.random() * 6));
         if (msg.content.toLowerCase().indexOf("hello") != -1 || msg.content.toLowerCase().indexOf("hi ") != -1 || msg.content.toLowerCase().indexOf("welcome") != -1) { //Greetings.
             var response = ["Hello to you, ", "Greetings, ", "Hi there, ", "Hiya, ", "Howdy, ", "*Yoshi-yosh*, "];
             bot.sendMessage(msg.channel, response[choice] + msg.author + "!");
