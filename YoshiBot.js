@@ -392,11 +392,11 @@ bot.on("message", function (msg) {
                                             bot.deleteMessages(messages);
                                             bot.sendMessage(msg.channel, toDel + " messages successfully deleted!");
                                         }
-                                    });*/
+                                    });
                                 }
                                 else{
                                     bot.sendMessage(msg.channel, "That's not a number, silly.");
-                                }
+                                }*/
                             }
                             else{
                                 bot.sendMessage(msg.channel, "I need to know how many messages to delete, buddy.");
