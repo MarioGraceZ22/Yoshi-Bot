@@ -376,6 +376,34 @@ bot.on("message", function (msg) {
                 	case "!kms":
                 		bot.sendTTSMessage(msg.channel, "You're dead, kiddo. ᕕ[•̀͜ʖ•́]︻̷┻̿═━一 ---");
                 		break;
+                	
+                	case "!del":
+                        if (msg.author.id === "110932722322505728"){
+                    		if(msg.content.length > 5){
+                                var toDel = msg.content.substring(5);
+                                if(!isNaN(toDel)){
+                                    bot.getChannelLogs(msg.channel, toDel, {before: msg}, function(error, messages){
+                                        if(error){
+                                            bot.sendMessage(msg.channel, "Oh, whoops. " + error);
+                                        }
+                                        else{
+                                            bot.deleteMessages(messages);
+                                            bot.sendMessage(msg.channel, toDel + " messages successfully deleted!");
+                                        }
+                                    });
+                                }
+                                else{
+                                    bot.sendMessage(msg.channel, "That's not a number, silly.");
+                                }
+                            }
+                            else{
+                                bot.sendMessage(msg.channel, "I need to know how many messages to delete, buddy.");
+                            }
+                        }
+                        else{
+                            bot.reply(msg, "I can't really take that order from you. Sorry. :c");
+                        }
+                        break;
             }
         }
     }
