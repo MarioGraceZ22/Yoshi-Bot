@@ -381,28 +381,25 @@ bot.on("message", function (msg) {
                		case "!del ":
 	                        if (msg.author.id === "110932722322505728" || msg.author.id == "137665965096697859" || msg.author.id == "137763223414898688"){
 	                    	    if(msg.content.length > 5){
-	                                var toDel = msg.content.substring(5, msg.content.length);
-	                                bot.sendMessage(msg.channel, toDel + " is the number of messages you want me to delete.");
-	                                if(!isNaN(toDel)){
-	                                    bot.getChannelLogs(msg.channel, toDel, {before: msg}, function(error, messages){
-	                                        if(error){
-	                                            bot.sendMessage(msg.channel, "Oh, whoops. " + error);
-	                                        }
-	                                        else{
-	                                            for(var i = 0; i < messages.length; i++){
-	                                            	bot.deleteMessage(messages[i].id);
-	                                            }
-	                                            bot.sendMessage(msg.channel, toDel + " message(s) successfully deleted!");
-	                                        }
-	                                    });
-	                                }
-	                                else{
-	                                    bot.sendMessage(msg.channel, "That's not a number, silly.");
-	                                }
-	                            }
-	                            else{
-	                                bot.sendMessage(msg.channel, "I need to know how many messages to delete, buddy.");
-	                            }
+                                	var toDel = msg.content.substring(5);
+                                	if(!isNaN(toDel)){
+                                    		bot.getChannelLogs(msg.channel, toDel, {before: msg}, function(error, messages){
+                                        		if(error){
+                                            			bot.sendMessage(msg.channel, "Oh, whoops. " + error);
+                                        		}
+                                        		else{
+                                            			bot.deleteMessages(messages);
+                                            			bot.sendMessage(msg.channel, toDel + " messages successfully deleted!");
+                                        		}
+                                    		});
+                                	}
+                        	    else{
+                                    	bot.sendMessage(msg.channel, "That's not a number, silly.");
+                                	}
+                            }
+                            else{
+                                bot.sendMessage(msg.channel, "I need to know how many messages to delete, buddy.");
+                            }
 	                        }
 	                        else{
 	                            bot.reply(msg, "I can't really take that order from you. Sorry. :c");
