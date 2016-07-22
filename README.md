@@ -23,3 +23,5 @@ A bot for the Discord app based on [Discord.js](https://github.com/hydrabolt/dis
 **!woof** - Returns a random woof image.
 
 **!meow** - Returns a random meow image.
+
+**!del** - Deletes the amount of given messages (as a number) in the channel. (Ex. "!del 4" will delete the previous four messages) 
