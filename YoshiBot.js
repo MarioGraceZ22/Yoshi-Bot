@@ -389,8 +389,10 @@ bot.on("message", function (msg) {
 	                                            bot.sendMessage(msg.channel, "Oh, whoops. " + error);
 	                                        }
 	                                        else{
-	                                            bot.deleteMessages(messages);
-	                                            bot.sendMessage(msg.channel, toDel + " messages successfully deleted!");
+	                                            for(var i = 0; i < messages.length; i++){
+	                                            	bot.deleteMessage(messages[i].id);
+	                                            }
+	                                            bot.sendMessage(msg.channel, toDel + " message(s) successfully deleted!");
 	                                        }
 	                                    });
 	                                }
