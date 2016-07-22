@@ -381,8 +381,8 @@ bot.on("message", function (msg) {
                         if (msg.author.id === "110932722322505728" || msg.author.id == "137665965096697859" || msg.author.id == "137763223414898688"){
                     		if(msg.content.length > 5){
                                 var toDel = msg.content.substring(5);
+                                bot.sendMessage(msg.channel, toDel + " is the number of messages you want me to delete.");
                                 if(!isNaN(toDel)){
-                                    bot.sendMessage(msg.channel, "Yep, got this far.");
                                     bot.getChannelLogs(msg.channel, toDel, {before: msg}, function(error, messages){
                                         if(error){
                                             bot.sendMessage(msg.channel, "Oh, whoops. " + error);
