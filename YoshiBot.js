@@ -261,7 +261,12 @@ bot.on("message", function (msg) {
                     request("https://www.reddit.com/r/" + subr + "/random/.json", function (error, response, body) {
                         if (!error && response.statusCode == 200) {
                             var srThing = JSON.parse(body);
-                            bot.sendMessage(msg.channel, srThing);
+                            if(typeof(srThing[0]) !== "undefined" || typeof(srThing[0]) !== "null"){
+                            	bot.sendMessage(msg.channel, srThing[0]);
+                            }
+                            else{
+                            	bot.sendMessage(msg.channel, "lel, that's not how this JSON works.");
+                            }
                         }
                             /*if (typeof (srThing.data.children) != "null" && typeof(srThing.data.children[0]) != "undefined") {
                                 bot.sendMessage(msg.channel, srThing.data.children[0].data.url);
