@@ -258,12 +258,11 @@ bot.on("message", function (msg) {
 
                 case "!subr":
                     var subr = msg.content.substring(6);
-                    request("https://www.reddit.com/r/" + subr + "/hot/.json", function (error, response, body) {
+                    request("https://www.reddit.com/r/" + subr + "/random/.json", function (error, response, body) {
                         if (!error && response.statusCode == 200) {
                             var srThing = JSON.parse(body);
-                            var randPost = Math.floor(Math.random() * srThing.data.children.length);
                             if (typeof (srThing.data.children) != "null" && typeof(srThing.data.children[0]) != "null") {
-                                bot.sendMessage(msg.channel, srThing.data.children[randPost].data.url);
+                                bot.sendMessage(msg.channel, srThing.data.children[0].data.url);
                             }
                             else {
                                 bot.sendMessage(msg.channel, "I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
