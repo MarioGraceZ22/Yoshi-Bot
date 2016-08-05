@@ -261,11 +261,13 @@ bot.on("message", function (msg) {
                     request("https://www.reddit.com/r/" + subr + "/random/.json", function (error, response, body) {
                         if (!error && response.statusCode == 200) {
                             var srThing = JSON.parse(body);
-                            if ((typeof (srThing.data.children) != "null" && typeof(srThing.data.children[0]) != "undefined") && typeof(srThing[0].data.children[0].data.url) !== "undefined") {
-                                bot.sendMessage(msg.channel, srThing[0].data.children[0].data.url);
+                            if(typeof (srThing.data) !== "undefined"){
+                            	bot.sendMessage(msg.channel, "I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
                             }
                             else {
-                                bot.sendMessage(msg.channel, "I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
+                                if (typeof(srThing[0].data.children[0].data.url) !== "undefined") {
+                                	bot.sendMessage(msg.channel, srThing[0].data.children[0].data.url);
+                            	}
                             }
                         }
                         else {
