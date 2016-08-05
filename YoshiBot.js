@@ -261,7 +261,8 @@ bot.on("message", function (msg) {
                     request("https://www.reddit.com/r/" + subr + "/random/.json", function (error, response, body) {
                         if (!error && response.statusCode == 200) {
                             var srThing = JSON.parse(body);
-                            if (typeof (srThing.data.children) != "null" && typeof(srThing.data.children[0]) != "undefined") {
+                            bot.sendMessage(msg.channel, srThing);
+                            /*if (typeof (srThing.data.children) != "null" && typeof(srThing.data.children[0]) != "undefined") {
                                 bot.sendMessage(msg.channel, srThing.data.children[0].data.url);
                             }
                             else {
@@ -271,7 +272,7 @@ bot.on("message", function (msg) {
                         else {
                             console.log(error);
                             bot.sendMessage(msg.channel, "I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
-                        }
+                        }*/
                     });
                     break;
                 case "!woof":
