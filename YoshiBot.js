@@ -261,8 +261,8 @@ bot.on("message", function (msg) {
                     request("https://www.reddit.com/r/" + subr + "/random/.json", function (error, response, body) {
                         if (!error && response.statusCode == 200) {
                             var srThing = JSON.parse(body);
-                            if(typeof(srThing[0].data) !== "undefined" || typeof(srThing[0].data) !== "null"){
-                            	bot.sendMessage(msg.channel, srThing[0].data);
+                            if(typeof(srThing[0].data.children) !== "undefined" || typeof(srThing[0].data.children) !== "null"){
+                            	bot.sendMessage(msg.channel, srThing[0].data.children);
                             }
                             else{
                             	bot.sendMessage(msg.channel, "lel, that's not how this JSON works.");
