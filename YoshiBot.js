@@ -262,7 +262,7 @@ bot.on("message", function (msg) {
                         if (!error && response.statusCode == 200) {
                             var srThing = JSON.parse(body);
                             var randPost = Math.floor(Math.random() * srThing.data.children.length);
-                            if (typeof (srThing.data.children) != "null") {
+                            if (typeof (srThing.data.children) != "null" && typeof(srThing.data.children.[0l]) != "null") {
                                 bot.sendMessage(msg.channel, srThing.data.children[randPost].data.url);
                             }
                             else {
