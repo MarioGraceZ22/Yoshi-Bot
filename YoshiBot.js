@@ -262,6 +262,7 @@ bot.on("message", function (msg) {
                         if (!error && response.statusCode == 200) {
                             var srThing = JSON.parse(body);
                             bot.sendMessage(msg.channel, srThing);
+                        }
                             /*if (typeof (srThing.data.children) != "null" && typeof(srThing.data.children[0]) != "undefined") {
                                 bot.sendMessage(msg.channel, srThing.data.children[0].data.url);
                             }
