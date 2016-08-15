@@ -406,6 +406,10 @@ bot.on("message", function (msg) {
 	                            bot.reply(msg, "I can't really take that order from you. Sorry. :c");
 	                        }
 	                        break;
+
+                    case "!info":
+                        var infoString = "Information for user " + msg.author.name + "#" + msg.author.discriminator " and this server:";
+                        break;
             }
         }
     }
