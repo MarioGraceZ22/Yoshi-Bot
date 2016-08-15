@@ -408,9 +408,37 @@ bot.on("message", function (msg) {
 	                        break;
 
                     case "!info":
-                        var infoString = "Information for user " + msg.author.name + "#" + msg.author.discriminator " and this server:";
-                        break;
-            }
+                        var infoString = "";
+                        if (msg.content.length > 5) {
+                            var regst = /^[^\s]+/;
+                            var regend = /[^\s]+$/;
+                            var match = true;
+                            for (var i = 0; i < bot.users.length ; i++) {
+                                if (regst.exec(bot.users[i].username)[0] === avget) {
+                                    match = true;
+                                    infoString = "Information for user **" + bot.users[i].name + "#" + bot.users[i].discriminator "** and " + msg.server.name;
+                                    bot.sendMessage(msg.channel, infoString);
+                                    break;
+                                }
+                                else if (regend.exec(bot.users[i].username)[0] === avget) {
+                                    match = true;
+                                    infoString = "Information for user **" + bot.users[i].name + "#" + bot.users[i].discriminator "** and " + msg.server.name;
+                                    bot.sendMessage(msg.channel, infoString);
+                                    break;
+                                }
+                                else {
+                                    match = false;
+                                }
+                            }
+                            if (match === false) {
+                                bot.sendMessage(msg.channel, "I couldn't find the user you requested.");
+                            }
+                        }
+                        else{
+                            infoString = "Information for user **" + msg.author.name + "#" + msg.author.discriminator "** and " + msg.server.name;
+                            bot.sendMessage(msg.channel, infoString);
+                            break;
+                        }
         }
     }
     else if (msg.content.indexOf(bot.user.mention()) != -1 && msg.content[0] != '!') { //Customized language responses.
