@@ -409,6 +409,7 @@ bot.on("message", function (msg) {
 
                     case "!info":
                         var infoString = "";
+                        var user = null;
                         if (msg.content.length > 5) {
                             var regst = /^[^\s]+/;
                             var regend = /[^\s]+$/;
@@ -416,15 +417,11 @@ bot.on("message", function (msg) {
                             for (var i = 0; i < bot.users.length ; i++) {
                                 if (regst.exec(bot.users[i].username)[0] === avget) {
                                     match = true;
-                                    infoString = "Information for user **" + bot.users[i].name + "#" + bot.users[i].discriminator "** and " + msg.server.name;
-                                    bot.sendMessage(msg.channel, infoString);
-                                    break;
+                                    user = bot.users[i];
                                 }
                                 else if (regend.exec(bot.users[i].username)[0] === avget) {
                                     match = true;
-                                    infoString = "Information for user **" + bot.users[i].name + "#" + bot.users[i].discriminator "** and " + msg.server.name;
-                                    bot.sendMessage(msg.channel, infoString);
-                                    break;
+                                    user = bot.users[i];
                                 }
                                 else {
                                     match = false;
@@ -432,13 +429,17 @@ bot.on("message", function (msg) {
                             }
                             if (match === false) {
                                 bot.sendMessage(msg.channel, "I couldn't find the user you requested.");
+                                break;
                             }
                         }
                         else{
-                            infoString = "Information for user **" + msg.author.name + "#" + msg.author.discriminator "** and " + msg.server.name;
-                            bot.sendMessage(msg.channel, infoString);
-                            break;
+                            user = msg.author;
                         }
+
+                        infoString = "Information for user **" + user.name + "#" + user.discriminator "** and **" + msg.server.name "**:";
+                        bot.sendMessage(msg.channel, infoString);
+                        break;
+                        
         }
     }
     else if (msg.content.indexOf(bot.user.mention()) != -1 && msg.content[0] != '!') { //Customized language responses.
