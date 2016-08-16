@@ -457,14 +457,14 @@ bot.on("message", function (msg) {
                                         }
 
                                         bot.sendMessage(msg.channel, infoString);
-
-                                        break;
                                     }
                                 });
 
                                 
                             }
                         });
+
+                        break;
                         
         }
     }
