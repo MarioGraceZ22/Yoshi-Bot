@@ -411,14 +411,13 @@ bot.on("message", function (msg) {
                         var infoString = "";
                         var user = null;
                         if (msg.content.length > 5) {
-                        	if (bot.users.get("username", avget) != null) {
-                        		user = bot.users.get("username", avget);
+                        	var qstring = msg.content.substring(6);
+                        	if (bot.users.get("username", qstring) != null) {
+                        		user = bot.users.get("username", qstring);
                         	}
                         	else{
 	                            var regst = /^[^\s]+/;
 	                            var regend = /[^\s]+$/;
-	                            var qstring = msg.content.substring(6);
-	                            console.log(qstring);
 	                            var match = true;
 	                            for (var i = 0; i < bot.users.length ; i++) {
 	                                if (regst.exec(bot.users[i].username)[0] === qstring) {
