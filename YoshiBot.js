@@ -411,28 +411,33 @@ bot.on("message", function (msg) {
                         var infoString = "";
                         var user = null;
                         if (msg.content.length > 5) {
-                            var regst = /^[^\s]+/;
-                            var regend = /[^\s]+$/;
-                            var qstring = msg.content.substring(6);
-                            console.log(qstring);
-                            var match = true;
-                            for (var i = 0; i < bot.users.length ; i++) {
-                                if (regst.exec(bot.users[i].username)[0] === qstring) {
-                                    match = true;
-                                    user = bot.users[i];
-                                }
-                                else if (regend.exec(bot.users[i].username)[0] === qstring) {
-                                    match = true;
-                                    user = bot.users[i];
-                                }
-                                else {
-                                    match = false;
-                                }
-                            }
-                            if (match === false) {
-                                bot.sendMessage(msg.channel, "I couldn't find the user you requested.");
-                                break;
-                            }
+                        	if (bot.users.get("username", avget) != null) {
+                        		user = bot.users.get("username", avget);
+                        	}
+                        	else{
+	                            var regst = /^[^\s]+/;
+	                            var regend = /[^\s]+$/;
+	                            var qstring = msg.content.substring(6);
+	                            console.log(qstring);
+	                            var match = true;
+	                            for (var i = 0; i < bot.users.length ; i++) {
+	                                if (regst.exec(bot.users[i].username)[0] === qstring) {
+	                                    match = true;
+	                                    user = bot.users[i];
+	                                }
+	                                else if (regend.exec(bot.users[i].username)[0] === qstring) {
+	                                    match = true;
+	                                    user = bot.users[i];
+	                                }
+	                                else {
+	                                    match = false;
+	                                }
+	                            }
+	                            if (match === false) {
+	                                bot.sendMessage(msg.channel, "I couldn't find the user you requested.");
+	                                break;
+	                            }
+	                        }
                         }
                         else{
                             user = msg.author;
