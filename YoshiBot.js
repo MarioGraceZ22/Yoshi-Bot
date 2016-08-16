@@ -447,13 +447,13 @@ bot.on("message", function (msg) {
                             if(message){
                                 bot.sendMessage(msg.channel, "His/Her avatar is: " + user.avatarURL, function(error, message){
                                     if(message){
-                                        infoString = "    - **" + user.name + "'s** ID is **" + user.id + "**.\n    - This account was created in **" + user.createdAt + "**.\n";
+                                        infoString = "\t- **" + user.name + "'s** ID is **" + user.id + "**.\n\t- This account was created in **" + user.createdAt + "**.\n";
 
                                         if(user.bot){
-                                            infoString += "    - This user is **an official bot** account as per Discord API.\n";
+                                            infoString += "\t- This user is **an official bot** account as per Discord API.\n";
                                         }
                                         else{
-                                            infoString += "    - This user is **not an official bot** account as per Discord API.\n";
+                                            infoString += "\t- This user is **not an official bot** account as per Discord API.\n";
                                         }
 
                                         bot.sendMessage(msg.channel, infoString);
