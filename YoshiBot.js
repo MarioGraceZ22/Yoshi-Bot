@@ -443,21 +443,28 @@ bot.on("message", function (msg) {
                         }
 
                         infoString = "Information for user **" + user.name + "#" + user.discriminator + "** and **" + msg.server.name + "**:";
-                        bot.sendMessage(msg.channel, infoString);
-                        bot.sendMessage(msg.channel, "His/Her avatar is: " + user.avatarURL);
+                        bot.sendMessage(msg.channel, infoString, function(error, message){
+                            if(message){
+                                bot.sendMessage(msg.channel, "His/Her avatar is: " + user.avatarURL, function(error, message){
+                                    if(message){
+                                        infoString = "    - **" + user.name + "'s** ID is **" + user.id + "**.\n    - This account was created in **" + user.createdAt + "**.\n";
 
-                        infoString = "    - " + user.name + "'s ID is " + user.id + ".\n    - This account was created in " + user.createdAt + ".\n";
+                                        if(user.bot){
+                                            infoString += "    - This user is **an official bot** account as per Discord API.\n";
+                                        }
+                                        else{
+                                            infoString += "    - This user is **not an official bot** account as per Discord API.\n";
+                                        }
 
-                        if(user.bot){
-                            infoString += "    - This user is an official bot account as per Discord API.\n";
-                        }
-                        else{
-                            infoString += "    - This user is not an official bot account as per Discord API.\n";
-                        }
+                                        bot.sendMessage(msg.channel, infoString);
 
-                        bot.sendMessage(msg.channel, infoString);
+                                        break;
+                                    }
+                                });
 
-                        break;
+                                
+                            }
+                        });
                         
         }
     }
