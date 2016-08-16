@@ -16,6 +16,8 @@ const exec = require('child_process').exec;
 
 var auth = require("./auth.json");
 
+var helpers = require("./helpers.js");
+
 try {
     var request = require("request");
 }
@@ -447,18 +449,19 @@ bot.on("message", function (msg) {
                             if(message){
                                 bot.sendMessage(msg.channel, "His/Her avatar is: " + user.avatarURL, function(error, message){
                                     if(message){
-                                        infoString = "\t- **" + user.name + "'s** ID is **" + user.id + "**.\n\t- This account was created in **" + user.createdAt + "**.\n";
+                                        infoString = "- **" + user.name + "'s** ID is **" + user.id + "**.\n- This account was created in **" + user.createdAt + "**.\n";
 
                                         if(user.bot){
-                                            infoString += "\t- This user is **an official bot** account as per Discord API.\n";
+                                            infoString += "- This user is **an official bot** account as per Discord API.\n";
                                         }
                                         else{
-                                            infoString += "\t- This user is **not an official bot** account as per Discord API.\n";
+                                            infoString += "- This user is **not an official bot** account as per Discord API.\n";
                                         }
 
                                         var userServerDetails = msg.server.detailsOfUser(user);
-                                        infoString += "\t- This user has the role(s) **" + userServerDetails.roles + "** in this server.\n\t- **" + user.name + "'s** nickname is **" + userServerDetails.nick + "** in this server.\n\t- **" + user.name + "#" + user.discriminator + "** joined this server in " + userServerDetails.joinedAt;
-
+                                        infoString += "- This user has the role(s) **" + userServerDetails.roles + "** in this server.\n- **" + user.name + "'s** nickname is **" + userServerDetails.nick + "** in this server.\n- **" + user.name + "#" + user.discriminator + "** joined this server in **";
+                                        timeJoined = helpers.unix_to_time(userServerDetails.joinedAt);
+                                        infoString += timeJoined + "**.\n";
                                         bot.sendMessage(msg.channel, infoString);
                                     }
                                 });
