@@ -170,12 +170,12 @@ bot.on("message", function (msg) {
                 case "!bye": //Shut down bot.
                     if (msg.author.id === "110932722322505728") {
                         bot.sendMessage(msg.channel, "Goodbye, everyone!", function(error, message){
-                        	if(message){
-                        		bot.logout();
-                        	}
-                        	else{
-                        		console.log("I couldn't send the message before logging off.");
-                        	}
+                            if(message){
+                                bot.logout();
+                            }
+                            else{
+                                console.log("I couldn't send the message before logging off.");
+                            }
                         });
                     }
                     else {
@@ -262,12 +262,12 @@ bot.on("message", function (msg) {
                         if (!error && response.statusCode == 200) {
                             var srThing = JSON.parse(body);
                             if(typeof (srThing.data) !== "undefined"){
-                            	bot.sendMessage(msg.channel, "I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
+                                bot.sendMessage(msg.channel, "I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
                             }
                             else {
                                 if (typeof(srThing[0].data.children[0].data.url) !== "undefined") {
-                                	bot.sendMessage(msg.channel, srThing[0].data.children[0].data.url);
-                            	}
+                                    bot.sendMessage(msg.channel, srThing[0].data.children[0].data.url);
+                                }
                             }
                         }
                         else {
@@ -338,105 +338,105 @@ bot.on("message", function (msg) {
                     bot.sendMessage(msg.channel, "Playing Intent: " + bot.internal.voiceConnection.playingIntent);
                     break;
 
-                case "!updt":            	
-                	if (msg.author.id === "110932722322505728"){
-                		if(bot.internal.voiceConnection){
-                			bot.internal.voiceConnection.destroy();
-                		}
-                		bot.sendMessage(msg.channel, "Checking for updates...");
-                		simpleGit().pull(function(error, update) {
-            				if(update && update.summary.changes) {
-            					bot.sendMessage(msg.channel, "Be right back!", function(error, message){
-            						if(message){
-            							exec('node YoshiBot.js', (error, stdout, stderr) => {
-  									if (error) {
-    									console.error(`exec error: ${error}`);
-    									return;
-  									}
-  									console.log(`stdout: ${stdout}`);
-  									console.log(`stderr: ${stderr}`);
-								});
-                						bot.logout();
-            						}
-            						else{
-            							console.log("I couldn't send the message before logging off.");
-            						}
-            					});
-            				}
-            				else{
-            					bot.sendMessage(msg.channel, "Already up to date.");
-            					console.log(error);
-            				}
-         				});
-                	}
-                	else{
-                		bot.reply(msg, "I can't really take that order from you. Sorry. :c");
-                	}
-                	break;
+                case "!updt":               
+                    if (msg.author.id === "110932722322505728"){
+                        if(bot.internal.voiceConnection){
+                            bot.internal.voiceConnection.destroy();
+                        }
+                        bot.sendMessage(msg.channel, "Checking for updates...");
+                        simpleGit().pull(function(error, update) {
+                            if(update && update.summary.changes) {
+                                bot.sendMessage(msg.channel, "Be right back!", function(error, message){
+                                    if(message){
+                                        exec('node YoshiBot.js', (error, stdout, stderr) => {
+                                    if (error) {
+                                        console.error(`exec error: ${error}`);
+                                        return;
+                                    }
+                                    console.log(`stdout: ${stdout}`);
+                                    console.log(`stderr: ${stderr}`);
+                                });
+                                        bot.logout();
+                                    }
+                                    else{
+                                        console.log("I couldn't send the message before logging off.");
+                                    }
+                                });
+                            }
+                            else{
+                                bot.sendMessage(msg.channel, "Already up to date.");
+                                console.log(error);
+                            }
+                        });
+                    }
+                    else{
+                        bot.reply(msg, "I can't really take that order from you. Sorry. :c");
+                    }
+                    break;
 
-                	case "!kms":
-                		bot.sendTTSMessage(msg.channel, "You're dead, kiddo. ᕕ[•̀͜ʖ•́]︻̷┻̿═━一 ---");
-                		break;
-                	
-                	case "!del":
-               		case "!del ":
-	                        if (msg.author.id === "110932722322505728" || msg.author.id == "137665965096697859" || msg.author.id == "137763223414898688"){
-	                    	    if(msg.content.length > 5){
-                                	var toDel = msg.content.substring(5);
-                                	if(!isNaN(toDel)){
-                                    		bot.getChannelLogs(msg.channel, toDel, {before: msg}, function(error, messages){
-                                        		if(error){
-                                            			bot.sendMessage(msg.channel, "Oh, whoops. " + error);
-                                        		}
-                                        		else{
-                                            			bot.deleteMessages(messages);
-                                            			bot.sendMessage(msg.channel, toDel + " messages successfully deleted!");
-                                        		}
-                                    		});
-                                	}
-                        	    else{
-                                    	bot.sendMessage(msg.channel, "That's not a number, silly.");
-                                	}
+                    case "!kms":
+                        bot.sendTTSMessage(msg.channel, "You're dead, kiddo. ᕕ[•̀͜ʖ•́]︻̷┻̿═━一 ---");
+                        break;
+                    
+                    case "!del":
+                    case "!del ":
+                            if (msg.author.id === "110932722322505728" || msg.author.id == "137665965096697859" || msg.author.id == "137763223414898688"){
+                                if(msg.content.length > 5){
+                                    var toDel = msg.content.substring(5);
+                                    if(!isNaN(toDel)){
+                                            bot.getChannelLogs(msg.channel, toDel, {before: msg}, function(error, messages){
+                                                if(error){
+                                                        bot.sendMessage(msg.channel, "Oh, whoops. " + error);
+                                                }
+                                                else{
+                                                        bot.deleteMessages(messages);
+                                                        bot.sendMessage(msg.channel, toDel + " messages successfully deleted!");
+                                                }
+                                            });
+                                    }
+                                else{
+                                        bot.sendMessage(msg.channel, "That's not a number, silly.");
+                                    }
                             }
                             else{
                                 bot.sendMessage(msg.channel, "I need to know how many messages to delete, buddy.");
                             }
-	                        }
-	                        else{
-	                            bot.reply(msg, "I can't really take that order from you. Sorry. :c");
-	                        }
-	                        break;
+                            }
+                            else{
+                                bot.reply(msg, "I can't really take that order from you. Sorry. :c");
+                            }
+                            break;
 
                     case "!info":
                         var infoString = "";
                         var user = null;
                         if (msg.content.length > 5) {
-                        	var qstring = msg.content.substring(6);
-                        	if (bot.users.get("username", qstring) != null) {
-                        		user = bot.users.get("username", qstring);
-                        	}
-                        	else{
-	                            var regst = /^[^\s]+/;
-	                            var regend = /[^\s]+$/;
-	                            var match = true;
-	                            for (var i = 0; i < bot.users.length ; i++) {
-	                                if (regst.exec(bot.users[i].username)[0] === qstring) {
-	                                    match = true;
-	                                    user = bot.users[i];
-	                                }
-	                                else if (regend.exec(bot.users[i].username)[0] === qstring) {
-	                                    match = true;
-	                                    user = bot.users[i];
-	                                }
-	                                else {
-	                                    match = false;
-	                                }
-	                            }
-	                            if (match === false) {
-	                                bot.sendMessage(msg.channel, "I couldn't find the user you requested.");
-	                                break;
-	                            }
-	                        }
+                            var qstring = msg.content.substring(6);
+                            if (bot.users.get("username", qstring) != null) {
+                                user = bot.users.get("username", qstring);
+                            }
+                            else{
+                                var regst = /^[^\s]+/;
+                                var regend = /[^\s]+$/;
+                                var match = true;
+                                for (var i = 0; i < bot.users.length ; i++) {
+                                    if (regst.exec(bot.users[i].username)[0] === qstring) {
+                                        match = true;
+                                        user = bot.users[i];
+                                    }
+                                    else if (regend.exec(bot.users[i].username)[0] === qstring) {
+                                        match = true;
+                                        user = bot.users[i];
+                                    }
+                                    else {
+                                        match = false;
+                                    }
+                                }
+                                if (match === false) {
+                                    bot.sendMessage(msg.channel, "I couldn't find the user you requested.");
+                                    break;
+                                }
+                            }
                         }
                         else{
                             user = msg.author;
@@ -444,6 +444,19 @@ bot.on("message", function (msg) {
 
                         infoString = "Information for user **" + user.name + "#" + user.discriminator + "** and **" + msg.server.name + "**:";
                         bot.sendMessage(msg.channel, infoString);
+                        bot.sendFile(msg.channel, user.avatarURL, "user_avatar", "His/Her avatar is:");
+
+                        infoString += "    - " + user.name + "'s ID is " + user.id + ".\n    - This account was created in " + user.createdAt + ".\n";
+
+                        if(user.bot){
+                            infoString += "    - This user is not an official bot account as per Discord API.\n";
+                        }
+                        else{
+                            infoString += "    - This user is an official bot account as per Discord API.\n";
+                        }
+
+                        bot.sendMessage(msg.channel, infoString);
+
                         break;
                         
         }
@@ -471,7 +484,7 @@ bot.on("message", function (msg) {
             }
         }
         else { //Anything else.
-       	    var response = ["no u", "Y- Yoshi..?", "isokay.", "Ian, my creator, is a ~~dirty furfag~~ nice guy.", "you must have called me here for a reason... right?", "fun fact: Ian only gave me 6 options in my random language responses."];
+            var response = ["no u", "Y- Yoshi..?", "isokay.", "Ian, my creator, is a ~~dirty furfag~~ nice guy.", "you must have called me here for a reason... right?", "fun fact: Ian only gave me 6 options in my random language responses."];
             bot.reply(msg, response[choice]);
         }
     }
