@@ -462,7 +462,7 @@ bot.on("message", function (msg) {
                                         infoString += "- This user has the role(s) **" + userServerDetails.roles + "** in this server.\n- **" + user.name + "'s** nickname is **" + userServerDetails.nick + "** in this server.\n- **" + user.name + "#" + user.discriminator + "** joined this server in **";
                                         //timeJoined = helpers.unix_to_time(userServerDetails.joinedAt);
                                         //timeJoined = "nicemem";
-                                        //infoString += timeJoined + "**.\n\n- The ID of server **" + msg.server.name + "** is **" + msg.server.id + "**.\n- There are **" + msg.server.users.length + "** users in this server.";
+                                        infoString += userServerDetails.joinedAt + "**.\n\n- The ID of server **" + msg.server.name + "** is **" + msg.server.id + "**.\n- There are **" + msg.server.users.length + "** users in this server.";
                                         bot.sendMessage(msg.channel, infoString);
                                     }
                                 });
