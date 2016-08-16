@@ -413,13 +413,15 @@ bot.on("message", function (msg) {
                         if (msg.content.length > 5) {
                             var regst = /^[^\s]+/;
                             var regend = /[^\s]+$/;
+                            var qstring = msg.content.substring(6);
+                            console.log(qstring);
                             var match = true;
                             for (var i = 0; i < bot.users.length ; i++) {
-                                if (regst.exec(bot.users[i].username)[0] === avget) {
+                                if (regst.exec(bot.users[i].username)[0] === qstring) {
                                     match = true;
                                     user = bot.users[i];
                                 }
-                                else if (regend.exec(bot.users[i].username)[0] === avget) {
+                                else if (regend.exec(bot.users[i].username)[0] === qstring) {
                                     match = true;
                                     user = bot.users[i];
                                 }
@@ -436,12 +438,13 @@ bot.on("message", function (msg) {
                             user = msg.author;
                         }
 
-                        infoString = "Information for user **" + user.name + "#" + user.discriminator "** and **" + msg.server.name "**:";
+                        infoString = "Information for user **" + user.name + "#" + user.discriminator + "** and **" + msg.server.name + "**:";
                         bot.sendMessage(msg.channel, infoString);
                         break;
                         
         }
     }
+}
     else if (msg.content.indexOf(bot.user.mention()) != -1 && msg.content[0] != '!') { //Customized language responses.
         var choice = Math.floor((Math.random() * 6));
         if (msg.content.toLowerCase().indexOf("hello") != -1 || msg.content.toLowerCase().indexOf("hi ") != -1 || msg.content.toLowerCase().indexOf("welcome") != -1) { //Greetings.
