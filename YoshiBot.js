@@ -14,6 +14,8 @@ var simpleGit = require('simple-git');
 
 const exec = require('child_process').exec;
 
+var moment = require('moment');
+
 var auth = require("./auth.json");
 
 var helpers = require("./helpers.js");
@@ -461,7 +463,9 @@ bot.on("message", function (msg) {
                                         var userServerDetails = msg.server.detailsOfUser(user);
                                         infoString += "- This user has the role(s) **" + userServerDetails.roles + "** in this server.\n- **" + user.name + "'s** nickname is **" + userServerDetails.nick + "** in this server.\n- **" + user.name + "#" + user.discriminator + "** joined this server in **";
                                         //timeJoined = helpers.unix_to_time(userServerDetails.joinedAt);
-                                        infoString += userServerDetails.joinedAt + "**.\n\n- The ID of server **" + msg.server.name + "** is **" + msg.server.id + "**."//\n- There are **" + msg.server.users.length + "** users in this server.";
+                                        var t = new Date(userServerDetails.joinedAt*1000);
+                                        var formatted = t.format("dd.mm.yyyy hh:MM:ss");
+                                        infoString += formatted + "**.\n\n- The ID of server **" + msg.server.name + "** is **" + msg.server.id + "**."//\n- There are **" + msg.server.users.length + "** users in this server.";
                                         bot.sendMessage(msg.channel, infoString);
                                     }
                                 });

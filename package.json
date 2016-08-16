@@ -13,8 +13,9 @@
   "dependencies": {
     "d20": "^1.4.0",
     "discord.js": "<=5.2.x",
+    "moment": "^2.14.1",
+    "npm": "",
     "querystring": "0.2.x"
-	, "npm":""
   },
   "main": "YoshiBot.js"
 }
