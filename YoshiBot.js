@@ -456,6 +456,9 @@ bot.on("message", function (msg) {
                                             infoString += "\t- This user is **not an official bot** account as per Discord API.\n";
                                         }
 
+                                        var userServerDetails = msg.server.detailsOfUser(user);
+                                        infoString += "\t- This user has the role(s) **" + userServerDetails.roles + "** in this server.\n\t- **" + user.name + "'s** nickname is **" + userServerDetails.nick + "** in this server.\n\t- **" + user.name + "#" + user.discriminator + "** joined this server in " + userServerDetails.joinedAt;
+
                                         bot.sendMessage(msg.channel, infoString);
                                     }
                                 });
