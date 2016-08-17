@@ -160,7 +160,7 @@ bot.on("message", function (msg) {
 
                 case "!help": //Displays help message.
                     if (msg.content === "!help " + bot.user.mention()) {
-                        bot.sendMessage(msg.channel, "```These are the commands I can use: \n!ping - I'll respond with a \"pong.\" Useful for checking if I'm alive.\n!pong - Similar to !ping. Kind of.\n!join - I'll attempt to join the server you invite me to.\n!server - List of servers I am in.\n!mlfw - Returns a pony reaction image based on tags (separated by a comma and a space) given. (Ex. !mlfw happy, twilight sparkle)\n!e621 - It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given. (Ex. !e621 anthro, canine)\n!avie - Returns the avatar image of the specified user. If no user is specified, returns the avatar image of the author.\n!pick - Will randomly pick from the number of options given by the user, separated by commas and spaces. (Ex. !pick option1, option2, option3)\n!subr - Will return a random post from the \"hot\" section of the user given subreddit. (Ex. !subr wheredidthesodago)\n!woof - Returns a random woof image.\n!meow - Returns a random meow image.\n!del - Deletes the amount of given messages (as a number) in the channel. (Ex. \"!del 4\" will delete the previous four messages) ```")
+                        bot.sendMessage(msg.channel, "```These are the commands I can use: \n!ping - I'll respond with a \"pong.\" Useful for checking if I'm alive.\n!pong - Similar to !ping. Kind of.\n!join - I'll attempt to join the server you invite me to.\n!server - List of servers I am in.\n!mlfw - Returns a pony reaction image based on tags (separated by a comma and a space) given. (Ex. !mlfw happy, twilight sparkle)\n!e621 - It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given. (Ex. !e621 anthro, canine)\n!avie - Returns the avatar image of the specified user. If no user is specified, returns the avatar image of the author.\n!pick - Will randomly pick from the number of options given by the user, separated by commas and spaces. (Ex. !pick option1, option2, option3)\n!subr - Will return a random post from the user given subreddit using reddit's own \"random.\" (Ex. !subr wheredidthesodago)\n!woof - Returns a random woof image.\n!meow - Returns a random meow image.\n!del - Deletes the amount of given messages (as a number) in the channel. (Ex. \"!del 4\" will delete the previous four messages)\n!info - Will give information about the requested user and the server the command was issued in. If no user is specified, returns information about the author. ```")
                     }
                     break;
 
@@ -449,21 +449,24 @@ bot.on("message", function (msg) {
                             if(message){
                                 bot.sendMessage(msg.channel, "His/Her avatar is: " + user.avatarURL, function(error, message){
                                     if(message){
-                                        infoString = "- **" + user.name + "'s** ID is **" + user.id + "**.\n- This account was created in **" + user.createdAt + "**.\n";
+                                    	bot.sendMessage(msg.channel, "The server's icon is: " + msg.server.iconURL, function(error, message){
+                                    		if(message){
+	                                    		infoString = "- **" + user.name + "'s** ID is **" + user.id + "**.\n- This account was created in **" + user.createdAt + "**.\n";
 
-                                        if(user.bot){
-                                            infoString += "- This user is **an official bot** account as per Discord API.\n";
-                                        }
-                                        else{
-                                            infoString += "- This user is **not an official bot** account as per Discord API.\n";
-                                        }
+		                                        if(user.bot){
+		                                            infoString += "- This user is **an official bot** account as per Discord API.\n";
+		                                        }
+		                                        else{
+		                                            infoString += "- This user is **not an official bot** account as per Discord API.\n";
+		                                        }
 
-                                        var userServerDetails = msg.server.detailsOfUser(user);
-                                        infoString += "- This user has the role(s) **" + userServerDetails.roles + "** in this server.\n- **" + user.name + "'s** nickname is **" + userServerDetails.nick + "** in this server.\n- **" + user.name + "#" + user.discriminator + "** joined this server in **";
-                                        var t = moment.unix(userServerDetails.joinedAt);
-                                        var formatted = t.format("dddd, MMMM Do YYYY, h:mm:ss a");
-                                        infoString += formatted + "**.\n\n- The ID of server **" + msg.server.name + "** is **" + msg.server.id + "**."//\n- There are **" + msg.server.users.length + "** users in this server.";
-                                        bot.sendMessage(msg.channel, infoString);
+		                                        var userServerDetails = msg.server.detailsOfUser(user);
+		                                        infoString += "- This user has the role(s) **" + userServerDetails.roles + "** in this server.\n- **" + user.name + "'s** nickname is **" + userServerDetails.nick + "** in this server.\n- **" + user.name + "#" + user.discriminator + "** joined this server in **";
+		                                        var t = new Date(userServerDetails.joinedAt);
+		                                        infoString += t + "**.\n\n- The ID of server **" + msg.server.name + "** is **" + msg.server.id + "**.\n- There are **" + msg.server.members.length + "** users in this server.\n- **" + msg.server.owner.name + "#" + msg.server.owner.discriminator + "** is the owner of **" + msg.server.name + "**.\n- This server was created in **" + msg.server.createdAt + "**.";
+		                                        bot.sendMessage(msg.channel, infoString);
+                                    		}
+                                    	});
                                     }
                                 });
 
