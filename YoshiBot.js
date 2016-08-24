@@ -40,7 +40,9 @@ bot.loginWithToken(auth.token, function (error, token) {
 bot.on("ready", function () {
     console.log("Bot is live and ready!");
     bot.sendMessage("168188374023274496", "Hiya, everyone!")
-    bot.setPlayingGame("with " + bot.users.length + " users!");
+    games = ["with " + bot.users.length + " users!", "with over 500 lines of code!", "with eggs and ham!", "with Ian's sanity!", "in Yoshi's Island!"]
+    randGame = Math.floor(Math.random() * 5) + 1;
+    bot.setPlayingGame(games[randGame]);
 });
 
 bot.on("serverNewMember", function (server, user) {
