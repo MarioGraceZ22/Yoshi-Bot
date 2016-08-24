@@ -63,18 +63,20 @@ bot.on("message", function (msg) {
                         var tagesto = "";
                         var tagestosplit = msg.content.substring((msg.content.indexOf(',') + 1), msg.content.length).split(",");
                         if (msg.content.indexOf(',') != -1) {
-                            tagesto = (msg.content.substring(6, msg.content.indexOf(',')) + "+");
+                            tagesto = (msg.content.substring(6, msg.content.indexOf(',')).replace(/\s/g, "_") + "+");
                             for (var i = 0; i < tagestosplit.length; i++) {
                                 if (i === (tagestosplit.length - 1)) {
-                                    tagesto += tagestosplit[i].substring(1, tagestosplit[i].length);
+                                    tagestosplit[i] = tagestosplit[i].substring(1, tagestosplit[i].length).replace(/\s/g, "_");
+                                    tagesto += tagestosplit[i];
                                 }
                                 else {
-                                    tagesto += tagestosplit[i].substring(1, tagestosplit[i].length) + "+";
+                                    tagestosplit[i] = tagestosplit[i].substring(1, tagestosplit[i].length).replace(/\s/g, "_");
+                                    tagesto += tagestosplit[i] + "+";
                                 }
                             }
                         }
                         else {
-                            tagesto = msg.content.substring(6, msg.content.length);
+                            tagesto = msg.content.substring(6, msg.content.length).replace(/\s/g, "_");
                         }
 
                         if (msg.channel.isPrivate === true || msg.channel.name.indexOf("art") != -1 || msg.channel.name.indexOf("furry") != -1 || msg.channel.name.indexOf("2am") != -1) {
