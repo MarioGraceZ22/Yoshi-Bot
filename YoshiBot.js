@@ -4,25 +4,56 @@ try {
 catch (e) {
     console.log(e.stack);
     console.log(process.version);
-    console.log("Please run npm install and ensure it passes with no errors!");
+    console.log("I think there is a complete lack of everything here... I mean, do you even want to start? There is no 'discord.js.'");
     process.exit();
 }
 
-var LOADDIR = "C:/Users/Woof/Music/";
+var LOADDIR = "C:\\Users\\Ian\\Music\\";
 
-var simpleGit = require('simple-git');
+try{
+    var simpleGit = require('simple-git');
+}
+catch(e){
+    console.log("You're missing simple-git from your dependencies! Surely you want this bot to update, right?");
+}
 
-const exec = require('child_process').exec;
+try{
+    const exec = require('child_process').exec;
+}
+catch(e){
+    console.log("Now now, if you don't have child_process, Yoshi won't be able to restart.");
+}
 
-var moment = require('moment');
+try{
+    var moment = require('moment');
+}
+catch(e){
+    console.log("You must get 'moment' in a TIMEly manner... just get the module.");
+}
 
-var auth = require("./auth.json");
+try{
+    var auth = require("./auth.json");
+}
+catch(e){
+    console.log("You aren't getting very far without an auth.json... just sayin'.");
+}
+
+try{
+    var YouTube = require('youtube-node');
+}
+catch(e){
+    console.log("There is no youtube-node here... I guess you don't want YouTube videos.");
+}
+
+var yt = new YouTube();
+
+yt.setKey(auth.yt);
 
 try {
     var request = require("request");
 }
 catch (e) {
-    console.log("Missing 'request' from dependencies.")
+    console.log("I'm REQUESTing you to get 'request.' I need it for pretty much everything.")
 }
 var qs = require("querystring");
 var password = "";
@@ -44,6 +75,7 @@ bot.on("ready", function () {
     randGame = Math.floor(Math.random() * 5) + 1;
     bot.setPlayingGame(games[randGame]);
 });
+
 
 bot.on("serverNewMember", function (server, user) {
     bot.sendMessage("136609300700332032", "Welcome, " + user + ", to our little piece of Discord: Shitpost Central - Live. We're really glad to have ya and we hope that you will enjoy your time here to the fullest. We encourage you to head on to <#169511435347558400> to ensure you know all the rules and become informed in the extents of each channel. If you have any questions, feel free to ask the admin or the mods, they'll be happy to answer. Cya around!");
@@ -327,9 +359,9 @@ bot.on("message", function (msg) {
                             if (bot.internal.voiceConnection) {
                                 var songName = msg.content.substring(6, msg.content.length);
                                 var connection = bot.internal.voiceConnection;
-                                var filePath = LOADDIR + songName;
+                                var filePath = "https://api.soundcloud.com/tracks/194566340/stream";
                                 bot.sendMessage(msg.channel, "Playing that for you in a sec...");
-                                connection.playFile(filePath);
+                                connection.playRawStream(filePath, {volume: 0.3});
                             }
                         }
                         else {
@@ -341,7 +373,11 @@ bot.on("message", function (msg) {
                 case "!dbgt":
                     bot.sendMessage(msg.channel, "Stream Time: " + bot.internal.voiceConnection.streamTime);
                     bot.sendMessage(msg.channel, "Is playing? " + bot.internal.voiceConnection.playing);
-                    bot.sendMessage(msg.channel, "Playing Intent: " + bot.internal.voiceConnection.playingIntent);
+                    bot.sendMessage(msg.channel, "Playing Intent: ");
+                    for(values in bot.internal.voiceConnection.playingIntent._events){
+                        bot.sendMessage(msg.channel, values);
+                    }
+
                     break;
 
                 case "!updt":               
