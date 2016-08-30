@@ -41,7 +41,6 @@ bot.loginWithToken(auth.token, function (error, token) {
 bot.on("ready", function () {
     console.log("Bot is live and ready!");
     bot.sendMessage("168188374023274496", "New and rehauled Yoshi-Bot online and ready to serve! Why don't you try \"!help\"?");
-    bot.sendMessage("155932302671740929", "New and rehauled Yoshi-Bot online and ready to serve! Why don't you try \"!help\"?");
     games = ["with " + bot.users.length + " users!", "with over 500 lines of code!", "with eggs and ham!", "with Ian's sanity!", "in Yoshi's Island!"]
     randGame = Math.floor(Math.random() * 5);
     bot.setPlayingGame(games[randGame]);
@@ -50,6 +49,20 @@ bot.on("ready", function () {
 
 bot.on("serverNewMember", function (server, user) {
     bot.sendMessage("136609300700332032", "Welcome, " + user + ", to our little piece of Discord: Shitpost Central - Live. We're really glad to have ya and we hope that you will enjoy your time here to the fullest. We encourage you to head on to <#169511435347558400> to ensure you know all the rules and become informed in the extents of each channel. If you have any questions, feel free to ask the admin or the mods, they'll be happy to answer. Cya around!");
+});
+
+bot.on("messageDeleted", function(message, channel){
+    var t = new Date(Date.now());
+    if(message){
+        bot.sendMessage("220258542131740672", "```" + t + "```" + "Message by **" + message.author.name + "#" + message.author.discriminator + "** was deleted in " + channel + "\n**Message: **" + message.content);
+    }
+});
+
+bot.on("messageUpdated", function(old, message){
+    var d = new Date(Date.now());
+    if(old && message){
+        bot.sendMessage("220258542131740672", "```" + d + "```" + "Message by **" + message.author.name + "#" + message.author.discriminator + "** was updated in " + message.channel + "\n**Old:** " + old.content + "\n**New:** " + message.content);
+    }
 });
 
 bot.on("message", function (msg) {
@@ -79,7 +92,18 @@ bot.on("message", function (msg) {
                     }
                 }
                 info += "```";
-                bot.sendMessage(msg.channel, info);
+                if(info.length > 2000){
+                    firstHalf = info.substring(0, info.indexOf("!voice"));
+                    secondHalf = info.substring(info.indexOf("!voice"), info.length);
+                    bot.sendMessage(msg.channel, firstHalf + "```", function(error, message){
+                        if(message){
+                            bot.sendMessage(msg.channel, "```" + secondHalf);
+                        }
+                    });
+                }
+                else{
+                    bot.sendMessage(msg.channel, info);
+                }
                 });
             }
             else if(cmd) {

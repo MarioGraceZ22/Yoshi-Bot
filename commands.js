@@ -521,7 +521,7 @@ exports.commands = {
 
     "yt": {
         usage: "<search terms> (Ex. !yt PFUDOR)",
-        description: "Returns a YouTube video.",
+        description: "Returns the first YouTube video in a search based on the input query.",
         process: function(bot, msg, params){
              if(params){
                 yt.search(params, 1, function(error, result) {
@@ -535,6 +535,27 @@ exports.commands = {
             }
             else{
                 bot.sendMessage(msg.channel, "Give me some search terms to look for, silly.");
+            }
+        }
+    },
+
+    "8ball": {
+        usage: "<question> (Ex. !8ball Will Ian ever get a life?)",
+        description: "Will briefly turn into the Magical 8 Ball and respond to whatever question you pose.",
+        process: function(bot, msg, params){
+            if(params){
+                request('https://8ball.delegator.com/magic/JSON/' + params, function(error, response, body){
+                    if (!error && response.statusCode == 200){
+                        answer = JSON.parse(body);
+                        botResponse = "*The Magical 8 Ball answers...*\n";
+                        botResponse += "`Question:` **" + params + "**\n";
+                        botResponse += "`Answer:` **" + answer.magic.answer + "**";
+                        bot.sendMessage(msg.channel, botResponse);
+                    }
+                    else{
+                        bot.sendMessage(msg.channel, "Whoops, I couldn't turn into an 8 Ball: " + error);
+                    }
+                });
             }
         }
     }
