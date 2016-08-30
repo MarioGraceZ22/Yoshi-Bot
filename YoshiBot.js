@@ -54,14 +54,18 @@ bot.on("serverNewMember", function (server, user) {
 bot.on("messageDeleted", function(message, channel){
     var t = new Date(Date.now());
     if(message){
-        bot.sendMessage("220258542131740672", "```" + t + "```" + "Message by **" + message.author.name + "#" + message.author.discriminator + "** was deleted in " + channel + "\n**Message: **" + message.content);
+        if(message.server.id == "136609300700332032"){
+            bot.sendMessage("220258542131740672", "```" + t + "```" + "Message by **" + message.author.name + "#" + message.author.discriminator + "** was deleted in " + channel + "\n**Message: **" + message.content);
+        }
     }
 });
 
 bot.on("messageUpdated", function(old, message){
     var d = new Date(Date.now());
     if(old && message){
-        bot.sendMessage("220258542131740672", "```" + d + "```" + "Message by **" + message.author.name + "#" + message.author.discriminator + "** was updated in " + message.channel + "\n**Old:** " + old.content + "\n**New:** " + message.content);
+        if(message.server.id == "136609300700332032"){
+            bot.sendMessage("220258542131740672", "```" + d + "```" + "Message by **" + message.author.name + "#" + message.author.discriminator + "** was updated in " + message.channel + "\n**Old:** " + old.content + "\n**New:** " + message.content);
+        }
     }
 });
 
@@ -75,36 +79,56 @@ bot.on("message", function (msg) {
             console.log("treating " + msg.content + " from " + msg.author + " as command");
             var msgcmd = msg.content.split(" ")[0].substring(1);
             var params = msg.content.substring(msgcmd.length + 2);
-            var cmd = commands[msgcmd];
+            for(var module in commands){
+                for(var cmnd in commands[module].commands){
+                    if(cmnd == msgcmd){
+                        var cmd = commands[module].commands[msgcmd];
+                        break;
+                    }
+                }
+            }
 
             if(msgcmd == "help"){
-                bot.sendMessage(msg.channel, "These are the commands I can use:", function(){
-                    var info = "```";
-                for(var command in commands) {
-                    info += "!" + command;
-                    var usage = commands[command].usage;
-                    if(usage){
-                        info += " " + usage;
+                var info = "```";
+                if(params){
+                    if(commands[params]){
+                        bot.sendMessage(msg.channel, "These are the commands for the module **" + params + "**:", function(){
+                            for(var command in commands[params].commands){
+                                info += "!" + command;
+                                var usage = commands[params].commands[command].usage;
+                                if(usage){
+                                    info += " " + usage;
+                                }
+                                var description = commands[params].commands[command].description;
+                                if(description){
+                                    info += "\n\t" + description + "\n\n";
+                                }
+                            }
+                            info += "```";
+                            bot.sendMessage(msg.channel, info);
+                        });
                     }
-                    var description = commands[command].description;
-                    if(description){
-                        info += "\n\t" + description + "\n\n";
+                    else{
+                         bot.sendMessage(msg.channel, "I don't believe that's a module, bud.");
                     }
-                }
-                info += "```";
-                if(info.length > 2000){
-                    firstHalf = info.substring(0, info.indexOf("!voice"));
-                    secondHalf = info.substring(info.indexOf("!voice"), info.length);
-                    bot.sendMessage(msg.channel, firstHalf + "```", function(error, message){
-                        if(message){
-                            bot.sendMessage(msg.channel, "```" + secondHalf);
-                        }
-                    });
                 }
                 else{
-                    bot.sendMessage(msg.channel, info);
+                    bot.sendMessage(msg.channel, "Please tell me which module you would like to learn about:", function(){
+                        for(var module in commands) {
+                            info += module;
+                            var help = commands[module].help;
+                            if(help){
+                                info += " - " + help;
+                            }
+                            var description = commands[module].description;
+                            if(description){
+                                info += "\n\t" + description + "\n\n";
+                            }
+                        }
+                        info += "```";
+                        bot.sendMessage(msg.channel, info);
+                    });
                 }
-                });
             }
             else if(cmd) {
                 cmd.process(bot,msg,params);
