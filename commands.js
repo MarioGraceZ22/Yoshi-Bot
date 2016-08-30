@@ -520,10 +520,10 @@ exports.commands = {
     },
 
     "yt": {
-        usage: "<query to search for in YouTube> (Ex. !yt PFUDOR)",
-        description: "Searches YouTube and returns the first video result based on input query.",
+        usage: "<search terms> (Ex. !yt PFUDOR)",
+        description: "Returns a YouTube video.",
         process: function(bot, msg, params){
-            if(params){
+             if(params){
                 yt.search(params, 1, function(error, result) {
                   if (error) {
                     console.log(error);
@@ -537,5 +537,5 @@ exports.commands = {
                 bot.sendMessage(msg.channel, "Give me some search terms to look for, silly.");
             }
         }
-    },
+    }
 }

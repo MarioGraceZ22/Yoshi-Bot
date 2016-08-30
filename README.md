@@ -24,7 +24,7 @@ A bot for the Discord app based on [Discord.js](https://github.com/hydrabolt/dis
 
 **!meow** - Returns a random meow image.
 
-**!del** - Deletes the amount of given messages (as a number) in the channel. (Ex. "!del 4" will delete the previous four messages) 
+**!clean** - Deletes the amount of given messages (as a number) in the channel. (Ex. "!clean 4" will delete the previous four messages) 
 
 **!info** - Will give information about the requested user and the server the command was issued in. If no user is specified, returns information about the author.
 

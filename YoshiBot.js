@@ -40,7 +40,8 @@ bot.loginWithToken(auth.token, function (error, token) {
 })
 bot.on("ready", function () {
     console.log("Bot is live and ready!");
-    bot.sendMessage("168188374023274496", "<@110932722322505728> succs");
+    bot.sendMessage("168188374023274496", "New and rehauled Yoshi-Bot online and ready to serve! Why don't you try \"!help\"?");
+    bot.sendMessage("155932302671740929", "New and rehauled Yoshi-Bot online and ready to serve! Why don't you try \"!help\"?");
     games = ["with " + bot.users.length + " users!", "with over 500 lines of code!", "with eggs and ham!", "with Ian's sanity!", "in Yoshi's Island!"]
     randGame = Math.floor(Math.random() * 5);
     bot.setPlayingGame(games[randGame]);
