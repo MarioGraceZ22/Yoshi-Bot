@@ -41,14 +41,16 @@ bot.loginWithToken(auth.token, function (error, token) {
 bot.on("ready", function () {
     console.log("Bot is live and ready!");
     bot.sendMessage("168188374023274496", "New and rehauled Yoshi-Bot online and ready to serve! Why don't you try \"!help\"?");
-    games = ["with " + bot.users.length + " users!", "with over 500 lines of code!", "with eggs and ham!", "with Ian's sanity!", "in Yoshi's Island!"]
-    randGame = Math.floor(Math.random() * 5);
+    games = ["with " + bot.users.length + " users!", "with over 500 lines of code!", "with eggs and ham!", "with Ian's sanity!", "in Yoshi's Island!", "Dunkin' Nose Simulator", "Super Smash Brothers"]
+    randGame = Math.floor(Math.random() * games.length);
     bot.setPlayingGame(games[randGame]);
 });
 
 
 bot.on("serverNewMember", function (server, user) {
-    bot.sendMessage("136609300700332032", "Welcome, " + user + ", to our little piece of Discord: Shitpost Central - Live. We're really glad to have ya and we hope that you will enjoy your time here to the fullest. We encourage you to head on to <#169511435347558400> to ensure you know all the rules and become informed in the extents of each channel. If you have any questions, feel free to ask the admin or the mods, they'll be happy to answer. Cya around!");
+    if(server.id == "136609300700332032"){
+        bot.sendMessage("136609300700332032", "Welcome, " + user + ", to our little piece of Discord: **" + server.name + "**. We're really glad to have ya and we hope that you will enjoy your time here to the fullest. We encourage you to head on to <#169511435347558400> to ensure you know all the rules and become informed in the extents of each channel. If you have any questions, feel free to ask the admin or the mods, they'll be happy to answer. Cya around!");
+    }
 });
 
 bot.on("messageDeleted", function(message, channel){
@@ -76,7 +78,6 @@ bot.on("message", function (msg) {
             bot.sendMessage(msg.channel, "Use #bots_channel, please.");
         }
         else {
-            console.log("treating " + msg.content + " from " + msg.author + " as command");
             var msgcmd = msg.content.split(" ")[0].substring(1);
             var params = msg.content.substring(msgcmd.length + 2);
             for(var module in commands){
@@ -89,6 +90,7 @@ bot.on("message", function (msg) {
             }
 
             if(msgcmd == "help"){
+                console.log("treating " + msg.content + " from " + msg.author + " as command");
                 var info = "```";
                 if(params){
                     if(commands[params]){
@@ -131,6 +133,7 @@ bot.on("message", function (msg) {
                 }
             }
             else if(cmd) {
+                console.log("treating " + msg.content + " from " + msg.author + " as command");
                 cmd.process(bot,msg,params);
             }
             else {
