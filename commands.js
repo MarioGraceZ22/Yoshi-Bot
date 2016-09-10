@@ -16,7 +16,7 @@ catch(e){
 }
 
 try{
-    const exec = require('child_process').exec;
+    var exec = require('child_process').exec;
 }
 catch(e){
     console.log("Now now, if you don't have 'child_process', Yoshi won't be able to restart.");
@@ -30,29 +30,37 @@ catch(e){
 }
 
 try{
-    var YouTube = require('youtube-node');
-}
-catch(e){
-    console.log("There is no 'youtube-node' here... I guess you don't want YouTube videos.");
-}
-
-try{
     var auth = require("./auth.json");
 }
 catch(e){
     console.log("You aren't getting very far without an 'auth.json'... just sayin'.");
 }
 
-var yt = new YouTube();
+try{
+    var YouTube = require('youtube-node');
+    var yt = new YouTube();
 
-yt.setKey(auth.yt);
-yt.addParam('type', 'video');
+    yt.setKey(auth.yt);
+    yt.addParam('type', 'video');
+}
+catch(e){
+    console.log("There is no 'youtube-node' here... I guess you don't want YouTube videos.");
+}
 
 try {
     var request = require("request");
 }
 catch (e) {
     console.log("I'm REQUESTing you to get 'request.' I need it for pretty much everything.")
+}
+
+try {
+    var cleverbot = require("cleverbot.io");
+    var CleverBot = new cleverbot('qnZi4MTKo6zwwFkh','fM2qdIkZeGiC66ADn9ylCz9nZopCAfuN');
+    CleverBot.setNick("Yoshi-Bot");
+}
+catch(e) {
+    console.log("Oh, I see. You don't want to talk to me... you don't even have 'cleverbot.io'");
 }
 var qs = require("querystring");
 
@@ -65,7 +73,7 @@ exports.commands = {
                 usage: "!ping",
                 description: "I'll respond with a \"pong.\" Useful for checking if I'm alive.",
                 process: function(bot, msg, params){
-                    bot.sendMessage(msg.channel, "Pong!");
+                    msg.channel.sendMessage("Pong!");
                 }
             },
 
@@ -74,37 +82,12 @@ exports.commands = {
                 description: "Shuts down the bot.",
                 process: function(bot, msg, params){
                     if (msg.author.id === "110932722322505728") {
-                        bot.sendMessage(msg.channel, "Goodbye, everyone!", function(error, message){
-                            if(message){
-                                bot.logout();
-                            }
-                            else{
-                                console.log("I couldn't send the message before logging off.");
-                            }
+                        msg.channel.sendMessage("Goodbye, everyone!").then(message => {
+                            bot.destroy();
                         });
                     }
                     else {
-                        bot.reply(msg, "I can't really take that order from you. Sorry. :c");
-                    }
-                }
-            },
-
-            "leave": {
-                usage: "<server ID> (Ex. !leave 120233722422545928)",
-                description: "I'll attempt to leave the server you specify.",
-                process: function(bot, msg, params){
-                    if (msg.author.id === "110932722322505728") {
-                        bot.leaveServer(msg.content.substring(6, msg.content.length), function (error) {
-                            if (error) {
-                                bot.sendMessage(msg.channel, "Am I even part of that? " + error);
-                            }
-                            else {
-                                bot.sendMessage(msg.channel, "I have left that server.");
-                            }
-                        });
-                    }
-                    else {
-                        bot.reply(msg, "I can't really take that order from you. Sorry. :c");
+                        msg.reply("I can't really take that order from you. Sorry. :c");
                     }
                 }
             },
@@ -114,37 +97,55 @@ exports.commands = {
                 description: "Will check if there is a new updated available. If update is found, will attempt to restart with the new code.",
                 process: function(bot, msg, params){
                     if (msg.author.id === "110932722322505728"){
-                        if(bot.internal.voiceConnection){
-                            bot.internal.voiceConnection.destroy();
+                        if(bot.voiceConnection){
+                            bot.voiceConnection.destroy();
                         }
-                        bot.sendMessage(msg.channel, "Checking for updates...");
+                        msg.channel.sendMessage("Checking for updates...");
                         simpleGit().pull(function(error, update) {
                             if(update && update.summary.changes) {
-                                bot.sendMessage(msg.channel, "Be right back!", function(error, message){
-                                    if(message){
-                                        exec('node YoshiBot.js', (error, stdout, stderr) => {
-                                    if (error) {
-                                        console.error(`exec error: ${error}`);
-                                        return;
-                                    }
-                                    console.log(`stdout: ${stdout}`);
-                                    console.log(`stderr: ${stderr}`);
-                                });
-                                        bot.logout();
-                                    }
-                                    else{
-                                        console.log("I couldn't send the message before logging off.");
-                                    }
-                                });
+                                msg.channel.sendMessage("Be right back!").then(message => {
+                                    exec('node YoshiBot.js', (error, stdout, stderr) => {
+                                        if (error) {
+                                            console.error(`exec error: ${error}`);
+                                            return;
+                                        }
+                                        console.log(`stdout: ${stdout}`);
+                                        console.log(`stderr: ${stderr}`);
+                                    });
+                                    bot.destroy();
+                                }).catch(console.log);
                             }
                             else{
-                                bot.sendMessage(msg.channel, "Already up to date.");
+                                msg.channel.sendMessage("Already up to date.");
                                 console.log(error);
                             }
                         });
                     }
                     else{
-                        bot.reply(msg, "I can't really take that order from you. Sorry. :c");
+                        msg.reply("I can't really take that order from you. Sorry. :c");
+                    }
+                }
+            },
+
+            "restart": {
+                usage: "!restart",
+                description: "Forces Yoshi-Bot to restart without needing to update.",
+                process: function(bot, msg, params){
+                    if (msg.author.id === "110932722322505728"){
+                        if(bot.voiceConnection){
+                            bot.voiceConnection.destroy();
+                        }
+                        msg.channel.sendMessage("Be right back!").then(message => {
+                            exec('node YoshiBot.js', (error, stdout, stderr) => {
+                                if (error) {
+                                    console.error(`exec error: ${error}`);
+                                    return;
+                                }
+                                console.log(`stdout: ${stdout}`);
+                                console.log(`stderr: ${stderr}`);
+                            });
+                            bot.destroy();
+                        }).catch(console.log);
                     }
                 }
             },
@@ -156,26 +157,21 @@ exports.commands = {
                     if (msg.author.id === "110932722322505728" || msg.author.id == "137665965096697859" || msg.author.id == "137763223414898688"){
                         if(params){
                             if(!isNaN(params)){
-                                    bot.getChannelLogs(msg.channel, params, {before: msg}, function(error, messages){
-                                        if(error){
-                                                bot.sendMessage(msg.channel, "Oh, whoops. " + error);
-                                        }
-                                        else{
-                                                bot.deleteMessages(messages);
-                                                bot.sendMessage(msg.channel, params + " messages successfully deleted!");
-                                        }
-                                    });
+                                msg.channel.fetchMessages({before: msg.id, limit: params}).then(messages => {
+                                    msg.channel.bulkDelete(messages);
+                                    msg.channel.sendMessage(params + " messages successfully deleted!");
+                                }).catch(console.log);
                             }
                             else{
-                                    bot.sendMessage(msg.channel, "That's not a number, silly.");
+                                    msg.channel.sendMessage("That's not a number, silly.");
                             }
                         }
                         else{
-                            bot.sendMessage(msg.channel, "I need to know how many messages to delete, buddy.");
+                            msg.channel.sendMessage("I need to know how many messages to delete, buddy.");
                         }
                     }
                     else{
-                        bot.reply(msg, "I can't really take that order from you. Sorry. :c");
+                        msg.reply("I can't really take that order from you. Sorry. :c");
                     }
                 }
             }
@@ -210,20 +206,20 @@ exports.commands = {
                             tagesto = params.replace(/\s/g, "_");
                         }
 
-                        if (msg.channel.isPrivate === true || msg.channel.name.indexOf("art") != -1 || msg.channel.name.indexOf("furry") != -1 || msg.channel.name.indexOf("2am") != -1) {
+                        if (msg.channel.type === "dm" || msg.channel.name.indexOf("art") != -1 || msg.channel.name.indexOf("furry") != -1 || msg.channel.name.indexOf("2am") != -1) {
                             console.log("Safe to post NSFW content.");
                         }
                         else {
                             tagesto += "+rating:safe";
                             if ((tagesto.indexOf("rating:explicit") != -1) || (tagesto.indexOf("penis") != -1) || (tagesto.indexOf("pussy") != -1) || (tagesto.indexOf("anus") != -1) || (tagesto.indexOf("dick") != -1) || tagesto.indexOf("rating:questionable") != -1 || tagesto.indexOf("genitalia") != -1 || tagesto.indexOf("genitals") != -1 || tagesto.indexOf("genital") != -1 || tagesto.indexOf("vagina") != -1 || tagesto.indexOf("cunt") != -1 || tagesto.indexOf("vaginal") != -1 || tagesto.indexOf("vaginal_penetration") != -1 || tagesto.indexOf("sex") != -1 || tagesto.indexOf("fuck") != -1 || tagesto.indexOf("intercourse") != -1 || tagesto.indexOf("cock") != -1) {
-                                bot.sendMessage(msg.channel, "[](/twiglare) That content isn't appropiate for this channel. Go be naughty elsewhere.");
+                                msg.channel.sendMessage("[](/twiglare) That content isn't appropiate for this channel. Go be naughty elsewhere.");
                                 return;
                             }
                         }
                         var estoHeader = {
                             url: 'https://e621.net/post/index.json?tags=order:random+' + tagesto,
                             headers: {
-                                'User-Agent': 'Yoshi-Bot/1.0 (by NeoNinetales on e621)'
+                                'User-Agent': 'Yoshi-Bot/${process.version} (by NeoNinetales on e621)'
                             }
                         }
 
@@ -232,22 +228,22 @@ exports.commands = {
                             if (!error && response.statusCode == 200) {
                                 var estoThing = JSON.parse(body);
                                 if (typeof (estoThing[0]) != "undefined") {
-                                    bot.sendMessage(msg.channel, estoThing[0].file_url.toString());
-                                    bot.sendMessage(msg.channel, "https://e621.net/post/show/" + estoThing[0].id.toString());
+                                    msg.channel.sendMessage(estoThing[0].file_url.toString());
+                                    msg.channel.sendMessage("https://e621.net/post/show/" + estoThing[0].id.toString());
                                 }
                                 else {
-                                    bot.sendMessage(msg.channel, "[](/derpshrug) No images found. Try different tags.")
+                                    msg.channel.sendMessage("[](/derpshrug) No images found. Try different tags.")
                                 }
                             }
                             else {
                                 console.log(error);
-                                bot.sendMessage(msg.channel, "The API isn't working and this is why I'm crashing.");
-                                bot.sendMessage(msg.channel, error);
+                                msg.channel.sendMessage("The API isn't working and this is why I'm crashing.");
+                                msg.channel.sendMessage(error);
                             }
                         });
                     }
                     else {
-                        bot.sendMessage(msg.channel, "No. Stop it.");
+                        msg.channel.sendMessage("No. Stop it.");
                     }
                 }
             },
@@ -277,15 +273,15 @@ exports.commands = {
                         if (!error && response.statusCode == 200) {
                             var mlfwThing = JSON.parse(body);
                             if (typeof (mlfwThing.objects[0]) != "undefined") {
-                                bot.sendMessage(msg.channel, "http://mylittlefacewhen.com/" + mlfwThing.objects[0].image.toString());
+                                msg.channel.sendMessage("http://mylittlefacewhen.com/" + mlfwThing.objects[0].image.toString());
                             }
                             else {
-                                bot.sendMessage(msg.channel, "[](/derpshrug) No images found. Try different tags.")
+                                msg.channel.sendMessage("[](/derpshrug) No images found. Try different tags.")
                             }
                         }
                         else {
                             console.log(error);
-                            bot.sendMessage(msg.channel, error);
+                            msg.channel.sendMessage(error);
                         }
                     });
                 }
@@ -299,17 +295,17 @@ exports.commands = {
                         if (!error && response.statusCode == 200) {
                             var srThing = JSON.parse(body);
                             if(typeof (srThing.data) !== "undefined"){
-                                bot.sendMessage(msg.channel, "I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
+                                msg.channel.sendMessage("I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
                             }
                             else {
                                 if (typeof(srThing[0].data.children[0].data.url) !== "undefined") {
-                                    bot.sendMessage(msg.channel, srThing[0].data.children[0].data.url);
+                                    msg.channel.sendMessage(srThing[0].data.children[0].data.url);
                                 }
                             }
                         }
                         else {
                             console.log(error);
-                            bot.sendMessage(msg.channel, "I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
+                            msg.channel.sendMessage("I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
                         }
                     });
                 }
@@ -319,15 +315,15 @@ exports.commands = {
                 usage: "!woof",
                 description: "Returns a random woof image.",
                 process: function(bot, msg, params){
-                    request("http://imgur.com/r/dog/top/year.json", function (error, response, body) {
+                    request("http://random.dog/", function (error, response, body) {
                         if (!error && response.statusCode == 200) {
-                            var woofThing = JSON.parse(body);
-                            var randWoof = Math.floor(Math.random() * woofThing.data.length);
-                            if (typeof (woofThing.data[0]) != "undefined") {
-                                bot.sendMessage(msg.channel, "http://i.imgur.com/" + woofThing.data[randWoof].hash + woofThing.data[randWoof].ext);
+                            if (typeof (body) != "undefined") {
+                                woofThing = body.substring(50);
+                                woofThing = woofThing.substring(0, woofThing.indexOf("'"));
+                                msg.channel.sendMessage("http://random.dog/" + woofThing);
                             }
                             else {
-                                bot.sendMessage(msg.channel, "Things are going wrong all over.");
+                                msg.channel.sendMessage("Things are going wrong all over.");
                             }
                         }
                     });
@@ -338,15 +334,14 @@ exports.commands = {
                 usage: "!meow",
                 description: "Returns a random meow image.",
                 process: function(bot, msg, params){
-                    request("http://imgur.com/r/cat/top/year.json", function (error, response, body) {
+                    request("http://random.cat/meow", function (error, response, body) {
                         if (!error && response.statusCode == 200) {
                             var meowThing = JSON.parse(body);
-                            var randMeow = Math.floor(Math.random() * meowThing.data.length);
-                            if (typeof (meowThing.data[0]) != "undefined") {
-                                bot.sendMessage(msg.channel, "http://i.imgur.com/" + meowThing.data[randMeow].hash + meowThing.data[randMeow].ext);
+                            if (typeof (meowThing.file) != "undefined") {
+                                msg.channel.sendMessage(meowThing.file);
                             }
                             else {
-                                bot.sendMessage(msg.channel, "Things are going wrong all over.");
+                                msg.channel.sendMessage("Things are going wrong all over.");
                             }
                         }
                     });
@@ -363,7 +358,7 @@ exports.commands = {
                 usage: "!servers",
                 description: "List of servers I am in.",
                 process: function(bot, msg, params){
-                    bot.sendMessage(msg.channel, "I am currently serving in " + bot.servers);
+                    msg.channel.sendMessage("I am currently serving in " + bot.guilds);
                 }
             },
 
@@ -373,7 +368,7 @@ exports.commands = {
                 process: function(bot, msg, params){
                     if (params) {
                         if (bot.users.get("username", params) != null) {
-                            bot.sendMessage(msg.channel, "https://discordapp.com/api/users/" + bot.users.get("username", params).id + "/avatars/" + bot.users.get("username", params).avatar + ".jpg");
+                            msg.channel.sendMessage("https://discordapp.com/api/users/" + bot.users.get("username", params).id + "/avatars/" + bot.users.get("username", params).avatar + ".jpg");
                         }
                         else {
                             var regst = /^[^\s]+/;
@@ -382,12 +377,12 @@ exports.commands = {
                             for (var i = 0; i < bot.users.length ; i++) {
                                 if (regst.exec(bot.users[i].username)[0] === params) {
                                     match = true;
-                                    bot.sendMessage(msg.channel, "https://discordapp.com/api/users/" + bot.users[i].id + "/avatars/" + bot.users[i].avatar + ".jpg");
+                                    msg.channel.sendMessage("https://discordapp.com/api/users/" + bot.users[i].id + "/avatars/" + bot.users[i].avatar + ".jpg");
                                     return;
                                 }
                                 else if (regend.exec(bot.users[i].username)[0] === params) {
                                     match = true;
-                                    bot.sendMessage(msg.channel, "https://discordapp.com/api/users/" + bot.users[i].id + "/avatars/" + bot.users[i].avatar + ".jpg");
+                                    msg.channel.sendMessage("https://discordapp.com/api/users/" + bot.users[i].id + "/avatars/" + bot.users[i].avatar + ".jpg");
                                     return;
                                 }
                                 else {
@@ -395,12 +390,12 @@ exports.commands = {
                                 }
                             }
                             if (match === false) {
-                                bot.sendMessage(msg.channel, "I couldn't find the user you requested.");
+                                msg.channel.sendMessage("I couldn't find the user you requested.");
                             }
                         }
                     }
                     else {
-                        bot.sendMessage(msg.channel, msg.author.avatarURL);
+                        msg.channel.sendMessage(msg.author.avatarURL);
                     }
                 }
             },
@@ -413,7 +408,7 @@ exports.commands = {
                     var randomChoice = Math.floor(Math.random() * options.length);
                     options[0] = " " + options[0];
 
-                    bot.sendMessage(msg.channel, "You must go with" + options[randomChoice] + ", " + msg.author + ".");
+                    msg.channel.sendMessage("You must go with" + options[randomChoice] + ", " + msg.author + ".");
                 }
             },
 
@@ -421,7 +416,7 @@ exports.commands = {
                 usage: "!kms",
                 description: "You asked for death.",
                 process: function(bot, msg, params){
-                    bot.sendTTSMessage(msg.channel, "You're dead, kiddo. ᕕ[•̀͜ʖ•́]︻̷┻̿═━一 ---");
+                    msg.channel.sendTTSMessage("You're dead, kiddo. ᕕ[•̀͜ʖ•́]︻̷┻̿═━一 ---");
                 }
             },
 
@@ -453,7 +448,7 @@ exports.commands = {
                                 }
                             }
                             if (match === false) {
-                                bot.sendMessage(msg.channel, "I couldn't find the user you requested.");
+                                msg.channel.sendMessage("I couldn't find the user you requested.");
                                 return;
                             }
                         }
@@ -462,14 +457,14 @@ exports.commands = {
                         user = msg.author;
                     }
 
-                    infoString = "Information for user **" + user.name + "#" + user.discriminator + "** and **" + msg.server.name + "**:";
-                    bot.sendMessage(msg.channel, infoString, function(error, message){
+                    infoString = "Information for user **" + user.name + "#" + user.discriminator + "** and **" + msg.guild.name + "**:";
+                    msg.channel.sendMessage(infoString).then((error, message) => {
                         if(message){
-                            bot.sendMessage(msg.channel, "His/Her avatar is: " + user.avatarURL, function(error, message){
+                            msg.channel.sendMessage("His/Her avatar is: " + user.avatarURL).then((error, message) => {
                                 if(message){
-                                    bot.sendMessage(msg.channel, "The server's icon is: " + msg.server.iconURL, function(error, message){
+                                    msg.channel.sendMessage("The server's icon is: " + msg.guild.iconURL).then((error, message) => {
                                         if(message){
-                                            infoString = "- **" + user.name + "'s** ID is **" + user.id + "**.\n- This account was created in **" + user.createdAt + "**.\n";
+                                            infoString = "- **" + user.name + "'s** ID is **" + user.id + "**.\n- This account was created in **" + user.creationDate + "**.\n";
 
                                             if(user.bot){
                                                 infoString += "- This user is **an official bot** account as per Discord API.\n";
@@ -478,11 +473,11 @@ exports.commands = {
                                                 infoString += "- This user is **not an official bot** account as per Discord API.\n";
                                             }
 
-                                            var userServerDetails = msg.server.detailsOfUser(user);
-                                            infoString += "- This user has the role(s) **" + userServerDetails.roles + "** in this server.\n- **" + user.name + "'s** nickname is **" + userServerDetails.nick + "** in this server.\n- **" + user.name + "#" + user.discriminator + "** joined this server in **";
+                                            var userServerDetails = msg.guild.member(user);
+                                            infoString += "- This user has the role(s) **" + userServerDetails.roles + "** in this server.\n- **" + user.name + "'s** nickname is **" + userServerDetails.nickname + "** in this server.\n- **" + user.name + "#" + user.discriminator + "** joined this server in **";
                                             var t = new Date(userServerDetails.joinedAt);
-                                            infoString += t + "**.\n\n- The ID of server **" + msg.server.name + "** is **" + msg.server.id + "**.\n- There are **" + msg.server.members.length + "** users in this server.\n- **" + msg.server.owner.name + "#" + msg.server.owner.discriminator + "** is the owner of **" + msg.server.name + "**.\n- This server was created in **" + msg.server.createdAt + "**.";
-                                            bot.sendMessage(msg.channel, infoString);
+                                            infoString += t + "**.\n\n- The ID of server **" + msg.guild.name + "** is **" + msg.guild.id + "**.\n- There are **" + msg.guild.members.length + "** users in this server.\n- **" + msg.guild.owner.name + "#" + msg.guild.owner.discriminator + "** is the owner of **" + msg.guild.name + "**.\n- This server was created in **" + msg.guild.creationDate + "**.";
+                                            msg.channel.sendMessage(infoString);
                                         }
                                     });
                                 }
@@ -505,13 +500,25 @@ exports.commands = {
                                 botResponse = "*The Magical 8 Ball answers...*\n";
                                 botResponse += "`Question:` **" + params + "**\n";
                                 botResponse += "`Answer:` **" + answer.magic.answer + "**";
-                                bot.sendMessage(msg.channel, botResponse);
+                                msg.channel.sendMessage(botResponse);
                             }
                             else{
-                                bot.sendMessage(msg.channel, "Whoops, I couldn't turn into an 8 Ball: " + error);
+                                msg.channel.sendMessage("Whoops, I couldn't turn into an 8 Ball: " + error);
                             }
                         });
                     }
+                }
+            },
+
+            "chat": {
+                usage: "<text> (Ex. !chat Hello, how are you?)",
+                description: "Allows you to chat with Yoshi-Bot! Aren't you itching to talk to someone? Here's your chance.",
+                process: function(bot, msg, params){
+                    CleverBot.create(function (err, session) {
+                     CleverBot.ask(params, function (err, response) {
+                          msg.channel.sendMessage(msg.author + ": " + response);
+                        });
+                    });
                 }
             }
         }
@@ -523,21 +530,29 @@ exports.commands = {
         commands: {
             "voice": {
                 usage: "!voice",
-                description: "Joins the voice channel the author of the command is in. THIS COMMAND ISN'T FINISHED.",
+                description: "Joins the voice channel the author of the command is in.",
                 process: function(bot, msg, params){
                     if (!bot.internal.voiceConnection) {
-                        if (msg.channel.server.id === "136609300700332032") {
-                            var channelID = "198276772435984384";
+                        if(msg.author.voiceChannel == null){
+                            msg.channel.sendMessage("You have to be in a voice channel before I can join it.");
                         }
-                        else {
-                            var channelID = "198287699461931008";
+                        else{
+                            msg.author.voiceChannel.join();
+                            msg.channel.sendMessage("Voice channel joined.");
                         }
-
-                        bot.joinVoiceChannel(channelID);
-                        bot.sendMessage(msg.channel, "Voice channel joined.");
                     }
                     else {
-                        bot.sendMessage(msg.channel, "I'm already in a voice channel.");
+                        var flag = 0;
+                        for(connection = 0; connection < bot.voiceConnections.length; connection++){
+                            if(msg.guild.id == bot.voiceConnections[connection].voiceChannel.server.id){
+                                msg.channel.sendMessage("I'm already in a voice channel.");
+                                flag = 1;
+                            }
+                        }
+                        if(flag == 0){
+                            msg.author.voiceChannel.join();
+                            msg.channel.sendMessage("Voice channel joined.");
+                        }
                     }
                 }
             },
@@ -546,18 +561,18 @@ exports.commands = {
                 usage: "<SoundCloud or Youtube link> (Ex. !play https://soundcloud.com/assertivef/silva-hound-hooves-up-high)",
                 description: "Queues or plays (if nothing in queue) the requested song. Worthless command.",
                 process: function(bot, msg, params){
-                    bot.sendMessage(msg.channel, "This command is worthless as of now.");
+                    msg.channel.sendMessage("This command is worthless as of now.");
                     /*if (msg.content.length > 5) {
                             if (bot.internal.voiceConnection) {
                                 var songName = msg.content.substring(6, msg.content.length);
                                 var connection = bot.internal.voiceConnection;
                                 var filePath = "https://api.soundcloud.com/tracks/194566340/stream";
-                                bot.sendMessage(msg.channel, "Playing that for you in a sec...");
+                                msg.channel.sendMessage("Playing that for you in a sec...");
                                 connection.playRawStream(filePath, {volume: 0.3});
                             }
                         }
                         else {
-                            bot.sendMessage(msg.channel, "I'm already in the voice channel. Give me something to play.");
+                            msg.channel.sendMessage("I'm already in the voice channel. Give me something to play.");
                         }*/
                 }
             },
@@ -572,12 +587,12 @@ exports.commands = {
                             console.log(error);
                           }
                           else {
-                            bot.sendMessage(msg.channel, "https://www.youtube.com/watch?v=" + result.items[0].id.videoId);
+                            msg.channel.sendMessage("https://www.youtube.com/watch?v=" + result.items[0].id.videoId);
                           }
                         });
                     }
                     else{
-                        bot.sendMessage(msg.channel, "Give me some search terms to look for, silly.");
+                        msg.channel.sendMessage("Give me some search terms to look for, silly.");
                     }
                 }
             }
