@@ -367,22 +367,23 @@ exports.commands = {
                 description: "Returns the avatar image of the specified user. If no user is specified, returns the avatar image of the author.",
                 process: function(bot, msg, params){
                     if (params) {
-                        if (bot.users.get("username", params) != null) {
-                            msg.channel.sendMessage("https://discordapp.com/api/users/" + bot.users.get("username", params).id + "/avatars/" + bot.users.get("username", params).avatar + ".jpg");
+                        if (bot.users.find("username", params) != null) {
+                            msg.channel.sendMessage("https://discordapp.com/api/users/" + bot.users.find("username", params).id + "/avatars/" + bot.users.find("username", params).avatar + ".jpg");
                         }
                         else {
                             var regst = /^[^\s]+/;
                             var regend = /[^\s]+$/;
                             var match = true;
-                            for (var i = 0; i < bot.users.length ; i++) {
-                                if (regst.exec(bot.users[i].username)[0] === params) {
+                            var users = bot.users.array();
+                            for (var i = 0; i < users.length ; i++) {
+                                if (regst.exec(users[i].username)[0] === params) {
                                     match = true;
-                                    msg.channel.sendMessage("https://discordapp.com/api/users/" + bot.users[i].id + "/avatars/" + bot.users[i].avatar + ".jpg");
+                                    msg.channel.sendMessage("https://discordapp.com/api/users/" + users[i].id + "/avatars/" + users[i].avatar + ".jpg");
                                     return;
                                 }
-                                else if (regend.exec(bot.users[i].username)[0] === params) {
+                                else if (regend.exec(users[i].username)[0] === params) {
                                     match = true;
-                                    msg.channel.sendMessage("https://discordapp.com/api/users/" + bot.users[i].id + "/avatars/" + bot.users[i].avatar + ".jpg");
+                                    msg.channel.sendMessage("https://discordapp.com/api/users/" + users[i].id + "/avatars/" + users[i].avatar + ".jpg");
                                     return;
                                 }
                                 else {
@@ -427,21 +428,22 @@ exports.commands = {
                     var infoString = "";
                     var user = null;
                     if (params) {
-                        if (bot.users.get("username", params) != null) {
-                            user = bot.users.get("username", params);
+                        if (bot.users.find("username", params) != null) {
+                            user = bot.users.find("username", params);
                         }
                         else{
                             var regst = /^[^\s]+/;
                             var regend = /[^\s]+$/;
                             var match = true;
-                            for (var i = 0; i < bot.users.length ; i++) {
-                                if (regst.exec(bot.users[i].username)[0] === params) {
+                            var users = bot.users.array();
+                            for (var i = 0; i < users.length ; i++) {
+                                if (regst.exec(users[i].username)[0] === params) {
                                     match = true;
-                                    user = bot.users[i];
+                                    user = users[i];
                                 }
-                                else if (regend.exec(bot.users[i].username)[0] === params) {
+                                else if (regend.exec(users[i].username)[0] === params) {
                                     match = true;
-                                    user = bot.users[i];
+                                    user = users[i];
                                 }
                                 else {
                                     match = false;
@@ -457,34 +459,27 @@ exports.commands = {
                         user = msg.author;
                     }
 
-                    infoString = "Information for user **" + user.name + "#" + user.discriminator + "** and **" + msg.guild.name + "**:";
-                    msg.channel.sendMessage(infoString).then((error, message) => {
-                        if(message){
-                            msg.channel.sendMessage("His/Her avatar is: " + user.avatarURL).then((error, message) => {
-                                if(message){
-                                    msg.channel.sendMessage("The server's icon is: " + msg.guild.iconURL).then((error, message) => {
-                                        if(message){
-                                            infoString = "- **" + user.name + "'s** ID is **" + user.id + "**.\n- This account was created in **" + user.creationDate + "**.\n";
+                    infoString = "Information for user **" + user.username + "#" + user.discriminator + "** and **" + msg.guild.name + "**:";
+                    msg.channel.sendMessage(infoString).then(message => {
+                        msg.channel.sendMessage("His/Her avatar is: " + user.avatarURL).then(message => {
+                            msg.channel.sendMessage("The server's icon is: " + msg.guild.iconURL).then(message => {
+                                infoString = "- **" + user.username + "'s** ID is **" + user.id + "**.\n- This account was created in **" + user.creationDate + "**.\n";
 
-                                            if(user.bot){
-                                                infoString += "- This user is **an official bot** account as per Discord API.\n";
-                                            }
-                                            else{
-                                                infoString += "- This user is **not an official bot** account as per Discord API.\n";
-                                            }
-
-                                            var userServerDetails = msg.guild.member(user);
-                                            infoString += "- This user has the role(s) **" + userServerDetails.roles + "** in this server.\n- **" + user.name + "'s** nickname is **" + userServerDetails.nickname + "** in this server.\n- **" + user.name + "#" + user.discriminator + "** joined this server in **";
-                                            var t = new Date(userServerDetails.joinedAt);
-                                            infoString += t + "**.\n\n- The ID of server **" + msg.guild.name + "** is **" + msg.guild.id + "**.\n- There are **" + msg.guild.members.length + "** users in this server.\n- **" + msg.guild.owner.name + "#" + msg.guild.owner.discriminator + "** is the owner of **" + msg.guild.name + "**.\n- This server was created in **" + msg.guild.creationDate + "**.";
-                                            msg.channel.sendMessage(infoString);
-                                        }
-                                    });
+                                if(user.bot){
+                                    infoString += "- This user is **an official bot** account as per Discord API.\n";
                                 }
-                            });
+                                else{
+                                    infoString += "- This user is **not an official bot** account as per Discord API.\n";
+                                }
 
-                            
-                        }
+                                var userServerDetails = msg.guild.member(user);
+                                var roles = userServerDetails.roles.array();
+                                infoString += "- This user has the role(s) **" + roles + "** in this server.\n- **" + user.username + "'s** nickname is **" + userServerDetails.nickname + "** in this server.\n- **" + user.username + "#" + user.discriminator + "** joined this server in **";
+                                var t = new Date(userServerDetails.joinDate);
+                                infoString += t + "**.\n\n- The ID of server **" + msg.guild.name + "** is **" + msg.guild.id + "**.\n- There are **" + msg.guild.memberCount + "** users in this server.\n- **" + msg.guild.owner.user.username + "#" + msg.guild.owner.user.discriminator + "** is the owner of **" + msg.guild.name + "**.\n- This server was created in **" + msg.guild.creationDate + "**.";
+                                msg.channel.sendMessage(infoString);
+                            });
+                        });        
                     });
                 }
             },

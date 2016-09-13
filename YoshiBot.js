@@ -10,6 +10,8 @@ catch (e) {
 
 var LOADDIR = "C:\\Users\\Ian\\Music\\";
 
+var fs = require("fs");
+
 try{
     var auth = require("./auth.json");
 }
@@ -34,9 +36,10 @@ bot.login(auth.token);
 
 bot.on("ready", function () {
     console.log("Bot is live and ready!");
-    bot.channels.get("168188374023274496").sendMessage("New and rehauled Yoshi-Bot online and ready to serve! Why don't you try \"!help\"?")
+    bot.channels.get("168188374023274496").sendMessage("New and rehauled Yoshi-Bot online and ready to serve! Why don't you try \"!help\"?");
+    users = bot.users.array();
 
-    games = ["with " + bot.users.length + " users!", "with over 500 lines of code!", "with eggs and ham!", "with Ian's sanity!", "in Yoshi's Island!", "Dunkin' Nose Simulator", "Super Smash Brothers"]
+    games = ["with " + users.length + " users!", "with over 500 lines of code!", "with eggs and ham!", "with Ian's sanity!", "in Yoshi's Island!", "Dunkin' Nose Simulator", "Super Smash Brothers"]
     randGame = Math.floor(Math.random() * games.length);
     bot.user.setStatus('online', games[randGame]);
 });
@@ -48,21 +51,21 @@ bot.on("guildMemberAdd", (guild, member) => {
     }
 });
 
-bot.on("messageDeleted", function(message, channel){
+bot.on("messageDelete", (message) => {
     var t = new Date(Date.now());
     if(message){
-        if(message.server.id == "136609300700332032"){
-            bot.sendMessage("220258542131740672", "```" + t + "```" + "Message by **" + message.author.name + "#" + message.author.discriminator + "** was deleted in " + channel + "\n**Message: **" + message.content);
+        if(message.guild.id == "136609300700332032"){
+            bot.channels.get("220258542131740672").sendMessage("```" + t + "```" + "Message by **" + message.author.username + "#" + message.author.discriminator + "** was deleted in " + message.channel.name + "\n**Message: **" + message.content);
         }
     }
 });
 
-bot.on("messageUpdated", function(old, message){
+bot.on("messageUpdate", (oldMessage, newMessage) =>{
     var d = new Date(Date.now());
-    if(old && message){
-        if(old !== message){
-            if(message.server.id == "136609300700332032"){
-                bot.sendMessage("220258542131740672", "```" + d + "```" + "Message by **" + message.author.name + "#" + message.author.discriminator + "** was updated in " + message.channel + "\n**Old:** " + old.content + "\n**New:** " + message.content);
+    if(oldMessage && newMessage){
+        if(oldMessage !== newMessage){
+            if(newMessage.guild.id == "136609300700332032"){
+                bot.channels.get("220258542131740672").sendMessage("```" + d + "```" + "Message by **" + newMessage.author.username + "#" + newMessage.author.discriminator + "** was updated in " + newMessage.channel + "\n**Old:** " + oldMessage.content + "\n**New:** " + newMessage.content);
             }
         }
     }
