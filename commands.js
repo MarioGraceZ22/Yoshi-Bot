@@ -154,7 +154,7 @@ exports.commands = {
                 usage: "<number of messages to delete> (Ex. !clean 5)",
                 description: "Deletes the amount of given messages (as a number) in the channel.",
                 process: function(bot, msg, params){
-                    if (msg.author.id === "110932722322505728" || msg.author.id == "137665965096697859" || msg.author.id == "137763223414898688"){
+                    if (msg.member.hasPermission('MANAGE_MESSAGES')){
                         if(params){
                             if(!isNaN(params)){
                                 msg.channel.fetchMessages({before: msg.id, limit: params}).then(messages => {
@@ -174,7 +174,30 @@ exports.commands = {
                         msg.reply("I can't really take that order from you. Sorry. :c");
                     }
                 }
-            }
+            }/*,
+
+            "role": {
+                usage: "<give or take> <user> <role name> (Ex. !role give @Ian#4208 Moderator)",
+                description: "Gives or takes a role from a user, depending on specified action.",
+                process: function(bot, msg, params){
+                    if (msg.member.hasPermission('MANAGE_ROLES_OR_PERMISSIONS')){
+                        var options = params.split(" ");
+                        if(options[0] == "give"){
+                            var user = bot.fetchUser(options[1]);
+                            if(user != null)
+                        }
+                        else if(options[0] == "take"){
+
+                        }
+                        else{
+                            msg.channel.sendMessage("I don't know what " + options[0] + " is supposed to mean.");
+                        }
+                    }
+                    else{
+                        msg.reply("I can't really take that order from you. Sorry. :c");
+                    }
+                }
+            }*/
         }
     },
 
@@ -206,13 +229,13 @@ exports.commands = {
                             tagesto = params.replace(/\s/g, "_");
                         }
 
-                        if (msg.channel.type === "dm" || msg.channel.name.indexOf("art") != -1 || msg.channel.name.indexOf("furry") != -1 || msg.channel.name.indexOf("2am") != -1) {
+                        if (msg.channel.type === "dm" || msg.channel.name.indexOf("the_art_gallery") != -1 || msg.channel.name.indexOf("furry") != -1 || msg.channel.name.indexOf("2am") != -1 || msg.channel.name.indexOf("nsfw") != -1) {
                             console.log("Safe to post NSFW content.");
                         }
                         else {
                             tagesto += "+rating:safe";
                             if ((tagesto.indexOf("rating:explicit") != -1) || (tagesto.indexOf("penis") != -1) || (tagesto.indexOf("pussy") != -1) || (tagesto.indexOf("anus") != -1) || (tagesto.indexOf("dick") != -1) || tagesto.indexOf("rating:questionable") != -1 || tagesto.indexOf("genitalia") != -1 || tagesto.indexOf("genitals") != -1 || tagesto.indexOf("genital") != -1 || tagesto.indexOf("vagina") != -1 || tagesto.indexOf("cunt") != -1 || tagesto.indexOf("vaginal") != -1 || tagesto.indexOf("vaginal_penetration") != -1 || tagesto.indexOf("sex") != -1 || tagesto.indexOf("fuck") != -1 || tagesto.indexOf("intercourse") != -1 || tagesto.indexOf("cock") != -1) {
-                                msg.channel.sendMessage("[](/twiglare) That content isn't appropiate for this channel. Go be naughty elsewhere.");
+                                msg.channel.sendFile("C:/Users/Ian/Documents/GitHub/Yoshi-Bot/bruh.jpg", "bruh.jpg", "That content isn't appropiate for this channel. Go be naughty elsewhere.");
                                 return;
                             }
                         }
@@ -232,7 +255,7 @@ exports.commands = {
                                     msg.channel.sendMessage("https://e621.net/post/show/" + estoThing[0].id.toString());
                                 }
                                 else {
-                                    msg.channel.sendMessage("[](/derpshrug) No images found. Try different tags.")
+                                    msg.channel.sendMessage("No images found. Try different tags.")
                                 }
                             }
                             else {
@@ -276,7 +299,7 @@ exports.commands = {
                                 msg.channel.sendMessage("http://mylittlefacewhen.com/" + mlfwThing.objects[0].image.toString());
                             }
                             else {
-                                msg.channel.sendMessage("[](/derpshrug) No images found. Try different tags.")
+                                msg.channel.sendMessage("No images found. Try different tags.")
                             }
                         }
                         else {

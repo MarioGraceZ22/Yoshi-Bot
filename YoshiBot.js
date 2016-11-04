@@ -36,8 +36,8 @@ bot.login(auth.token);
 
 bot.on("ready", function () {
     console.log("Bot is live and ready!");
-    bot.channels.get("168188374023274496").sendMessage("New and rehauled Yoshi-Bot online and ready to serve! Why don't you try \"!help\"?");
-    users = bot.users.array();
+    console.log("New and rehauled Yoshi-Bot online and ready to serve!");
+    var users = bot.users.array();
 
     games = ["with " + users.length + " users!", "with over 500 lines of code!", "with eggs and ham!", "with Ian's sanity!", "in Yoshi's Island!", "Dunkin' Nose Simulator", "Super Smash Brothers"]
     randGame = Math.floor(Math.random() * games.length);
@@ -153,13 +153,13 @@ bot.on("message", function (msg) {
         }
         else if (msg.content.length === 21) { //Only a mention.
             if (choice === 1 || choice === 2) {
-                msg.reply("may I help you? Use \"!help @Yoshi Bot\" to learn about my commands.");
+                msg.reply("may I help you? Use \"!help\" to learn about my commands.");
             }
             else if (choice === 3 || choice === 4) {
-                msg.reply("what can I do for you? Use \"!help @Yoshi Bot\" if you aren't aware of my options.");
+                msg.reply("what can I do for you? Use \"!help\" if you aren't aware of my options.");
             }
             else if (choice === 5 || choice === 6) {
-                msg.reply("you called? Try \"!help @Yoshi Bot\" to see what you could ask me to do.");
+                msg.reply("you called? Try \"!help\" to see what you could ask me to do.");
             }
         }
         else { //Anything else.
