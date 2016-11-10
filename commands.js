@@ -550,25 +550,27 @@ exports.commands = {
                 usage: "!voice",
                 description: "Joins the voice channel the author of the command is in.",
                 process: function(bot, msg, params){
-                    if (!bot.internal.voiceConnection) {
-                        if(msg.author.voiceChannel == null){
+                    var voiceConnections = bot.voiceConnections.array();
+                    if (voiceConnections.length == 0) {
+                        if(msg.member.voiceChannel == null){
                             msg.channel.sendMessage("You have to be in a voice channel before I can join it.");
                         }
                         else{
-                            msg.author.voiceChannel.join();
+                            msg.member.voiceChannel.join();
                             msg.channel.sendMessage("Voice channel joined.");
                         }
                     }
                     else {
                         var flag = 0;
-                        for(connection = 0; connection < bot.voiceConnections.length; connection++){
-                            if(msg.guild.id == bot.voiceConnections[connection].voiceChannel.server.id){
+                        console.log(voiceConnections[0].channel.guild.id);
+                        for(connection = 0; connection < voiceConnections.length; connection++){
+                            if(msg.guild.id == voiceConnections[connection].channel.guild.id){
                                 msg.channel.sendMessage("I'm already in a voice channel.");
                                 flag = 1;
                             }
                         }
                         if(flag == 0){
-                            msg.author.voiceChannel.join();
+                            msg.member.voiceChannel.join();
                             msg.channel.sendMessage("Voice channel joined.");
                         }
                     }
@@ -579,7 +581,14 @@ exports.commands = {
                 usage: "<SoundCloud or Youtube link> (Ex. !play https://soundcloud.com/assertivef/silva-hound-hooves-up-high)",
                 description: "Queues or plays (if nothing in queue) the requested song. Worthless command.",
                 process: function(bot, msg, params){
-                    msg.channel.sendMessage("This command is worthless as of now.");
+                    msg.channel.sendMessage("Attempting to play test file...");
+                    var voiceConnections = bot.voiceConnections.array();
+                    var flag = 0;
+                    for (var i = voiceConnections.length - 1; i >= 0; i--) {
+                        if(msg.guild.id == voiceConnections[connection].channel.guild.id){
+                            flag = 1;
+                        }
+                    }
                     /*if (msg.content.length > 5) {
                             if (bot.internal.voiceConnection) {
                                 var songName = msg.content.substring(6, msg.content.length);
