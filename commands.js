@@ -47,6 +47,13 @@ catch(e){
     console.log("There is no 'youtube-node' here... I guess you don't want YouTube videos.");
 }
 
+try{
+	var ytdl = require('ytdl-core');
+}
+catch(e){
+	console.log("You know, streaming audio isn't too important... but if you care, we need yt-dl core.");
+}
+
 try {
     var request = require("request");
 }
@@ -578,16 +585,24 @@ exports.commands = {
             },
 
             "play": {
-                usage: "<SoundCloud or Youtube link> (Ex. !play https://soundcloud.com/assertivef/silva-hound-hooves-up-high)",
-                description: "Queues or plays (if nothing in queue) the requested song. Worthless command.",
+                usage: "<YouTube link> (Ex. !play https://www.youtube.com/watch?v=vc6vs-l5dkc)",
+                description: "Queues or plays (if nothing in queue) the requested song. CURRENTLY DOES NOT QUEUE. ONLY PLAYS SONG.",
                 process: function(bot, msg, params){
-                    msg.channel.sendMessage("Attempting to play test file...");
                     var voiceConnections = bot.voiceConnections.array();
-                    var flag = 0;
+                    var flag = false;
                     for (var i = voiceConnections.length - 1; i >= 0; i--) {
-                        if(msg.guild.id == voiceConnections[connection].channel.guild.id){
-                            flag = 1;
+                        if(msg.guild.id == voiceConnections[i].channel.guild.id){
+                            flag = true;
+                            connection = voiceConnections[i];
                         }
+                    }
+                    if(flag){
+                    	msg.channel.sendMessage("Playing that for you in just a sec...");
+                    	stream = ytdl(params, {filter : 'audioonly'});
+                    	connection.playStream(stream, { seek: 0, volume: 0.75});
+                    }
+                    else{
+                    	msg.channel.sendMessage("I'm not in a voice channel in this server. Join one and use !voice before you can use !play.")
                     }
                     /*if (msg.content.length > 5) {
                             if (bot.internal.voiceConnection) {
