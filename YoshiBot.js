@@ -8,10 +8,6 @@ catch (e) {
     process.exit();
 }
 
-var LOADDIR = "C:\\Users\\Ian\\Music\\";
-
-var fs = require("fs");
-
 try{
     var auth = require("./auth.json");
 }
@@ -28,14 +24,11 @@ catch(e){
     throw new Error(e);
 }
 
-var password = "";
-
 var bot = new Discord.Client({autoReconnect: true});
 
 bot.login(auth.token);
 
 bot.on("ready", function () {
-    console.log("Bot is live and ready!");
     console.log("New and rehauled Yoshi-Bot online and ready to serve!");
     var users = bot.users.array();
 
@@ -43,7 +36,6 @@ bot.on("ready", function () {
     randGame = Math.floor(Math.random() * games.length);
     bot.user.setStatus('online', games[randGame]);
 });
-
 
 bot.on("guildMemberAdd", (guild, member) => {
     if(guild.id == "136609300700332032"){
@@ -62,10 +54,12 @@ bot.on("messageDelete", (message) => {
 
 bot.on("messageUpdate", (oldMessage, newMessage) =>{
     var d = new Date(Date.now());
-    if(oldMessage && newMessage){
-        if(oldMessage !== newMessage){
-            if(newMessage.guild.id == "136609300700332032"){
-                bot.channels.get("220258542131740672").sendMessage("```" + d + "```" + "Message by **" + newMessage.author.username + "#" + newMessage.author.discriminator + "** was updated in " + newMessage.channel + "\n**Old:** " + oldMessage.content + "\n**New:** " + newMessage.content);
+    if(oldMessage.author.id !== bot.user.id){
+        if(oldMessage && newMessage){
+            if(oldMessage !== newMessage){
+                if(newMessage.guild.id == "136609300700332032"){
+                    bot.channels.get("220258542131740672").sendMessage("```" + d + "```" + "Message by **" + newMessage.author.username + "#" + newMessage.author.discriminator + "** was updated in " + newMessage.channel + "\n**Old:** " + oldMessage.content + "\n**New:** " + newMessage.content);
+                }
             }
         }
     }

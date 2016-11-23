@@ -181,7 +181,7 @@ exports.commands = {
                         msg.reply("I can't really take that order from you. Sorry. :c");
                     }
                 }
-            }/*,
+            },
 
             "role": {
                 usage: "<give or take> <user> <role name> (Ex. !role give @Ian#4208 Moderator)",
@@ -189,22 +189,47 @@ exports.commands = {
                 process: function(bot, msg, params){
                     if (msg.member.hasPermission('MANAGE_ROLES_OR_PERMISSIONS')){
                         var options = params.split(" ");
-                        if(options[0] == "give"){
-                            var user = bot.fetchUser(options[1]);
-                            if(user != null)
+                        if(options.length < 3){
+                            msg.channel.sendMessage("The amount of parameters you gave me is incorrect. Usage: `!role <give or take> <user> <role name>`");
+                            return;
                         }
-                        else if(options[0] == "take"){
 
+                        var roleString = "";
+                        for(var i = 2; i < options.length; i++){
+                            roleString += options[i] + " ";
+                        }
+
+                        var user = msg.guild.members.find('id', options[1].replace(/[^\w\s]/gi, ''));
+                        var role = msg.guild.roles.find('name', roleString.trim());
+                        if(user != null){
+                            if(role !== null){
+                                if(options[0] == "give"){
+                                    user.addRole(role.id).then(member => {
+                                        msg.channel.sendMessage("User " + user + " now has the role " + roleString.trim() + ".");
+                                    }).catch(console.error);
+                                }
+                                else if(options[0] == "take"){
+                                    user.removeRole(role.id).then(member => {
+                                        msg.channel.sendMessage("User " + user + " no longer has the role " + roleString.trim() + ".");
+                                    }).catch(console.error);
+                                }
+                                else{
+                                    msg.channel.sendMessage("I don't know what " + options[0] + " is supposed to mean.");
+                                }
+                            }
+                            else{
+                                msg.channel.sendMessage("\"" + roleString.trim() + "\" might not be a role in this server.");
+                            }
                         }
                         else{
-                            msg.channel.sendMessage("I don't know what " + options[0] + " is supposed to mean.");
+                            msg.channel.sendMessage("Sorry, I am unable to find the user \"" + options[1] + "\".");
                         }
                     }
                     else{
                         msg.reply("I can't really take that order from you. Sorry. :c");
                     }
                 }
-            }*/
+            }
         }
     },
 
