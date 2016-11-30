@@ -71,6 +71,46 @@ catch(e) {
 }
 var qs = require("querystring");
 
+var estoBanList = [
+    "murder",
+    "suicidal",
+    "suicide",
+    "dead",
+    "retard",
+    "gore",
+    "retarded",
+    "cancer",
+    "cancerous",
+    "scat",
+    "shit",
+    "crap",
+    "poo",
+    "pee",
+    "feces",
+    "urin",
+    "piss",
+    "diaper",
+    "baby",
+    "babies",
+    "defecation",
+    "child",
+    "kid",
+    "tod" + /[\s|,]/,
+    "toddler",
+    "cake_farts",
+    "diarrhea",
+    "soiled",
+    "vore",
+    "snuff",
+    "watersports",
+    "unbirthing",
+    "hyper",
+    "expansion",
+    "inflation",
+    "guro"
+]
+
+
 exports.commands = {
     "mod": {
         description: "All commands useful for moderation and debugging of the bot.",
@@ -241,65 +281,54 @@ exports.commands = {
                 usage: "<tags> (Ex. !e621 canine, anthro, blue eyes)",
                 description: "It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given.",
                 process: function(bot, msg, params){
-                    if (params.indexOf("murder") === -1 && params.indexOf("suicidal") === -1 && params.indexOf("suicide") === -1 && params.indexOf("dead") === -1 && params.indexOf("retard") === -1 && params.indexOf("gore") === -1 && params.indexOf("retarded") === -1 && params.indexOf("cancer") === -1 && params.indexOf("cancerous") === -1 && params.indexOf("scat") === -1 && params.indexOf("shit") === -1 && params.indexOf("crap") === -1 && params.indexOf("poo") === -1 && params.indexOf("pee") == -1 && params.indexOf("feces") === -1 && params.indexOf("urin") == -1 && params.indexOf("piss") == -1 && params.indexOf("diaper") == -1 && params.indexOf("baby") == -1 && params.indexOf("babies") == -1 && params.indexOf("defecation") === -1 && params.indexOf("child") === -1 && params.indexOf("kid") === -1 && params.indexOf("tod" + /[\s|,]/) === -1 && params.indexOf("toddler") === -1 && params.indexOf("cake_farts") == -1 && params.indexOf("diarrhea") == -1 && params.indexOf("soiled") == -1 && params.indexOf('vore') == -1) {
-                        var tagesto = "";
-                        var tagestosplit = params.substring((params.indexOf(',') + 1), params.length).split(",");
-                        if (params.indexOf(',') != -1) {
-                            tagesto = (params.substring(0, params.indexOf(',')).replace(/\s/g, "_") + "+");
-                            for (var i = 0; i < tagestosplit.length; i++) {
-                                if (i === (tagestosplit.length - 1)) {
-                                    tagestosplit[i] = tagestosplit[i].substring(1, tagestosplit[i].length).replace(/\s/g, "_");
-                                    tagesto += tagestosplit[i];
-                                }
-                                else {
-                                    tagestosplit[i] = tagestosplit[i].substring(1, tagestosplit[i].length).replace(/\s/g, "_");
-                                    tagesto += tagestosplit[i] + "+";
-                                }
-                            }
+                    var tagesto = "";
+                    var tagestosplit = params.split(",");
+                    for (var i = 0; i < tagestosplit.length; i++) {
+                        tagestosplit[i] = tagestosplit[i].trim();
+                        tagestosplit[i] = tagestosplit[i].replace(/\s/g, "_");
+                        if(estoBanList.indexOf(tagestosplit[i]) != -1){
+                            msg.channel.sendMessage("No. Stop it.");
+                            return;
                         }
-                        else {
-                            tagesto = params.replace(/\s/g, "_");
-                        }
+                    }
 
-                        if (msg.channel.type === "dm" || msg.channel.name.indexOf("the_art_gallery") != -1 || msg.channel.name.indexOf("furry") != -1 || msg.channel.name.indexOf("2am") != -1 || msg.channel.name.indexOf("nsfw") != -1) {
-                            console.log("Safe to post NSFW content.");
-                        }
-                        else {
-                            tagesto += "+rating:safe";
-                            if ((tagesto.indexOf("rating:explicit") != -1) || (tagesto.indexOf("penis") != -1) || (tagesto.indexOf("pussy") != -1) || (tagesto.indexOf("anus") != -1) || (tagesto.indexOf("dick") != -1) || tagesto.indexOf("rating:questionable") != -1 || tagesto.indexOf("genitalia") != -1 || tagesto.indexOf("genitals") != -1 || tagesto.indexOf("genital") != -1 || tagesto.indexOf("vagina") != -1 || tagesto.indexOf("cunt") != -1 || tagesto.indexOf("vaginal") != -1 || tagesto.indexOf("vaginal_penetration") != -1 || tagesto.indexOf("sex") != -1 || tagesto.indexOf("fuck") != -1 || tagesto.indexOf("intercourse") != -1 || tagesto.indexOf("cock") != -1) {
-                                msg.channel.sendFile("C:/Users/Ian/Documents/GitHub/Yoshi-Bot/bruh.jpg", "bruh.jpg", "That content isn't appropiate for this channel. Go be naughty elsewhere.");
-                                return;
-                            }
-                        }
-                        var estoHeader = {
-                            url: 'https://e621.net/post/index.json?tags=order:random+' + tagesto,
-                            headers: {
-                                'User-Agent': 'Yoshi-Bot/${process.version} (by NeoNinetales on e621)'
-                            }
-                        }
+                    tagesto = tagestosplit.join("+");
 
-                        request(estoHeader,
-                        function (error, response, body) {
-                            if (!error && response.statusCode == 200) {
-                                var estoThing = JSON.parse(body);
-                                if (typeof (estoThing[0]) != "undefined") {
-                                    msg.channel.sendMessage(estoThing[0].file_url.toString());
-                                    msg.channel.sendMessage("https://e621.net/post/show/" + estoThing[0].id.toString());
-                                }
-                                else {
-                                    msg.channel.sendMessage("No images found. Try different tags.")
-                                }
-                            }
-                            else {
-                                console.log(error);
-                                msg.channel.sendMessage("The API isn't working and this is why I'm crashing.");
-                                msg.channel.sendMessage(error);
-                            }
-                        });
+                    if (msg.channel.type === "dm" || msg.channel.name.indexOf("the_art_gallery") != -1 || msg.channel.name.indexOf("furry") != -1 || msg.channel.name.indexOf("2am") != -1 || msg.channel.name.indexOf("nsfw") != -1) {
+                        console.log("Safe to post NSFW content.");
                     }
                     else {
-                        msg.channel.sendMessage("No. Stop it.");
+                        tagesto += "+rating:safe";
+                        if ((tagesto.indexOf("rating:explicit") != -1) || (tagesto.indexOf("penis") != -1) || (tagesto.indexOf("pussy") != -1) || (tagesto.indexOf("anus") != -1) || (tagesto.indexOf("dick") != -1) || tagesto.indexOf("rating:questionable") != -1 || tagesto.indexOf("genitalia") != -1 || tagesto.indexOf("genitals") != -1 || tagesto.indexOf("genital") != -1 || tagesto.indexOf("vagina") != -1 || tagesto.indexOf("cunt") != -1 || tagesto.indexOf("vaginal") != -1 || tagesto.indexOf("vaginal_penetration") != -1 || tagesto.indexOf("sex") != -1 || tagesto.indexOf("fuck") != -1 || tagesto.indexOf("intercourse") != -1 || tagesto.indexOf("cock") != -1) {
+                            msg.channel.sendFile("C:/Users/Ian/Documents/GitHub/Yoshi-Bot/bruh.jpg", "bruh.jpg", "That content isn't appropiate for this channel. Go be naughty elsewhere.");
+                            return;
+                        }
                     }
+                    var estoHeader = {
+                        url: 'https://e621.net/post/index.json?tags=order:random+' + tagesto,
+                        headers: {
+                            'User-Agent': 'Yoshi-Bot/${process.version} (by NeoNinetales on e621)'
+                        }
+                    }
+
+                    request(estoHeader,
+                    function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
+                            var estoThing = JSON.parse(body);
+                            if (typeof (estoThing[0]) != "undefined") {
+                                msg.channel.sendMessage(estoThing[0].file_url.toString());
+                                msg.channel.sendMessage("https://e621.net/post/show/" + estoThing[0].id.toString());
+                            }
+                            else {
+                                msg.channel.sendMessage("No images found. Try different tags.")
+                            }
+                        }
+                        else {
+                            console.log(error);
+                            msg.channel.sendMessage("The API isn't working and this is why I'm crashing.");
+                            msg.channel.sendMessage(error);
+                        }
+                    });
                 }
             },
 

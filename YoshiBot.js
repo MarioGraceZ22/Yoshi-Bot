@@ -24,7 +24,7 @@ catch(e){
     throw new Error(e);
 }
 
-var bot = new Discord.Client({autoReconnect: true});
+var bot = new Discord.Client({autoReconnect: true, disableEvents: ["TYPING_START", "TYPING_STOP", "GUILD_MEMBER_SPEAKING", "GUILD_MEMBER_AVAILABLE", "PRESSENCE_UPDATE"]});
 
 bot.login(auth.token);
 
