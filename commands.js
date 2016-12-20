@@ -8,6 +8,14 @@ catch (e) {
     process.exit();
 }
 
+try {
+    var fs = require("fs"); 
+}
+catch(e) {
+    console.log("Well, no reading files, then. 'fs' is kinda necessary for that.");
+    process.exit()
+}
+
 try{
     var simpleGit = require('simple-git');
 }
@@ -34,6 +42,7 @@ try{
 }
 catch(e){
     console.log("You aren't getting very far without an 'auth.json'... just sayin'.");
+    process.exit();
 }
 
 try{
@@ -71,6 +80,8 @@ catch(e) {
 }
 var qs = require("querystring");
 
+let userInfo = JSON.parse(fs.readFileSync('./info.json', 'utf8'));
+
 var estoBanList = [
     "murder",
     "suicidal",
@@ -95,7 +106,7 @@ var estoBanList = [
     "defecation",
     "child",
     "kid",
-    "tod" + /[\s|,]/,
+    "tod",
     "toddler",
     "cake_farts",
     "diarrhea",
@@ -107,8 +118,20 @@ var estoBanList = [
     "hyper",
     "expansion",
     "inflation",
-    "guro"
+    "guro",
+    "nightmare_fuel"
 ]
+
+var infoCategories = {
+    games: {alias: "*Games: ", value: ""},
+    fursona: {alias: "*Fursona: ", value: ""},
+    furaffinity: {alias: "*FurAffinity: ", value: ""},
+    twitter: {alias: "*Twitter: ", value: ""},
+    youTube: {alias: "*YouTube: ", value: ""},
+    steam: {alias: "*Steam: ", value: ""},
+    nnid: {alias: "*NNID: ", value: ""},
+    note: {alias: "*Note: ", value: ""}
+}
 
 
 exports.commands = {
@@ -245,12 +268,12 @@ exports.commands = {
                             if(role !== null){
                                 if(options[0] == "give"){
                                     user.addRole(role.id).then(member => {
-                                        msg.channel.sendMessage("User " + user + " now has the role " + roleString.trim() + ".");
+                                        msg.channel.sendMessage("User " + user + " now has the role **" + roleString.trim() + "**.");
                                     }).catch(console.error);
                                 }
                                 else if(options[0] == "take"){
                                     user.removeRole(role.id).then(member => {
-                                        msg.channel.sendMessage("User " + user + " no longer has the role " + roleString.trim() + ".");
+                                        msg.channel.sendMessage("User " + user + " no longer has the role **" + roleString.trim() + "**.");
                                     }).catch(console.error);
                                 }
                                 else{
@@ -268,6 +291,117 @@ exports.commands = {
                     else{
                         msg.reply("I can't really take that order from you. Sorry. :c");
                     }
+                }
+            },
+
+            "kick": {
+                usage: "<user> (Ex. !kick @Ian#4208)",
+                description: "Kicks the specified user from the server.",
+                process: function(bot, msg, params){
+                    if (msg.member.hasPermission("KICK_MEMBERS")){
+                        var user = msg.guild.members.find('id', params.replace(/[^\w\s]/gi, ''));
+                        if(user != null){
+                            user.kick().then(member => {
+                                msg.channel.sendMessage("User " + user + " has been kicked from the server.");
+                            }).catch(console.error);
+                        }
+                        else{
+                            msg.channel.sendMessage("Sorry, I am unable to find the user \"" + params + "\".");
+                        }
+                    }
+                    else{
+                        msg.reply("I can't really take that order from you. Sorry. :c");
+                    }
+                }
+            },
+
+            "ban": {
+                usage: "<user> (Ex. !ban @Ian#4208)",
+                description: "Bans the specified user from the server.",
+                process: function(bot, msg, params){
+                    if (msg.member.hasPermission("BAN_MEMBERS")){
+                        var user = msg.guild.members.find('id', params.replace(/[^\w\s]/gi, ''));
+                        if(user != null){
+                            user.ban(7).then(member => {
+                                msg.channel.sendMessage("User " + user + " has been banned from the server.");
+                            }).catch(console.error);
+                        }
+                        else{
+                            msg.channel.sendMessage("Sorry, I am unable to find the user \"" + params + "\".");
+                        }
+                    }
+                    else{
+                        msg.reply("I can't really take that order from you. Sorry. :c");
+                    }
+                }
+            },
+
+            "test": {
+                usage: "lel",
+                description: "This is a testing space. It will change periodically as I need to test new things.",
+                process: function(bot, msg, params){
+                    if(params == ""){
+                        if(!userInfo[msg.author.id]){
+                            msg.channel.sendMessage("It appears to me that you don't have a profile set up yet! Get started with `!info help` c:");
+                            return
+                        }
+                        
+                        var infoString = msg.member.nickname != null ? "```css\n" + msg.member.nickname : "```css\n" + msg.author.username;
+                        infoString += "'s Profile:\n";
+                        for(category in userInfo[msg.author.id]){
+                            if(userInfo[msg.author.id][category].value != ""){
+                                infoString += userInfo[msg.author.id][category].alias + userInfo[msg.author.id][category].value + "\n";
+                            }
+                        }
+
+                        infoString += "```";
+
+                        msg.channel.sendMessage(infoString);
+                        return;
+                    }
+
+                    if(params == "help"){
+                        help = "To use this command, you can do one of the following:\n`!info add <category>` will allow you to add to a certain category.\n**Available categories:** `"
+                        for(category in infoCategories){
+                           help += category + ", ";
+                        }
+                        help = help.substring(0, help.length - 2) + "`";
+                        msg.channel.sendMessage(help);
+                    }
+
+                    var options = params.split(" ");
+                    if(options[0] == "add"){
+                        category = options[1].toLowerCase();
+                        if(!infoCategories[category]){
+                            msg.channel.sendMessage("Silly, I don't think '" + category + "' is a category.");
+                            return;
+                        }
+
+                        var elementsString = "";
+                        for(var i = 2; i < options.length; i++){
+                            elementsString += options[i] + " ";
+                        }
+                        var elementsArray = elementsString.split(",");
+
+                        elementsString = "";
+                        for (var i = 0; i < elementsArray.length; i++){
+                            elementsString += elementsArray[i].trim() + ", ";
+                        }
+
+                        elementsString = elementsString.substring(0, elementsString.length - 2);
+
+                        if(!userInfo[msg.author.id]){
+                            userInfo[msg.author.id] = infoCategories;
+                        }
+
+                        userInfo[msg.author.id][category].value = elementsString;
+                        fs.writeFile('./info.json', JSON.stringify(userInfo), (err) => {
+                          if (err) throw err;
+                          console.log('It\'s saved!');
+                        });
+                        msg.channel.sendMessage("The category `" + category + "` has been updated successfully.");
+                    }
+                    //msg.channel.sendMessage("Currently, I do not have a function for this command.");
                 }
             }
         }
