@@ -127,7 +127,7 @@ var infoCategories = {
     fursona: {alias: "*Fursona: ", value: ""},
     furaffinity: {alias: "*FurAffinity: ", value: ""},
     twitter: {alias: "*Twitter: ", value: ""},
-    youTube: {alias: "*YouTube: ", value: ""},
+    youtube: {alias: "*YouTube: ", value: ""},
     steam: {alias: "*Steam: ", value: ""},
     nnid: {alias: "*NNID: ", value: ""},
     note: {alias: "*Note: ", value: ""}
@@ -340,68 +340,7 @@ exports.commands = {
                 usage: "lel",
                 description: "This is a testing space. It will change periodically as I need to test new things.",
                 process: function(bot, msg, params){
-                    if(params == ""){
-                        if(!userInfo[msg.author.id]){
-                            msg.channel.sendMessage("It appears to me that you don't have a profile set up yet! Get started with `!info help` c:");
-                            return
-                        }
-                        
-                        var infoString = msg.member.nickname != null ? "```css\n" + msg.member.nickname : "```css\n" + msg.author.username;
-                        infoString += "'s Profile:\n";
-                        for(category in userInfo[msg.author.id]){
-                            if(userInfo[msg.author.id][category].value != ""){
-                                infoString += userInfo[msg.author.id][category].alias + userInfo[msg.author.id][category].value + "\n";
-                            }
-                        }
-
-                        infoString += "```";
-
-                        msg.channel.sendMessage(infoString);
-                        return;
-                    }
-
-                    if(params == "help"){
-                        help = "To use this command, you can do one of the following:\n`!info add <category>` will allow you to add to a certain category.\n**Available categories:** `"
-                        for(category in infoCategories){
-                           help += category + ", ";
-                        }
-                        help = help.substring(0, help.length - 2) + "`";
-                        msg.channel.sendMessage(help);
-                    }
-
-                    var options = params.split(" ");
-                    if(options[0] == "add"){
-                        category = options[1].toLowerCase();
-                        if(!infoCategories[category]){
-                            msg.channel.sendMessage("Silly, I don't think '" + category + "' is a category.");
-                            return;
-                        }
-
-                        var elementsString = "";
-                        for(var i = 2; i < options.length; i++){
-                            elementsString += options[i] + " ";
-                        }
-                        var elementsArray = elementsString.split(",");
-
-                        elementsString = "";
-                        for (var i = 0; i < elementsArray.length; i++){
-                            elementsString += elementsArray[i].trim() + ", ";
-                        }
-
-                        elementsString = elementsString.substring(0, elementsString.length - 2);
-
-                        if(!userInfo[msg.author.id]){
-                            userInfo[msg.author.id] = infoCategories;
-                        }
-
-                        userInfo[msg.author.id][category].value = elementsString;
-                        fs.writeFile('./info.json', JSON.stringify(userInfo), (err) => {
-                          if (err) throw err;
-                          console.log('It\'s saved!');
-                        });
-                        msg.channel.sendMessage("The category `" + category + "` has been updated successfully.");
-                    }
-                    //msg.channel.sendMessage("Currently, I do not have a function for this command.");
+                    msg.channel.sendMessage("Currently, I do not have a function for this command.");
                 }
             }
         }
@@ -643,62 +582,67 @@ exports.commands = {
                 usage: "[Optional] <name or name portion> (Ex. '!info Ian' or '!info')",
                 description: "Will give information about the requested user and the server the command was issued in. If no user is specified, returns information about the author.",
                 process: function(bot, msg, params){
-                    var infoString = "";
-                    var user = null;
-                    if (params) {
-                        if (bot.users.find("username", params) != null) {
-                            user = bot.users.find("username", params);
+                    if(params == ""){
+                        if(!userInfo[msg.author.id]){
+                            msg.channel.sendMessage("It appears to me that you don't have a profile set up yet! Get started with `!info help` c:");
+                            return
                         }
-                        else{
-                            var regst = /^[^\s]+/;
-                            var regend = /[^\s]+$/;
-                            var match = true;
-                            var users = bot.users.array();
-                            for (var i = 0; i < users.length ; i++) {
-                                if (regst.exec(users[i].username)[0] === params) {
-                                    match = true;
-                                    user = users[i];
-                                }
-                                else if (regend.exec(users[i].username)[0] === params) {
-                                    match = true;
-                                    user = users[i];
-                                }
-                                else {
-                                    match = false;
-                                }
-                            }
-                            if (match === false) {
-                                msg.channel.sendMessage("I couldn't find the user you requested.");
-                                return;
+                        
+                        var infoString = msg.member.nickname != null ? "```css\n" + msg.member.nickname : "```css\n" + msg.author.username;
+                        infoString += "'s Profile:\n";
+                        for(category in userInfo[msg.author.id]){
+                            if(userInfo[msg.author.id][category].value != ""){
+                                infoString += userInfo[msg.author.id][category].alias + userInfo[msg.author.id][category].value + "\n";
                             }
                         }
+
+                        infoString += "```";
+
+                        msg.channel.sendMessage(infoString);
+                        return;
                     }
-                    else{
-                        user = msg.author;
+
+                    if(params == "help"){
+                        help = "To use this command, you can do one of the following:\n`!info add <category>` will allow you to add to a certain category.\n**Available categories:** `"
+                        for(category in infoCategories){
+                           help += category + ", ";
+                        }
+                        help = help.substring(0, help.length - 2) + "`";
+                        msg.channel.sendMessage(help);
                     }
 
-                    infoString = "Information for user **" + user.username + "#" + user.discriminator + "** and **" + msg.guild.name + "**:";
-                    msg.channel.sendMessage(infoString).then(message => {
-                        msg.channel.sendMessage("His/Her avatar is: " + user.avatarURL).then(message => {
-                            msg.channel.sendMessage("The server's icon is: " + msg.guild.iconURL).then(message => {
-                                infoString = "- **" + user.username + "'s** ID is **" + user.id + "**.\n- This account was created in **" + user.creationDate + "**.\n";
+                    var options = params.split(" ");
+                    if(options[0] == "add"){
+                        category = options[1].toLowerCase();
+                        if(!infoCategories[category]){
+                            msg.channel.sendMessage("Silly, I don't think '" + category + "' is a category.");
+                            return;
+                        }
 
-                                if(user.bot){
-                                    infoString += "- This user is **an official bot** account as per Discord API.\n";
-                                }
-                                else{
-                                    infoString += "- This user is **not an official bot** account as per Discord API.\n";
-                                }
+                        var elementsString = "";
+                        for(var i = 2; i < options.length; i++){
+                            elementsString += options[i] + " ";
+                        }
+                        var elementsArray = elementsString.split(",");
 
-                                var userServerDetails = msg.guild.member(user);
-                                var roles = userServerDetails.roles.array();
-                                infoString += "- This user has the role(s) **" + roles + "** in this server.\n- **" + user.username + "'s** nickname is **" + userServerDetails.nickname + "** in this server.\n- **" + user.username + "#" + user.discriminator + "** joined this server in **";
-                                var t = new Date(userServerDetails.joinDate);
-                                infoString += t + "**.\n\n- The ID of server **" + msg.guild.name + "** is **" + msg.guild.id + "**.\n- There are **" + msg.guild.memberCount + "** users in this server.\n- **" + msg.guild.owner.user.username + "#" + msg.guild.owner.user.discriminator + "** is the owner of **" + msg.guild.name + "**.\n- This server was created in **" + msg.guild.creationDate + "**.";
-                                msg.channel.sendMessage(infoString);
-                            });
-                        });        
-                    });
+                        elementsString = "";
+                        for (var i = 0; i < elementsArray.length; i++){
+                            elementsString += elementsArray[i].trim() + ", ";
+                        }
+
+                        elementsString = elementsString.substring(0, elementsString.length - 2);
+
+                        if(!userInfo[msg.author.id]){
+                            userInfo[msg.author.id] = infoCategories;
+                        }
+
+                        userInfo[msg.author.id][category].value = elementsString;
+                        fs.writeFile('./info.json', JSON.stringify(userInfo), (err) => {
+                          if (err) throw err;
+                          console.log('It\'s saved!');
+                        });
+                        msg.channel.sendMessage("The category `" + category + "` has been updated successfully.");
+                    }
                 }
             },
 
