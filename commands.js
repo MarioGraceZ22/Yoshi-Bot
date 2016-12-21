@@ -337,6 +337,9 @@ exports.commands = {
                 }
             },
 
+            "config": {
+                usage: "<setting to configure> <parameter> (Ex. !config prefix ^)",
+                description: "Allows you to configure different settings about the bot for your server, such as ",
                 process: function(bot, msg, params){
 
                 }
