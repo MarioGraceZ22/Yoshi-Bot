@@ -81,6 +81,7 @@ catch(e) {
 var qs = require("querystring");
 
 let userInfo = JSON.parse(fs.readFileSync('./info.json', 'utf8'));
+let serverInfo = JSON.parse(fs.readFileSync('./servers.json', 'utf8'));
 
 var estoBanList = [
     "murder",
@@ -333,6 +334,11 @@ exports.commands = {
                     else{
                         msg.reply("I can't really take that order from you. Sorry. :c");
                     }
+                }
+            },
+
+                process: function(bot, msg, params){
+
                 }
             },
 

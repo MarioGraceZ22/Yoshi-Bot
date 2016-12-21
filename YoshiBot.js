@@ -24,6 +24,8 @@ catch(e){
     throw new Error(e);
 }
 
+let serverInfo = JSON.parse(fs.readFileSync('./servers.json', 'utf8'));
+
 var bot = new Discord.Client({autoReconnect: true, disableEvents: ["TYPING_START", "TYPING_STOP", "GUILD_MEMBER_SPEAKING", "GUILD_MEMBER_AVAILABLE", "PRESSENCE_UPDATE"]});
 
 bot.login(auth.token);
