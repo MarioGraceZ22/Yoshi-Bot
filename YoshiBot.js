@@ -15,6 +15,14 @@ catch(e){
     console.log("You aren't getting very far without an 'auth.json'... just sayin'.");
 }
 
+try {
+    var fs = require("fs"); 
+}
+catch(e) {
+    console.log("Well, no reading files, then. 'fs' is kinda necessary for that.");
+    process.exit()
+}
+
 
 try{
     var commands = require('./commands.js').commands;
@@ -24,7 +32,14 @@ catch(e){
     throw new Error(e);
 }
 
-let serverInfo = JSON.parse(fs.readFileSync('./servers.json', 'utf8'));
+var serverParams = {
+    prefix: "!",
+    log_channel: null,
+    welcome_channel: null,
+    logging_enabled: false,
+    welcome_message: null,
+    welcome_enabled: false
+};
 
 var bot = new Discord.Client({autoReconnect: true, disableEvents: ["TYPING_START", "TYPING_STOP", "GUILD_MEMBER_SPEAKING", "GUILD_MEMBER_AVAILABLE", "PRESSENCE_UPDATE"]});
 
@@ -68,8 +83,16 @@ bot.on("messageUpdate", (oldMessage, newMessage) =>{
 });
 
 bot.on("message", function (msg) {
+    let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
+    if(!serversInfo[msg.guild.id]){
+        serversInfo[msg.guild.id] = serverParams;
+        fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+          if (err) throw err;
+          console.log('It\'s saved!');
+        });
+    }
     //check if message is a command
-    if (msg.author.id != bot.user.id && (msg.content[0] === '!')) {
+    if (msg.author.id != bot.user.id && (msg.content[0] === serversInfo[msg.guild.id].prefix)) {
         if (msg.channel.isPrivate === false && msg.channel.server.id === "136609300700332032" && (msg.channel.id != "168188374023274496" && msg.channel.id != "137676980387577857")) {
             msg.channel.sendMessage("Use #bots_channel, please.");
         }

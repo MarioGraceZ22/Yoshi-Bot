@@ -80,8 +80,8 @@ catch(e) {
 }
 var qs = require("querystring");
 
-let userInfo = JSON.parse(fs.readFileSync('./info.json', 'utf8'));
-let serverInfo = JSON.parse(fs.readFileSync('./servers.json', 'utf8'));
+let userInfo = JSON.parse(fs.readFileSync('./data/info.json', 'utf8'));
+let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
 
 var estoBanList = [
     "murder",
@@ -339,9 +339,46 @@ exports.commands = {
 
             "config": {
                 usage: "<setting to configure> <parameter> (Ex. !config prefix ^)",
-                description: "Allows you to configure different settings about the bot for your server, such as ",
+                description: "Allows you to configure different settings about the bot for your server, such as a prefix for commands, logging, and welcome messages.",
                 process: function(bot, msg, params){
-
+                    if(msg.member.roles.find('name', ">> Bot Privs <<")){
+                        params += " ";
+                        var firstOption = params.substring(0, params.indexOf(" ")); 
+                        if(firstOption == "help"){
+                            var helpString = "Here's how you can configure the bot for your server:\n";
+                            helpString += "`!config prefix <special character>`: Customizes the prefix to use for commands in your server. Cannot be a number or a letter.\n";
+                            helpString += "`!config logging <enable/channel> [channel link]`: Enables logging (deleted/edited messages) or sets the logging channel. A logging channel must be set to enable.\n";
+                            helpString += "`!config welcome <enable/channel/message> [channel link/message]`: Enables welcome messages for new users, sets the channel to say welcomes in, or sets the welcome message.\n";
+                            msg.channel.sendMessage(helpString);
+                        }
+                        else if(firstOption == "prefix"){
+                            prefix = params.substring(params.indexOf(" ") + 1).trim();
+                            if(prefix.length > 2){
+                                msg.channel.sendMessage("Okay, buddy, I don't think having a prefix that long would be a good idea. Just saying.");
+                                return;
+                            }
+                            var regex = /^[^\w\s]+$/;
+                            if(regex.exec(prefix) != null){
+                                serversInfo[msg.guild.id].prefix = prefix;
+                                fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+                                  if (err) throw err;
+                                  console.log('It\'s saved!');
+                                });
+                                msg.channel.sendMessage("The prefix for this server has been successfully updated to `" + prefix + "`.");
+                            }
+                            
+                        }
+                        else if(firstOption == "logging"){
+                            otherOptions = params.substring(params.indexOf(" ") + 1).trim();
+                            otherOptions = otherOptions.split(" ");
+                        }
+                        else{
+                            msg.channel.sendMessage("Oh, let me give you a hand with that! Get started with `!config help` to learn about it! :3");
+                        }
+                    }
+                    else{
+                        msg.reply("I can't really take that order from you. You need a role by the name `>> Bot Privs <<`. Sorry. :c");
+                    }
                 }
             },
 
@@ -591,6 +628,8 @@ exports.commands = {
                 usage: "[Optional] <name or name portion> (Ex. '!info Ian' or '!info')",
                 description: "Will give information about the requested user and the server the command was issued in. If no user is specified, returns information about the author.",
                 process: function(bot, msg, params){
+                    var options = params.split(" ");
+                    var regMention = /^<[@\w]+>$/;
                     if(params == ""){
                         if(!userInfo[msg.author.id]){
                             msg.channel.sendMessage("It appears to me that you don't have a profile set up yet! Get started with `!info help` c:");
@@ -610,8 +649,7 @@ exports.commands = {
                         msg.channel.sendMessage(infoString);
                         return;
                     }
-
-                    if(params == "help"){
+                    else if(options[0] == "help"){
                         help = "To use this command, you can do one of the following:\n`!info add <category>` will allow you to add to a certain category.\n**Available categories:** `"
                         for(category in infoCategories){
                            help += category + ", ";
@@ -619,9 +657,26 @@ exports.commands = {
                         help = help.substring(0, help.length - 2) + "`";
                         msg.channel.sendMessage(help);
                     }
+                    else if(regMention.exec(options[0]) != null){
+                        user = msg.guild.members.find('id', options[0].replace(/[^\w\s]/gi, ''));
+                        if(!userInfo[user.id]){
+                            msg.channel.sendMessage("It appears to me that this user does not have a profile set up yet.");
+                            return;
+                        }
 
-                    var options = params.split(" ");
-                    if(options[0] == "add"){
+                        var infoString = user.nickname != null ? "```css\n" + msg.member.nickname : "```css\n" + msg.author.username;
+                        infoString += "'s Profile:\n";
+                        for(category in userInfo[msg.author.id]){
+                            if(userInfo[msg.author.id][category].value != ""){
+                                infoString += userInfo[msg.author.id][category].alias + userInfo[msg.author.id][category].value + "\n";
+                            }
+                        }
+
+                        infoString += "```";
+
+                        msg.channel.sendMessage(infoString);
+                    }
+                    else if(options[0] == "add"){
                         category = options[1].toLowerCase();
                         if(!infoCategories[category]){
                             msg.channel.sendMessage("Silly, I don't think '" + category + "' is a category.");
@@ -646,7 +701,7 @@ exports.commands = {
                         }
 
                         userInfo[msg.author.id][category].value = elementsString;
-                        fs.writeFile('./info.json', JSON.stringify(userInfo), (err) => {
+                        fs.writeFile('./data/info.json', JSON.stringify(userInfo), (err) => {
                           if (err) throw err;
                           console.log('It\'s saved!');
                         });
