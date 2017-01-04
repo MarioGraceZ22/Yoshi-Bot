@@ -81,7 +81,18 @@ catch(e) {
 var qs = require("querystring");
 
 let userInfo = JSON.parse(fs.readFileSync('./data/info.json', 'utf8'));
-let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
+
+var confusResponses = [
+	"You... what, now?",
+	"Pardon me?",
+	"Hah, yeah... what?",
+	"Sorry, I have no idea what that means.",
+	"Come again?",
+	"Maybe you should try something else there, buddy.",
+	"Um, Y-Yoshi..?",
+	"I tried to understand, trust me, but I just cannot.",
+	"Nope, dunno what you need, pal."
+]
 
 var estoBanList = [
     "murder",
@@ -143,7 +154,7 @@ exports.commands = {
             "ping": {
                 usage: "!ping",
                 description: "I'll respond with a \"pong.\" Useful for checking if I'm alive.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     msg.channel.sendMessage("Pong!");
                 }
             },
@@ -151,7 +162,7 @@ exports.commands = {
             "bye": {
                 usage: "!bye",
                 description: "Shuts down the bot.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     if (msg.author.id === "110932722322505728") {
                         msg.channel.sendMessage("Goodbye, everyone!").then(message => {
                             bot.destroy();
@@ -166,7 +177,7 @@ exports.commands = {
             "update": {
                 usage: "!update",
                 description: "Will check if there is a new updated available. If update is found, will attempt to restart with the new code.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     if (msg.author.id === "110932722322505728"){
                         if(bot.voiceConnection){
                             bot.voiceConnection.destroy();
@@ -201,7 +212,7 @@ exports.commands = {
             "restart": {
                 usage: "!restart",
                 description: "Forces Yoshi-Bot to restart without needing to update.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     if (msg.author.id === "110932722322505728"){
                         if(bot.voiceConnection){
                             bot.voiceConnection.destroy();
@@ -224,7 +235,7 @@ exports.commands = {
             "clean": {
                 usage: "<number of messages to delete> (Ex. !clean 5)",
                 description: "Deletes the amount of given messages (as a number) in the channel.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     if (msg.member.hasPermission('MANAGE_MESSAGES')){
                         if(params){
                             if(!isNaN(params)){
@@ -250,7 +261,7 @@ exports.commands = {
             "role": {
                 usage: "<give or take> <user> <role name> (Ex. !role give @Ian#4208 Moderator)",
                 description: "Gives or takes a role from a user, depending on specified action.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     if (msg.member.hasPermission('MANAGE_ROLES_OR_PERMISSIONS')){
                         var options = params.split(" ");
                         if(options.length < 3){
@@ -298,7 +309,7 @@ exports.commands = {
             "kick": {
                 usage: "<user> (Ex. !kick @Ian#4208)",
                 description: "Kicks the specified user from the server.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     if (msg.member.hasPermission("KICK_MEMBERS")){
                         var user = msg.guild.members.find('id', params.replace(/[^\w\s]/gi, ''));
                         if(user != null){
@@ -319,7 +330,7 @@ exports.commands = {
             "ban": {
                 usage: "<user> (Ex. !ban @Ian#4208)",
                 description: "Bans the specified user from the server.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     if (msg.member.hasPermission("BAN_MEMBERS")){
                         var user = msg.guild.members.find('id', params.replace(/[^\w\s]/gi, ''));
                         if(user != null){
@@ -340,7 +351,8 @@ exports.commands = {
             "config": {
                 usage: "<setting to configure> <parameter> (Ex. !config prefix ^)",
                 description: "Allows you to configure different settings about the bot for your server, such as a prefix for commands, logging, and welcome messages.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
+                	let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
                     if(msg.member.roles.find('name', ">> Bot Privs <<")){
                         params += " ";
                         var firstOption = params.substring(0, params.indexOf(" ")); 
@@ -361,16 +373,54 @@ exports.commands = {
                             if(regex.exec(prefix) != null){
                                 serversInfo[msg.guild.id].prefix = prefix;
                                 fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
-                                  if (err) throw err;
+                                if (err) throw err;
                                   console.log('It\'s saved!');
                                 });
                                 msg.channel.sendMessage("The prefix for this server has been successfully updated to `" + prefix + "`.");
                             }
-                            
+                            else{
+                            	msg.channel.sendMessage("Remember, you can only use special characters for the server prefix. Examples: `!`,`$`,`^`,`.`,`,`,`!!`,`!%`, etc.");
+                            }
                         }
                         else if(firstOption == "logging"){
                             otherOptions = params.substring(params.indexOf(" ") + 1).trim();
                             otherOptions = otherOptions.split(" ");
+                            if(otherOptions[0] == "enable"){
+                            	if(serversInfo[msg.guild.id].log_channel != null){
+                            		serversInfo[msg.guild.id].logging_enabled = true;
+                            		fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+	                                if (err) throw err;
+	                                  console.log('It\'s saved!');
+	                                });
+	                                msg.channel.sendMessage("Message logging has been **enabled** in this server.");
+	                                return;
+                            	}
+                            	msg.channel.sendMessage("To enable message logging, first **set a logging channel** with `!config logging channel <channel link>`.")
+                            }
+                            else if(otherOptions[0] == "disable"){
+                            	serversInfo[msg.guild.id].logging_enabled = false;
+                        		fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+                                if (err) throw err;
+                                  console.log('It\'s saved!');
+                                });
+                            	msg.channel.sendMessage("Message logging has been **disabled** in this server.");
+                            }
+                            else if(otherOptions[0] == "channel"){
+                            	var channelRegex = /^<#[0-9]+>$/;
+                            	if(channelRegex.exec(otherOptions[1]) != null){
+                            		serversInfo[msg.guild.id].log_channel = otherOptions[1].replace(/[^\w\s]/gi, '');
+                            		fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+	                                if (err) throw err;
+	                                  console.log('It\'s saved!');
+	                                });
+	                                msg.channel.sendMessage("The logging channel for this server has been successfully updated to " + otherOptions[1] + ".");
+	                                return;
+                            	}
+                            	msg.channel.sendMessage("I couldn't parse that as a channel link. Remember, a channel link looks like `#channel_name`.");
+                            }
+                            else{
+                            	msg.channel.sendMessage(confusResponses[choice]);
+                            }
                         }
                         else{
                             msg.channel.sendMessage("Oh, let me give you a hand with that! Get started with `!config help` to learn about it! :3");
@@ -385,7 +435,7 @@ exports.commands = {
             "test": {
                 usage: "lel",
                 description: "This is a testing space. It will change periodically as I need to test new things.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     msg.channel.sendMessage("Currently, I do not have a function for this command.");
                 }
             }
@@ -399,7 +449,7 @@ exports.commands = {
             "e621": {
                 usage: "<tags> (Ex. !e621 canine, anthro, blue eyes)",
                 description: "It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     var tagesto = "";
                     var tagestosplit = params.split(",");
                     for (var i = 0; i < tagestosplit.length; i++) {
@@ -454,7 +504,7 @@ exports.commands = {
             "mlfw": {
                 usage: "<tags> (Ex. !mlfw twilight sparkle, happy)",
                 description: "Returns a pony reaction image based on tags (separated by a comma and a space) given.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     var tagmlfw = "";
                     if (params.indexOf(',') != -1) {
                         tagmlfw = ("\"" + params.substring(0, params.indexOf(',')) + "\"" + ",");
@@ -493,7 +543,7 @@ exports.commands = {
             "subr": {
                 usage: "<subreddit name> (Ex. !subr wheredidthesodago)",
                 description: "Will return a random post from the user given subreddit using reddit's own \"random.\"",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     request("https://www.reddit.com/r/" + params + "/random/.json", function (error, response, body) {
                         if (!error && response.statusCode == 200) {
                             var srThing = JSON.parse(body);
@@ -517,7 +567,7 @@ exports.commands = {
             "woof": {
                 usage: "!woof",
                 description: "Returns a random woof image.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     request("http://random.dog/", function (error, response, body) {
                         if (!error && response.statusCode == 200) {
                             if (typeof (body) != "undefined") {
@@ -536,7 +586,7 @@ exports.commands = {
             "meow": {
                 usage: "!meow",
                 description: "Returns a random meow image.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     request("http://random.cat/meow", function (error, response, body) {
                         if (!error && response.statusCode == 200) {
                             var meowThing = JSON.parse(body);
@@ -560,7 +610,7 @@ exports.commands = {
             "servers": {
                 usage: "!servers",
                 description: "List of servers I am in.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     msg.channel.sendMessage("I am currently serving in " + bot.guilds);
                 }
             },
@@ -568,7 +618,7 @@ exports.commands = {
             "avie": {
                 usage: "[Optional] <name or name portion> (Ex. '!avie Ian' or '!avie')",
                 description: "Returns the avatar image of the specified user. If no user is specified, returns the avatar image of the author.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     if (params) {
                         if (bot.users.find("username", params) != null) {
                             msg.channel.sendMessage("https://discordapp.com/api/users/" + bot.users.find("username", params).id + "/avatars/" + bot.users.find("username", params).avatar + ".jpg");
@@ -607,7 +657,7 @@ exports.commands = {
             "pick": {
                 usage: "<options to pick from> (Ex. !pick option1, option2, option3)",
                 description: "Will randomly pick from the number of options given by the user, separated by commas and spaces.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     var options = params.split(",");
                     var randomChoice = Math.floor(Math.random() * options.length);
                     options[0] = " " + options[0];
@@ -619,7 +669,7 @@ exports.commands = {
             "kms": {
                 usage: "!kms",
                 description: "You asked for death.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     msg.channel.sendTTSMessage("You're dead, kiddo. ᕕ[•̀͜ʖ•́]︻̷┻̿═━一 ---");
                 }
             },
@@ -627,15 +677,15 @@ exports.commands = {
             "info": {
                 usage: "[Optional] <name or name portion> (Ex. '!info Ian' or '!info')",
                 description: "Will give information about the requested user and the server the command was issued in. If no user is specified, returns information about the author.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
+                	if(!userInfo[msg.author.id]){
+                        msg.channel.sendMessage("It appears to me that you don't have a profile set up yet! Get started with `!info help` c:");
+                        return
+                    }
+
                     var options = params.split(" ");
                     var regMention = /^<[@\w]+>$/;
                     if(params == ""){
-                        if(!userInfo[msg.author.id]){
-                            msg.channel.sendMessage("It appears to me that you don't have a profile set up yet! Get started with `!info help` c:");
-                            return
-                        }
-                        
                         var infoString = msg.member.nickname != null ? "```css\n" + msg.member.nickname : "```css\n" + msg.author.username;
                         infoString += "'s Profile:\n";
                         for(category in userInfo[msg.author.id]){
@@ -713,7 +763,7 @@ exports.commands = {
             "8ball": {
                 usage: "<question> (Ex. !8ball Will Ian ever get a life?)",
                 description: "Will briefly turn into the Magical 8 Ball and respond to whatever question you pose.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     if(params){
                         request('https://8ball.delegator.com/magic/JSON/' + params, function(error, response, body){
                             if (!error && response.statusCode == 200){
@@ -734,7 +784,7 @@ exports.commands = {
             "chat": {
                 usage: "<text> (Ex. !chat Hello, how are you?)",
                 description: "Allows you to chat with Yoshi-Bot! Aren't you itching to talk to someone? Here's your chance.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     CleverBot.create(function (err, session) {
                      CleverBot.ask(params, function (err, response) {
                           msg.channel.sendMessage(msg.author + ": " + response);
@@ -752,7 +802,7 @@ exports.commands = {
             "voice": {
                 usage: "!voice",
                 description: "Joins the voice channel the author of the command is in.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     var voiceConnections = bot.voiceConnections.array();
                     if (voiceConnections.length == 0) {
                         if(msg.member.voiceChannel == null){
@@ -783,7 +833,7 @@ exports.commands = {
             "play": {
                 usage: "<YouTube link> (Ex. !play https://www.youtube.com/watch?v=vc6vs-l5dkc)",
                 description: "Queues or plays (if nothing in queue) the requested song. CURRENTLY DOES NOT QUEUE. ONLY PLAYS SONG.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                     var voiceConnections = bot.voiceConnections.array();
                     var flag = false;
                     for (var i = voiceConnections.length - 1; i >= 0; i--) {
@@ -818,7 +868,7 @@ exports.commands = {
             "yt": {
                 usage: "<search terms> (Ex. !yt PFUDOR)",
                 description: "Returns the first YouTube video in a search based on the input query.",
-                process: function(bot, msg, params){
+                process: function(bot, msg, params, choice){
                      if(params){
                         yt.search(params, 1, function(error, result) {
                           if (error) {

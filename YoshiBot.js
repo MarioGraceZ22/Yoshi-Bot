@@ -61,23 +61,41 @@ bot.on("guildMemberAdd", (guild, member) => {
 });
 
 bot.on("messageDelete", (message) => {
-    var t = new Date(Date.now());
-    if(message){
-        if(message.guild.id == "136609300700332032"){
-            bot.channels.get("220258542131740672").sendMessage("```" + t + "```" + "Message by **" + message.author.username + "#" + message.author.discriminator + "** was deleted in " + message.channel.name + "\n**Message: **" + message.content);
-        }
-    }
+	let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
+	if(message){
+		if(serversInfo[message.guild.id].logging_enabled){
+			if(message.guild.channels.find('id', serversInfo[message.guild.id].log_channel) == null){
+				serversInfo[message.guild.id].logging_enabled = false;
+				serversInfo[message.guild.id].log_channel = null;
+				fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+                  if (err) throw err;
+                  console.log('It\'s saved!');
+                });
+                return;
+			}
+			var t = new Date(Date.now());
+	        bot.channels.get(serversInfo[message.guild.id].log_channel).sendMessage("```" + t + "```" + "Message by **" + message.author.username + "#" + message.author.discriminator + "** was deleted in " + message.channel.name + "\n**Message: **" + message.content);
+		}
+	}
 });
 
 bot.on("messageUpdate", (oldMessage, newMessage) =>{
+	let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
     var d = new Date(Date.now());
     if(oldMessage.author.id !== bot.user.id){
         if(oldMessage && newMessage){
-            if(oldMessage !== newMessage){
-                if(newMessage.guild.id == "136609300700332032"){
-                    bot.channels.get("220258542131740672").sendMessage("```" + d + "```" + "Message by **" + newMessage.author.username + "#" + newMessage.author.discriminator + "** was updated in " + newMessage.channel + "\n**Old:** " + oldMessage.content + "\n**New:** " + newMessage.content);
-                }
-            }
+        	if(serversInfo[newMessage.guild.id].logging_enabled){
+        		if(newMessage.guild.channels.find('id', serversInfo[newMessage.guild.id].log_channel) == null){
+					serversInfo[newMessage.guild.id].logging_enabled = false;
+					serversInfo[newMessage.guild.id].log_channel = null;
+					fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+	                  if (err) throw err;
+	                  console.log('It\'s saved!');
+	                });
+	                return;
+				}
+            	bot.channels.get(serversInfo[newMessage.guild.id].log_channel).sendMessage("```" + d + "```" + "Message by **" + newMessage.author.username + "#" + newMessage.author.discriminator + "** was updated in " + newMessage.channel + "\n**Old:** " + oldMessage.content + "\n**New:** " + newMessage.content);
+        	}
         }
     }
 });
@@ -153,7 +171,8 @@ bot.on("message", function (msg) {
             }
             else if(cmd) {
                 console.log("treating " + msg.content + " from " + msg.author + " as command");
-                cmd.process(bot,msg,params);
+                var choice = Math.floor((Math.random() * 9));
+                cmd.process(bot, msg, params, choice);
             }
             else {
                 return;
