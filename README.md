@@ -2,30 +2,64 @@
 A bot for the Discord app based on [Discord.js](https://github.com/hydrabolt/discord.js/).
 
 #Features
-**!help** - Will show a list of available commands.
+The bot's commands are divided in different "modules", each serving a different purpose. These are outlined below:
 
-**!ping** - Responds with a "pong." Useful for checking if bot is alive.
+**!help** - Will show a list of available modules, if followed by a module name, will show a list of available commands in that module.
 
-**!pong** - Similar to !ping. Kind of.
+##Mod - All commands useful for moderation and debugging of the bot.
 
-**!join** - Attempts to join the server the bot is invited to.
+**!ping** - I'll respond with a "pong." Useful for checking if I'm alive.
 
-**!server** - List of servers the bot is in.
+**!bye** - Shuts down the bot.
 
-**!mlfw** - Returns a pony reaction image based on tags (separated by a comma and a space) given. (Ex. !mlfw happy, twilight sparkle)
+**!update** - Will check if there is a new updated available. If update is found, will attempt to restart with the new code.
 
-**!e621** - It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given. (Ex. !e621 anthro, canine)
+**!restart** - Forces Yoshi-Bot to restart without needing to update.
 
-**!avie** - Returns the avatar image of the specified user. If no user is specified, it returns the avatar of the author.
+**!clean** - Deletes the amount of given messages (as a number) in the channel.
 
-**!pick** - Will randomly pick from the number of options given by the user, separated by commas and spaces. (Ex. !pick option1, option2, option3).
+**!role** - Gives or takes a role from a user, depending on specified action.
+
+**!kick** - Kicks the specified user from the server.
+
+**!ban** - Bans the specified user from the server.
+
+**!config** - Allows you to configure different settings about the bot for your server, such as a prefix for commands, logging, and welcome messages.
+
+**!test** - This is a testing space. It will change periodically as I need to test new things.
+
+##Images - All commands pertaining to image-hosting sites and image boards.
+
+**!e621** - It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given.
+
+**!mlfw** - Returns a pony reaction image based on tags (separated by a comma and a space) given.
+
+**!subr** - Will return a random post from the user given subreddit using reddit's own "random."
 
 **!woof** - Returns a random woof image.
 
 **!meow** - Returns a random meow image.
 
-**!clean** - Deletes the amount of given messages (as a number) in the channel. (Ex. "!clean 4" will delete the previous four messages) 
+##Fun - All miscellaneous, recreational commands.
 
-**!info** - Will give information about the requested user and the server the command was issued in. If no user is specified, returns information about the author.
+**!servers** - List of servers I am in.
 
-**!subr** - Will return a random post from the user given subreddit using reddit's own "random." (Ex. !subr wheredidthesodago)
+**!avie** -  Returns the avatar image of the specified user. If no user is specified, returns the avatar image of the author.
+
+**!pick** - Will randomly pick from the number of options given by the user, separated by commas and spaces.
+
+**!kms** - You asked for death.
+
+**!info** - Will give information about the requested user or the author of the message, if a profile is set up. Otherwise, set up a profile.
+
+**!8ball** - Will briefly turn into the Magical 8 Ball and respond to whatever question you pose.
+
+**!chat** - Allows you to chat with Yoshi-Bot! Aren't you itching to talk to someone? Here's your chance.
+
+##Media - All commands pertaining to music streaming and videos.
+
+**!voice** - Joins the voice channel the author of the command is in.
+
+**!play** - Queues or plays (if nothing in queue) the requested song. CURRENTLY DOES NOT QUEUE. ONLY PLAYS SONG.
+
+**!yt** - Returns the first YouTube video in a search based on the input query.
