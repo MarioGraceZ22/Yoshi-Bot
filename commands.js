@@ -611,7 +611,13 @@ exports.commands = {
                 usage: "!servers",
                 description: "List of servers I am in.",
                 process: function(bot, msg, params, choice){
-                    msg.channel.sendMessage("I am currently serving in " + bot.guilds);
+                	var guilds = bot.guilds.array();
+                	var serversString = "";
+                	for (var i = 0; i < guilds.length - 1; i++) {
+                		serversString += "**" + guilds[i] + "**, ";
+                	}
+                	serversString += "and **" + guilds[guilds.length - 1] + "**.";
+                    msg.channel.sendMessage("I am currently serving in " + serversString);
                 }
             },
 
@@ -675,8 +681,8 @@ exports.commands = {
             },
 
             "info": {
-                usage: "[Optional] <name or name portion> (Ex. '!info Ian' or '!info')",
-                description: "Will give information about the requested user and the server the command was issued in. If no user is specified, returns information about the author.",
+                usage: "[Optional] <user tag or `add`> (Ex. '!info @Ian#4208' or '!info')",
+                description: "Will give information about the requested user or the author of the message, if a profile is set up. Otherwise, set up a profile.",
                 process: function(bot, msg, params, choice){
                 	if(!userInfo[msg.author.id]){
                         msg.channel.sendMessage("It appears to me that you don't have a profile set up yet! Get started with `!info help` c:");
