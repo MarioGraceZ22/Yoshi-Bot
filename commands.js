@@ -426,7 +426,52 @@ exports.commands = {
                             otherOptions = params.substring(params.indexOf(" ") + 1).trim();
                             otherOptions = otherOptions.split(" ");
                             if(otherOptions[0] == "enable"){
+                                if(serversInfo[msg.guild.id].welcome_channel != null && serversInfo[msg.guild.id].welcome_channel != null){
+                                	serversInfo[msg.guild.id].welcome_enabled = true;
+                            		fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+	                                if (err) throw err;
+	                                  console.log('It\'s saved!');
+	                                });
+	                                msg.channel.sendMessage("New member welcomes have been **enabled** in this server.");
+	                                return;
+                                }
+                                msg.channel.sendMessage("To enable new member welcomes, first **set a welcome channel** with `!config welcome channel <channel link>` **and then set a welcome message** with `!config welcome message <message>`.");
+                            }
+                            else if(otherOptions[0] == "disable"){
+                            	serversInfo[msg.guild.id].welcome_enabled = false;
+                        		fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+                                if (err) throw err;
+                                  console.log('It\'s saved!');
+                                });
+                            	msg.channel.sendMessage("New member welcomes have been **disabled** in this server.");
+                            }
+                            else if(otherOptions[0] == "channel"){
+                            	var channelRegex = /^<#[0-9]+>$/;
+                            	if(channelRegex.exec(otherOptions[1]) != null){
+                            		serversInfo[msg.guild.id].welcome_channel = otherOptions[1].replace(/[^\w\s]/gi, '');
+                            		fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+	                                if (err) throw err;
+	                                  console.log('It\'s saved!');
+	                                });
+	                                msg.channel.sendMessage("The welcoming channel for this server has been successfully updated to " + otherOptions[1] + ".");
+	                                return;
+                            	}
+                            	msg.channel.sendMessage("I couldn't parse that as a channel link. Remember, a channel link looks like `#channel_name`.");
+                            }
+                            else if(otherOptions[0] == "message"){
+                            	otherOptions[0] = "";
+                            	var welcomeMessage = otherOptions.join(" ");
+
+                            	serversInfo[msg.guild.id].welcome_message = welcomeMessage.substring(1);
+                            	fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+                                if (err) throw err;
+                                  console.log('It\'s saved!');
+                                });
+                                msg.channel.sendMessage("The welcome message for this server has been successfully updated to: \n```" + welcomeMessage.substring(1) + "```");
                                 return;
+                            }
+                            else{
+                            	msg.channel.sendMessage(confusResponses[choice]);
                             }
                         }
                         else{

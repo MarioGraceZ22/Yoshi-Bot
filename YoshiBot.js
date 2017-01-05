@@ -55,9 +55,19 @@ bot.on("ready", function () {
 });
 
 bot.on("guildMemberAdd", (guild, member) => {
-    if(guild.id == "136609300700332032"){
-        bot.channels.get("136609300700332032").sendMessage("Welcome, " + member.user + ", to our little piece of Discord: **" + guild.name + "**. We're really glad to have ya and we hope that you will enjoy your time here to the fullest. We encourage you to head on to <#169511435347558400> to ensure you know all the rules and become informed in the extents of each channel. If you have any questions, feel free to ask the admin or the mods, they'll be happy to answer. Cya around!");
-    }
+	let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
+	if(serversInfo[guild.id].welcome_enabled){
+		if(guild.channels.find('id', serversInfo[guild.id].welcome_channel) == null || serversInfo[guild.id].welcome_message == null){
+			serversInfo[guild.id].welcome_enabled = false;
+			serversInfo[guild.id].welcome_channel = null;
+			fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+              if (err) throw err;
+              console.log('It\'s saved!');
+            });
+            return;
+		}
+		bot.channels.get(serversInfo[guild.id].welcome_channel).sendMessage("<@" + member.id + "> " + serversInfo[guild.id].welcome_message);
+	}
 });
 
 bot.on("messageDelete", (message) => {
