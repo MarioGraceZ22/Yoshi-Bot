@@ -289,7 +289,7 @@ exports.commands = {
                                     }).catch(console.error);
                                 }
                                 else{
-                                    msg.channel.sendMessage("I don't know what " + options[0] + " is supposed to mean.");
+                                    msg.channel.sendMessage(confusResponses[choice]);
                                 }
                             }
                             else{
@@ -359,8 +359,8 @@ exports.commands = {
                         if(firstOption == "help"){
                             var helpString = "Here's how you can configure the bot for your server:\n";
                             helpString += "`!config prefix <special character>`: Customizes the prefix to use for commands in your server. Cannot be a number or a letter.\n";
-                            helpString += "`!config logging <enable/channel> [channel link]`: Enables logging (deleted/edited messages) or sets the logging channel. A logging channel must be set to enable.\n";
-                            helpString += "`!config welcome <enable/channel/message> [channel link/message]`: Enables welcome messages for new users, sets the channel to say welcomes in, or sets the welcome message.\n";
+                            helpString += "`!config logging <(enable|disable)/channel> [channel link]`: Enables logging (deleted/edited messages) or sets the logging channel. A logging channel must be set to enable.\n";
+                            helpString += "`!config welcome <(enable|disable)/channel/message> [channel link/message]`: Enables welcome messages for new users, sets the channel to say welcomes in, or sets the welcome message.\n";
                             msg.channel.sendMessage(helpString);
                         }
                         else if(firstOption == "prefix"){
@@ -420,6 +420,13 @@ exports.commands = {
                             }
                             else{
                             	msg.channel.sendMessage(confusResponses[choice]);
+                            }
+                        }
+                        else if(firstOption == "welcome"){
+                            otherOptions = params.substring(params.indexOf(" ") + 1).trim();
+                            otherOptions = otherOptions.split(" ");
+                            if(otherOptions[0] == "enable"){
+                                return;
                             }
                         }
                         else{
@@ -720,11 +727,11 @@ exports.commands = {
                             return;
                         }
 
-                        var infoString = user.nickname != null ? "```css\n" + msg.member.nickname : "```css\n" + msg.author.username;
+                        var infoString = user.nickname != null ? "```css\n" + user.nickname : "```css\n" + user.user.username;
                         infoString += "'s Profile:\n";
-                        for(category in userInfo[msg.author.id]){
-                            if(userInfo[msg.author.id][category].value != ""){
-                                infoString += userInfo[msg.author.id][category].alias + userInfo[msg.author.id][category].value + "\n";
+                        for(category in userInfo[user.id]){
+                            if(userInfo[user.id][category].value != ""){
+                                infoString += userInfo[user.id][category].alias + userInfo[user.id][category].value + "\n";
                             }
                         }
 
@@ -849,6 +856,11 @@ exports.commands = {
                         }
                     }
                     if(flag){
+                        var youTubeRegex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
+                        if(youTubeRegex.exec(params) == null){
+                            msg.channel.sendMessage("I cannot parse that as a YouTube link, sorry. Try with a different one.");
+                            return;
+                        }
                     	msg.channel.sendMessage("Playing that for you in just a sec...");
                     	stream = ytdl(params, {filter : 'audioonly'});
                     	connection.playStream(stream, { seek: 0, volume: 0.75});

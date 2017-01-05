@@ -4,10 +4,10 @@
   "description": "Simple bot for Discord",
   "readme": "README.md",
   "maintainers": [],
-  "author": "MarioGraceZ22",
+  "author": "Woofie-Woof",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MarioGraceZ22/Yoshi-Bot.git"
+    "url": "git+https://github.com/Woofie-Woof/Yoshi-Bot.git"
   },
   "license": "GNU",
   "dependencies": {
