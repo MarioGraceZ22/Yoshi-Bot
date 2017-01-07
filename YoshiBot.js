@@ -41,6 +41,13 @@ var serverParams = {
     welcome_enabled: false
 };
 
+function clean(text) {
+  if (typeof(text) === "string")
+    return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
+  else
+      return text;
+}
+
 var bot = new Discord.Client({autoReconnect: true, disableEvents: ["TYPING_START", "TYPING_STOP", "GUILD_MEMBER_SPEAKING", "GUILD_MEMBER_AVAILABLE", "PRESSENCE_UPDATE"]});
 
 bot.login(auth.token);
@@ -178,6 +185,27 @@ bot.on("message", function (msg) {
                         msg.channel.sendMessage(info);
                     });
                 }
+            }
+            else if(msgcmd == "eval"){
+                if(msg.author.id == "110932722322505728"){
+                    console.log("Evaluating code...");
+                    try {
+                        var evaled = eval(params);
+
+                        if(typeof evaled !== "string"){
+                            evaled = require("util").inspect(evaled);
+                        }
+
+                        msg.channel.sendCode("xl", clean(evaled));   
+                    } 
+                    catch(err) {
+                        msg.channel.sendMessage("`ERROR` ```xl\n${clean(err)}\n```");
+                    }
+
+                    return;
+                }
+
+                msg.channel.sendMessage("Getting cheeky, aren't we? Nice try, but you ain't \"evaluating\" anything unless you're my boy Ian. ;)");
             }
             else if(cmd) {
                 console.log("treating " + msg.content + " from " + msg.author + " as command");
