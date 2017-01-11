@@ -74,6 +74,8 @@ try {
     var cleverbot = require("cleverbot.io");
     var CleverBot = new cleverbot('qnZi4MTKo6zwwFkh','fM2qdIkZeGiC66ADn9ylCz9nZopCAfuN');
     CleverBot.setNick("Yoshi-Bot");
+    CleverBot.create(function (err, session) {
+    });
 }
 catch(e) {
     console.log("Oh, I see. You don't want to talk to me... you don't even have 'cleverbot.io'");
@@ -488,7 +490,25 @@ exports.commands = {
                 usage: "lel",
                 description: "This is a testing space. It will change periodically as I need to test new things.",
                 process: function(bot, msg, params, choice){
-                    msg.channel.sendMessage("Currently, I do not have a function for this command.");
+                    var data = {
+                        author: msg.author.username,
+                        color: 2,
+                        description: "This is a test embed.",
+                        fields: [{fuck: "Why?"}],
+                        title: "Embed?",
+                        url: "fuck.com",
+                        timestamp: new Date(Date.now()),
+                    }
+                    try{
+                        embed = new Discord.RichEmbed(data);
+                    }
+                    catch(e){
+                        console.log(e);
+                    }
+                    msg.channel.sendEmbed(embed).then(message => {
+                        console.log('Message was sent successfully.');
+                    }).catch(console.log);
+                    //msg.channel.sendMessage("Currently, I do not have a function for this command.");
                 }
             }
         }
@@ -843,10 +863,8 @@ exports.commands = {
                 usage: "<text> (Ex. !chat Hello, how are you?)",
                 description: "Allows you to chat with Yoshi-Bot! Aren't you itching to talk to someone? Here's your chance.",
                 process: function(bot, msg, params, choice){
-                    CleverBot.create(function (err, session) {
-                     CleverBot.ask(params, function (err, response) {
-                          msg.channel.sendMessage(msg.author + ": " + response);
-                        });
+                    CleverBot.ask(params, function (err, response) {
+                        msg.channel.sendMessage(msg.author + ": " + response);
                     });
                 }
             }

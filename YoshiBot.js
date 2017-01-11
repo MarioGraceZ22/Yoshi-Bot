@@ -63,6 +63,13 @@ bot.on("ready", function () {
 
 bot.on("guildMemberAdd", (guild, member) => {
 	let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
+    if(!serversInfo[msg.guild.id]){
+        serversInfo[msg.guild.id] = serverParams;
+        fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+          if (err) throw err;
+          console.log('It\'s saved!');
+        });
+    }
 	if(serversInfo[guild.id].welcome_enabled){
 		if(guild.channels.find('id', serversInfo[guild.id].welcome_channel) == null || serversInfo[guild.id].welcome_message == null){
 			serversInfo[guild.id].welcome_enabled = false;
