@@ -78,7 +78,6 @@ try {
 catch(e) {
     console.log("Oh, I see. You don't want to talk to me... you don't even have 'cleverbot.io'");
 }
-var qs = require("querystring");
 
 let userInfo = JSON.parse(fs.readFileSync('./data/info.json', 'utf8'));
 
@@ -143,6 +142,10 @@ var infoCategories = {
     steam: {alias: "*Steam: ", value: ""},
     nnid: {alias: "*NNID: ", value: ""},
     note: {alias: "*Note: ", value: ""}
+}
+
+var songQueue = {
+	
 }
 
 
@@ -663,13 +666,7 @@ exports.commands = {
                 usage: "!servers",
                 description: "List of servers I am in.",
                 process: function(bot, msg, params, choice){
-                	var guilds = bot.guilds.array();
-                	var serversString = "";
-                	for (var i = 0; i < guilds.length - 1; i++) {
-                		serversString += "**" + guilds[i] + "**, ";
-                	}
-                	serversString += "and **" + guilds[guilds.length - 1] + "**.";
-                    msg.channel.sendMessage("I am currently serving in " + serversString);
+                    msg.channel.sendMessage("**I am currently serving in:** \n```\n" + bot.guilds.map(g=>g.name).join("\n") + "\n```");
                 }
             },
 
@@ -906,9 +903,14 @@ exports.commands = {
                             msg.channel.sendMessage("I cannot parse that as a YouTube link, sorry. Try with a different one.");
                             return;
                         }
-                    	msg.channel.sendMessage("Playing that for you in just a sec...");
-                    	stream = ytdl(params, {filter : 'audioonly'});
-                    	connection.playStream(stream, { seek: 0, volume: 0.75});
+                        try{
+                        	msg.channel.sendMessage("Playing that for you in just a sec...");
+	                    	stream = ytdl(params, {filter : 'audioonly'});
+	                    	connection.playStream(stream, { seek: 0, volume: 0.75});
+                        }
+                        catch(err){
+                        	msg.channel.sendMessage("Error: ```" + err + "```");
+                        }
                     }
                     else{
                     	msg.channel.sendMessage("I'm not in a voice channel in this server. Join one and use !voice before you can use !play.")
@@ -926,6 +928,40 @@ exports.commands = {
                             msg.channel.sendMessage("I'm already in the voice channel. Give me something to play.");
                         }*/
                 }
+            },
+
+            "volume": {
+            	usage: "<decimal between 0.25 to 1.0> (Ex. !volume 0.75)",
+            	description: "If the bot is currently playing something, it will change its volume.",
+            	process: function(bot, msg, params, choice){
+            		var voiceConnections = bot.voiceConnections.array();
+            		params = parseFloat(params);
+            		console.log(params);
+            		if(params == NaN){
+            			msg.channel.sendMessage("That's not a number, silly.");
+            		}
+            		for(connection = 0; connection < voiceConnections.length; connection++){
+                        if(msg.guild.id == voiceConnections[connection].channel.guild.id){
+                            flag = true;
+                            serverConnection = voiceConnections[connection];
+                        }
+                    }
+
+                    if(flag){
+                    	flag = serverConnection.player.dispatcher ? true : false;
+                    	if(flag){
+                    		if(params <= 1.0 && params >= 0.25){
+                    			serverConnection.player.dispatcher.setVolume(params);
+                    			msg.channel.sendMessage("Volume was set to: **" + params + "**");
+                    			return;
+                    		}
+                    		msg.channel.sendMessage("Make sure the volume value you're sending is between 0.25 and 1.0");
+                    		return;
+                    	}
+                    }
+
+                    msg.channel.sendMessage("I don't think anything is playing right now. I can't really change the volume of nothingness.");
+            	}
             },
 
             "yt": {

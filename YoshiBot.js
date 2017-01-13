@@ -100,7 +100,7 @@ bot.on("messageUpdate", (oldMessage, newMessage) =>{
 	let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
     var d = new Date(Date.now());
     if(oldMessage.author.id !== bot.user.id){
-        if(oldMessage && newMessage){
+        if((oldMessage && newMessage) && (oldMessage.content != newMessage.content)){
         	if(serversInfo[newMessage.guild.id].logging_enabled){
         		if(newMessage.guild.channels.find('id', serversInfo[newMessage.guild.id].log_channel) == null){
 					serversInfo[newMessage.guild.id].logging_enabled = false;
@@ -199,7 +199,7 @@ bot.on("message", function (msg) {
                         msg.channel.sendCode("xl", clean(evaled));   
                     } 
                     catch(err) {
-                        msg.channel.sendMessage("`ERROR` ```xl\n${clean(err)}\n```");
+                        msg.channel.sendMessage("`ERROR` ```xl\n" + clean(err) + "\n```");
                     }
 
                     return;
