@@ -63,13 +63,28 @@ bot.on("ready", function () {
 
 bot.on("guildMemberAdd", (guild, member) => {
 	let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
-    if(!serversInfo[msg.guild.id]){
-        serversInfo[msg.guild.id] = serverParams;
+    if(!serversInfo[guild.id]){
+        serversInfo[guild.id] = serverParams;
         fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
           if (err) throw err;
           console.log('It\'s saved!');
         });
     }
+
+    if(serversInfo[message.guild.id].logging_enabled){
+        if(message.guild.channels.find('id', serversInfo[message.guild.id].log_channel) == null){
+            serversInfo[message.guild.id].logging_enabled = false;
+            serversInfo[message.guild.id].log_channel = null;
+            fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+              if (err) throw err;
+              console.log('It\'s saved!');
+            });
+            return;
+        }
+        var t = new Date(Date.now());
+        bot.channels.get(serversInfo[message.guild.id].log_channel).sendMessage("```" + t + "```" + "**" + member.username + "#" + member.discriminator + "** just joined the server!");
+    }
+
 	if(serversInfo[guild.id].welcome_enabled){
 		if(guild.channels.find('id', serversInfo[guild.id].welcome_channel) == null || serversInfo[guild.id].welcome_message == null){
 			serversInfo[guild.id].welcome_enabled = false;

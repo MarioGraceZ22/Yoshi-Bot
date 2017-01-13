@@ -137,14 +137,16 @@ var estoBanList = [
 ]
 
 var infoCategories = {
-    games: {alias: "*Games: ", value: ""},
-    fursona: {alias: "*Fursona: ", value: ""},
-    furaffinity: {alias: "*FurAffinity: ", value: ""},
-    twitter: {alias: "*Twitter: ", value: ""},
-    youtube: {alias: "*YouTube: ", value: ""},
-    steam: {alias: "*Steam: ", value: ""},
-    nnid: {alias: "*NNID: ", value: ""},
-    note: {alias: "*Note: ", value: ""}
+    games: {alias: "Games", value: ""},
+    fursona: {alias: "Fursona", value: ""},
+    furaffinity: {alias: "FurAffinity", value: ""},
+    twitter: {alias: "Twitter", value: ""},
+    youtube: {alias: "YouTube", value: ""},
+    steam: {alias: "Steam", value: ""},
+    nnid: {alias: "NNID", value: ""},
+    note: {alias: "Note", value: ""},
+    image: {alias: "Image", value: ""},
+    updatedAt: ""
 }
 
 
@@ -490,24 +492,26 @@ exports.commands = {
                 usage: "lel",
                 description: "This is a testing space. It will change periodically as I need to test new things.",
                 process: function(bot, msg, params, choice){
-                    var data = {
-                        author: msg.author.username,
-                        color: 2,
-                        description: "This is a test embed.",
-                        fields: [{fuck: "Why?"}],
-                        title: "Embed?",
-                        url: "fuck.com",
-                        timestamp: new Date(Date.now()),
-                    }
+                        
+                    embed = new Discord.RichEmbed();
+
                     try{
-                        embed = new Discord.RichEmbed(data);
+                        embed.addField('hello', 'this is a field', true);
+                        embed.addField('hah', 'No, pls', true);
+                        embed.addField('who am i', 'im spiderman', true);
+                        embed.addField('mem', 'heh', true);
+                        embed.addField('test', 'is real', true);
+                        embed.addField('nope', 'yep', true);
+                        embed.setColor(16181338);
+                        embed.setThumbnail("https://cdn.discordapp.com/attachments/244219042603204609/264755369304260609/LugiaHoHoDuel.png");
+                        embed.setAuthor(msg.author.username + "'s Information", msg.author.avatarURL);
+                        embed.setTimestamp();
+                        msg.channel.sendEmbed(embed);
                     }
-                    catch(e){
-                        console.log(e);
+                    catch(err){
+                        console.log(err);
                     }
-                    msg.channel.sendEmbed(embed).then(message => {
-                        console.log('Message was sent successfully.');
-                    }).catch(console.log);
+
                     //msg.channel.sendMessage("Currently, I do not have a function for this command.");
                 }
             }
@@ -756,14 +760,14 @@ exports.commands = {
                 usage: "[Optional] <user tag or `add`> (Ex. '!info @Ian#4208' or '!info')",
                 description: "Will give information about the requested user or the author of the message, if a profile is set up. Otherwise, set up a profile.",
                 process: function(bot, msg, params, choice){
-                	if(!userInfo[msg.author.id]){
-                        msg.channel.sendMessage("It appears to me that you don't have a profile set up yet! Get started with `!info help` c:");
-                        return
-                    }
-
                     var options = params.split(" ");
                     var regMention = /^<[@\w]+>$/;
                     if(params == ""){
+                        if(!userInfo[msg.author.id]){
+                            msg.channel.sendMessage("It appears to me that you don't have a profile set up yet! Get started with `!info help` c:");
+                            return
+                        }
+                        /*
                         var infoString = msg.member.nickname != null ? "```css\n" + msg.member.nickname : "```css\n" + msg.author.username;
                         infoString += "'s Profile:\n";
                         for(category in userInfo[msg.author.id]){
@@ -775,12 +779,34 @@ exports.commands = {
                         infoString += "```";
 
                         msg.channel.sendMessage(infoString);
+                        */
+
+                        var infoEmbed = new Discord.RichEmbed();
+
+                        var toAuthor = msg.member.nickname != null ? msg.member.nickname : msg.author.username;
+
+                        infoEmbed.setAuthor(toAuthor + "'s Profile", msg.author.avatarURL);
+                        infoEmbed.setColor(16181338);
+                        infoEmbed.setTimestamp(userInfo[msg.author.id]["updatedAt"]);
+                        if(userInfo[msg.author.id]["image"].value != ""){
+                            infoEmbed.setThumbnail(userInfo[msg.author.id]["image"].value);
+                        }
+                        
+                        for(category in userInfo[msg.author.id]){
+                            if(userInfo[msg.author.id][category].value != "" && category != "image" && category != "updatedAt"){
+                                infoEmbed.addField(userInfo[msg.author.id][category].alias, userInfo[msg.author.id][category].value, true);
+                            }
+                        }
+
+                        msg.channel.sendEmbed(infoEmbed);
                         return;
                     }
                     else if(options[0] == "help"){
                         help = "To use this command, you can do one of the following:\n`!info add <category>` will allow you to add to a certain category.\n**Available categories:** `"
                         for(category in infoCategories){
-                           help += category + ", ";
+                            if(category != "updatedAt"){
+                                help += category + ", ";
+                            }
                         }
                         help = help.substring(0, help.length - 2) + "`";
                         msg.channel.sendMessage(help);
@@ -792,7 +818,26 @@ exports.commands = {
                             return;
                         }
 
-                        var infoString = user.nickname != null ? "```css\n" + user.nickname : "```css\n" + user.user.username;
+                        var infoEmbed = new Discord.RichEmbed();
+
+                        var toAuthor = user.nickname != null ? user.nickname : user.user.username;
+
+                        infoEmbed.setAuthor(toAuthor + "'s Profile", user.user.avatarURL);
+                        infoEmbed.setColor(16181338);
+                        infoEmbed.setTimestamp(userInfo[user.id]["updatedAt"]);
+                        if(userInfo[user.id]["image"].value != ""){
+                            infoEmbed.setThumbnail(userInfo[user.id]["image"].value);
+                        }
+
+                        for(category in userInfo[user.id]){
+                            if(userInfo[user.id][category].value != "" && category != "image" && category != "updatedAt"){
+                                infoEmbed.addField(userInfo[user.id][category].alias, userInfo[user.id][category].value, true);
+                            }
+                        }
+
+                        msg.channel.sendEmbed(infoEmbed);
+                        return;
+                        /*var infoString = user.nickname != null ? "```css\n" + user.nickname : "```css\n" + user.user.username;
                         infoString += "'s Profile:\n";
                         for(category in userInfo[user.id]){
                             if(userInfo[user.id][category].value != ""){
@@ -802,7 +847,7 @@ exports.commands = {
 
                         infoString += "```";
 
-                        msg.channel.sendMessage(infoString);
+                        msg.channel.sendMessage(infoString);*/
                     }
                     else if(options[0] == "add"){
                         category = options[1].toLowerCase();
@@ -829,6 +874,7 @@ exports.commands = {
                         }
 
                         userInfo[msg.author.id][category].value = elementsString;
+                        userInfo[msg.author.id]["updatedAt"] = new Date(Date.now());
                         fs.writeFile('./data/info.json', JSON.stringify(userInfo), (err) => {
                           if (err) throw err;
                           console.log('It\'s saved!');
