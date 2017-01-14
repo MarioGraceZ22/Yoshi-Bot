@@ -809,7 +809,7 @@ exports.commands = {
                         msg.channel.sendMessage(help);
                     }
                     else if(regMention.exec(options[0]) != null){
-                        user = msg.guild.members.find('id', options[0].replace(/[^\w\s]/gi, ''));
+                        user = msg.guild.members.get(options[0].replace(/[^\w\s]/gi, ''));
                         if(!userInfo[user.id]){
                             msg.channel.sendMessage("It appears to me that this user does not have a profile set up yet.");
                             return;
