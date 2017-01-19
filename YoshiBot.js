@@ -71,10 +71,10 @@ bot.on("guildMemberAdd", (guild, member) => {
         });
     }
 
-    if(serversInfo[message.guild.id].logging_enabled){
-        if(message.guild.channels.find('id', serversInfo[message.guild.id].log_channel) == null){
-            serversInfo[message.guild.id].logging_enabled = false;
-            serversInfo[message.guild.id].log_channel = null;
+    if(serversInfo[guild.id].logging_enabled){
+        if(message.guild.channels.find('id', serversInfo[guild.id].log_channel) == null){
+            serversInfo[guild.id].logging_enabled = false;
+            serversInfo[guild.id].log_channel = null;
             fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
               if (err) throw err;
               console.log('It\'s saved!');

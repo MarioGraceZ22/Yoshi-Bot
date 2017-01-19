@@ -764,19 +764,6 @@ exports.commands = {
                             msg.channel.sendMessage("It appears to me that you don't have a profile set up yet! Get started with `!info help` c:");
                             return
                         }
-                        /*
-                        var infoString = msg.member.nickname != null ? "```css\n" + msg.member.nickname : "```css\n" + msg.author.username;
-                        infoString += "'s Profile:\n";
-                        for(category in userInfo[msg.author.id]){
-                            if(userInfo[msg.author.id][category].value != ""){
-                                infoString += userInfo[msg.author.id][category].alias + userInfo[msg.author.id][category].value + "\n";
-                            }
-                        }
-
-                        infoString += "```";
-
-                        msg.channel.sendMessage(infoString);
-                        */
 
                         var infoEmbed = new Discord.RichEmbed();
 
@@ -866,6 +853,11 @@ exports.commands = {
 
                         elementsString = elementsString.substring(0, elementsString.length - 2);
 
+                        if(elementsString == ""){
+                        	msg.channel.sendMessage("You gave me no information here. Adding an empty field won't do much, don't you think?");
+                        	return;
+                        }
+
                         if(!userInfo[msg.author.id]){
                             userInfo[msg.author.id] = infoCategories;
                         }
@@ -877,6 +869,9 @@ exports.commands = {
                           console.log('It\'s saved!');
                         });
                         msg.channel.sendMessage("The category `" + category + "` has been updated successfully.");
+                    }
+                    else{
+                    	msg.channel.sendMessage(confusResponses[choice]);
                     }
                 }
             },
