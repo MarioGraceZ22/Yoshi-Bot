@@ -72,7 +72,7 @@ bot.on("guildMemberAdd", (guild, member) => {
     }
 
     if(serversInfo[guild.id].logging_enabled){
-        if(message.guild.channels.find('id', serversInfo[guild.id].log_channel) == null){
+        if(message.guild.channels.get(serversInfo[guild.id].log_channel) == null){
             serversInfo[guild.id].logging_enabled = false;
             serversInfo[guild.id].log_channel = null;
             fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
@@ -86,7 +86,7 @@ bot.on("guildMemberAdd", (guild, member) => {
     }
 
 	if(serversInfo[guild.id].welcome_enabled){
-		if(guild.channels.find('id', serversInfo[guild.id].welcome_channel) == null || serversInfo[guild.id].welcome_message == null){
+		if(guild.channels.get(serversInfo[guild.id].welcome_channel) == null || serversInfo[guild.id].welcome_message == null){
 			serversInfo[guild.id].welcome_enabled = false;
 			serversInfo[guild.id].welcome_channel = null;
 			fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
@@ -101,9 +101,9 @@ bot.on("guildMemberAdd", (guild, member) => {
 
 bot.on("messageDelete", (message) => {
 	let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
-	if(message){
+	if(message && message.channel.type != "dm"){
 		if(serversInfo[message.guild.id].logging_enabled){
-			if(message.guild.channels.find('id', serversInfo[message.guild.id].log_channel) == null){
+			if(message.guild.channels.get(serversInfo[message.guild.id].log_channel) == null){
 				serversInfo[message.guild.id].logging_enabled = false;
 				serversInfo[message.guild.id].log_channel = null;
 				fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
@@ -121,10 +121,10 @@ bot.on("messageDelete", (message) => {
 bot.on("messageUpdate", (oldMessage, newMessage) =>{
 	let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
     var d = new Date(Date.now());
-    if(oldMessage.author.id !== bot.user.id){
+    if(oldMessage.author.id !== bot.user.id && oldMessage.channel.type != "dm"){
         if((oldMessage && newMessage) && (oldMessage.content != newMessage.content)){
         	if(serversInfo[newMessage.guild.id].logging_enabled){
-        		if(newMessage.guild.channels.find('id', serversInfo[newMessage.guild.id].log_channel) == null){
+        		if(newMessage.guild.channels.get(serversInfo[newMessage.guild.id].log_channel) == null){
 					serversInfo[newMessage.guild.id].logging_enabled = false;
 					serversInfo[newMessage.guild.id].log_channel = null;
 					fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
@@ -141,7 +141,7 @@ bot.on("messageUpdate", (oldMessage, newMessage) =>{
 
 bot.on("message", function (msg) {
     let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
-    if(!serversInfo[msg.guild.id]){
+    if(msg.channel.type != "dm" && !serversInfo[msg.guild.id]){
         serversInfo[msg.guild.id] = serverParams;
         fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
           if (err) throw err;
@@ -149,56 +149,31 @@ bot.on("message", function (msg) {
         });
     }
     //check if message is a command
-    if (msg.author.id != bot.user.id && (msg.content[0] === serversInfo[msg.guild.id].prefix)) {
-        if (msg.channel.isPrivate === false && msg.channel.server.id === "136609300700332032" && (msg.channel.id != "168188374023274496" && msg.channel.id != "137676980387577857")) {
-            msg.channel.sendMessage("Use #bots_channel, please.");
-        }
-        else {
-            var msgcmd = msg.content.split(" ")[0].substring(1);
-            var params = msg.content.substring(msgcmd.length + 2);
-            for(var module in commands){
-                for(var cmnd in commands[module].commands){
-                    if(cmnd == msgcmd){
-                        var cmd = commands[module].commands[msgcmd];
-                        break;
-                    }
+    if (msg.author.id != bot.user.id && ((msg.channel.type === "dm" && msg.content[0] === "!") || (msg.channel.type != "dm" && msg.content[0] === serversInfo[msg.guild.id].prefix))) {
+        var msgcmd = msg.content.split(" ")[0].substring(1);
+        var params = msg.content.substring(msgcmd.length + 2);
+        for(var module in commands){
+            for(var cmnd in commands[module].commands){
+                if(cmnd == msgcmd){
+                    var cmd = commands[module].commands[msgcmd];
+                    break;
                 }
             }
+        }
 
-            if(msgcmd == "help"){
-                console.log("treating " + msg.content + " from " + msg.author + " as command");
-                var info = "```";
-                if(params){
-                    if(commands[params]){
-                        msg.channel.sendMessage("These are the commands for the module **" + params + "**:").then(msg => {
-                            for(var command in commands[params].commands){
-                                info += "!" + command;
-                                var usage = commands[params].commands[command].usage;
-                                if(usage){
-                                    info += " " + usage;
-                                }
-                                var description = commands[params].commands[command].description;
-                                if(description){
-                                    info += "\n\t" + description + "\n\n";
-                                }
+        if(msgcmd == "help"){
+            console.log("treating " + msg.content + " from " + msg.author + " as command");
+            var info = "```";
+            if(params){
+                if(commands[params]){
+                    msg.channel.sendMessage("These are the commands for the module **" + params + "**:").then(msg => {
+                        for(var command in commands[params].commands){
+                            info += "!" + command;
+                            var usage = commands[params].commands[command].usage;
+                            if(usage){
+                                info += " " + usage;
                             }
-                            info += "```";
-                            msg.channel.sendMessage(info);
-                        });
-                    }
-                    else{
-                         msg.channel.sendMessage("I don't believe that's a module, bud.");
-                    }
-                }
-                else{
-                    msg.channel.sendMessage("Please tell me which module you would like to learn about:").then(msg => {
-                        for(var module in commands) {
-                            info += module;
-                            var help = commands[module].help;
-                            if(help){
-                                info += " - " + help;
-                            }
-                            var description = commands[module].description;
+                            var description = commands[params].commands[command].description;
                             if(description){
                                 info += "\n\t" + description + "\n\n";
                             }
@@ -207,36 +182,56 @@ bot.on("message", function (msg) {
                         msg.channel.sendMessage(info);
                     });
                 }
+                else{
+                     msg.channel.sendMessage("I don't believe that's a module, bud.");
+                }
             }
-            else if(msgcmd == "eval"){
-                if(msg.author.id == "110932722322505728"){
-                    console.log("Evaluating code...");
-                    try {
-                        var evaled = eval(params);
-
-                        if(typeof evaled !== "string"){
-                            evaled = require("util").inspect(evaled);
+            else{
+                msg.channel.sendMessage("Please tell me which module you would like to learn about:").then(msg => {
+                    for(var module in commands) {
+                        info += module;
+                        var help = commands[module].help;
+                        if(help){
+                            info += " - " + help;
                         }
+                        var description = commands[module].description;
+                        if(description){
+                            info += "\n\t" + description + "\n\n";
+                        }
+                    }
+                    info += "```";
+                    msg.channel.sendMessage(info);
+                });
+            }
+        }
+        else if(msgcmd == "eval"){
+            if(msg.author.id == "110932722322505728"){
+                console.log("Evaluating code...");
+                try {
+                    var evaled = eval(params);
 
-                        msg.channel.sendCode("xl", clean(evaled));   
-                    } 
-                    catch(err) {
-                        msg.channel.sendMessage("`ERROR` ```xl\n" + clean(err) + "\n```");
+                    if(typeof evaled !== "string"){
+                        evaled = require("util").inspect(evaled);
                     }
 
-                    return;
+                    msg.channel.sendCode("xl", clean(evaled));   
+                } 
+                catch(err) {
+                    msg.channel.sendMessage("`ERROR` ```xl\n" + clean(err) + "\n```");
                 }
 
-                msg.channel.sendMessage("Getting cheeky, aren't we? Nice try, but you ain't \"evaluating\" anything unless you're my boy Ian. ;)");
-            }
-            else if(cmd) {
-                console.log("treating " + msg.content + " from " + msg.author + " as command");
-                var choice = Math.floor((Math.random() * 9));
-                cmd.process(bot, msg, params, choice);
-            }
-            else {
                 return;
             }
+
+            msg.channel.sendMessage("Getting cheeky, aren't we? Nice try, but you ain't \"evaluating\" anything unless you're my boy Ian. ;)");
+        }
+        else if(cmd) {
+            console.log("treating " + msg.content + " from " + msg.author + " as command");
+            var choice = Math.floor((Math.random() * 9));
+            cmd.process(bot, msg, params, choice);
+        }
+        else {
+            return;
         }
     }
     else if (msg.content.indexOf("<@182989844136329217>") != -1 && msg.content[0] != '!') { //Customized language responses.

@@ -359,6 +359,10 @@ exports.commands = {
                 usage: "<setting to configure> <parameter> (Ex. !config prefix ^)",
                 description: "Allows you to configure different settings about the bot for your server, such as a prefix for commands, logging, and welcome messages.",
                 process: function(bot, msg, params, choice){
+                	if(msg.channel.type == "dm"){
+                		msg.channel.sendMessage("You cannot change the settings for these Direct Messages (for now).");
+                		return;
+                	}
                 	let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
                     if(msg.member.roles.find('name', ">> Bot Privs <<")){
                         params += " ";
@@ -700,22 +704,39 @@ exports.commands = {
                 process: function(bot, msg, params, choice){
                     if (params) {
                         if (bot.users.find("username", params) != null) {
-                            msg.channel.sendMessage("https://discordapp.com/api/users/" + bot.users.find("username", params).id + "/avatars/" + bot.users.find("username", params).avatar + ".jpg");
+                            msg.channel.sendMessage(bot.users.find("username", params).avatarURL);
                         }
                         else {
                             var regst = /^[^\s]+/;
                             var regend = /[^\s]+$/;
                             var match = true;
                             var users = bot.users.array();
+                            var members = msg.guild.members.array();
                             for (var i = 0; i < users.length ; i++) {
                                 if (regst.exec(users[i].username)[0] === params) {
                                     match = true;
-                                    msg.channel.sendMessage("https://discordapp.com/api/users/" + users[i].id + "/avatars/" + users[i].avatar + ".jpg");
+                                    msg.channel.sendMessage(users[i].avatarURL);
                                     return;
                                 }
                                 else if (regend.exec(users[i].username)[0] === params) {
                                     match = true;
-                                    msg.channel.sendMessage("https://discordapp.com/api/users/" + users[i].id + "/avatars/" + users[i].avatar + ".jpg");
+                                    msg.channel.sendMessage(users[i].avatarURL);
+                                    return;
+                                }
+                                else {
+                                    match = false;
+                                }
+                            }
+
+                            for (var i = members.length - 1; i >= 0; i--) {
+                            	if (members[i].nickname != null && regst.exec(members[i].nickname)[0] === params) {
+                                    match = true;
+                                    msg.channel.sendMessage(members[i].user.avatarURL);
+                                    return;
+                                }
+                                else if (members[i].nickname != null && regend.exec(members[i].nickname)[0] === params) {
+                                    match = true;
+                                    msg.channel.sendMessage(members[i].user.avatarURL);
                                     return;
                                 }
                                 else {
@@ -869,6 +890,9 @@ exports.commands = {
                           console.log('It\'s saved!');
                         });
                         msg.channel.sendMessage("The category `" + category + "` has been updated successfully.");
+                    }
+                    else if(options[0] == "remove"){
+                    	return;
                     }
                     else{
                     	msg.channel.sendMessage(confusResponses[choice]);
