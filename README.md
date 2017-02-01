@@ -1,5 +1,15 @@
 # Yoshi-Bot
+![Yoshi](http://i.imgur.com/0P9zo7t.jpg)
+
 A bot for the Discord app based on [Discord.js](https://github.com/hydrabolt/discord.js/).
+
+###Want Yoshi-Bot on your server?
+
+Use this [invite link](https://discordapp.com/oauth2/authorize?client_id=182989700393336832&scope=bot&permissions=0x10002016) to get him to join!
+
+###Have a question for me, the creator?
+
+Find Discord user **Woofie Woof | Ian#9944**.
 
 #Features
 The bot's commands are divided in different "modules", each serving a different purpose. These are outlined below:
