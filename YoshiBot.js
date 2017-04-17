@@ -58,7 +58,7 @@ bot.on("ready", function () {
 
     games = ["with " + users.length + " users!", "with over 500 lines of code!", "with eggs and ham!", "with Ian's sanity!", "in Yoshi's Island!", "Dunkin' Nose Simulator", "Super Smash Brothers"]
     randGame = Math.floor(Math.random() * games.length);
-    bot.user.setStatus('online', games[randGame]);
+    bot.user.setGame(games[randGame]);
 });
 
 bot.on("guildMemberAdd", (guild, member) => {

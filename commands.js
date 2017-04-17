@@ -281,7 +281,7 @@ exports.commands = {
                             roleString += options[i] + " ";
                         }
 
-                        var user = msg.guild.members.find('id', options[1].replace(/[^\w\s]/gi, ''));
+                        var user = msg.guild.members.get(options[1].replace(/[^\w\s]/gi, ''));
                         var role = msg.guild.roles.find('name', roleString.trim());
                         if(user != null){
                             if(role !== null){
@@ -499,27 +499,7 @@ exports.commands = {
                 usage: "lel",
                 description: "This is a testing space. It will change periodically as I need to test new things.",
                 process: function(bot, msg, params, choice){
-                        
-                    embed = new Discord.RichEmbed();
-
-                    try{
-                        embed.addField('hello', 'this is a field', true);
-                        embed.addField('hah', 'No, pls', true);
-                        embed.addField('who am i', 'im spiderman', true);
-                        embed.addField('mem', 'heh', true);
-                        embed.addField('test', 'is real', true);
-                        embed.addField('nope', 'yep', true);
-                        embed.setColor(16181338);
-                        embed.setThumbnail("https://cdn.discordapp.com/attachments/244219042603204609/264755369304260609/LugiaHoHoDuel.png");
-                        embed.setAuthor(msg.author.username + "'s Information", msg.author.avatarURL);
-                        embed.setTimestamp();
-                        msg.channel.sendEmbed(embed);
-                    }
-                    catch(err){
-                        console.log(err);
-                    }
-
-                    //msg.channel.sendMessage("Currently, I do not have a function for this command.");
+                    msg.channel.sendMessage("Currently, I do not have a function for this command.");
                 }
             }
         }
@@ -770,7 +750,7 @@ exports.commands = {
                 usage: "!kms",
                 description: "You asked for death.",
                 process: function(bot, msg, params, choice){
-                    msg.channel.sendTTSMessage("You're dead, kiddo. ᕕ[•̀͜ʖ•́]︻̷┻̿═━一 ---");
+                    msg.channel.sendMessage("You're dead, kiddo. ᕕ[•̀͜ʖ•́]︻̷┻̿═━一 ---", {tts: true});
                 }
             },
 
