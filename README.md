@@ -3,20 +3,20 @@
 
 A bot for the Discord app based on [Discord.js](https://github.com/hydrabolt/discord.js/).
 
-###Want Yoshi-Bot on your server?
+### Want Yoshi-Bot on your server?
 
 Use this [invite link](https://discordapp.com/oauth2/authorize?client_id=182989700393336832&scope=bot&permissions=0x10002016) to get him to join!
 
-###Have a question for me, the creator?
+### Have a question for me, the creator?
 
 Find Discord user **Woofie Woof | Ian#9944**.
 
-#Features
+# Features
 The bot's commands are divided in different "modules", each serving a different purpose. These are outlined below:
 
 **!help** - Will show a list of available modules, if followed by a module name, will show a list of available commands in that module.
 
-##Mod - All commands useful for moderation and debugging of the bot.
+## Mod - All commands useful for moderation and debugging of the bot.
 
 **!ping** - I'll respond with a "pong." Useful for checking if I'm alive.
 
@@ -38,7 +38,7 @@ The bot's commands are divided in different "modules", each serving a different 
 
 **!test** - This is a testing space. It will change periodically as I need to test new things.
 
-##Images - All commands pertaining to image-hosting sites and image boards.
+## Images - All commands pertaining to image-hosting sites and image boards.
 
 **!e621** - It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given.
 
@@ -50,7 +50,7 @@ The bot's commands are divided in different "modules", each serving a different 
 
 **!meow** - Returns a random meow image.
 
-##Fun - All miscellaneous, recreational commands.
+## Fun - All miscellaneous, recreational commands.
 
 **!servers** - List of servers I am in.
 
@@ -66,7 +66,7 @@ The bot's commands are divided in different "modules", each serving a different 
 
 **!chat** - Allows you to chat with Yoshi-Bot! Aren't you itching to talk to someone? Here's your chance.
 
-##Media - All commands pertaining to music streaming and videos.
+## Media - All commands pertaining to music streaming and videos.
 
 **!voice** - Joins the voice channel the author of the command is in.
 
