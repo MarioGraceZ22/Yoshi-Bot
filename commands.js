@@ -318,7 +318,7 @@ exports.commands = {
                 description: "Kicks the specified user from the server.",
                 process: function(bot, msg, params, choice){
                     if (msg.member.hasPermission("KICK_MEMBERS")){
-                        var user = msg.guild.members.find('id', params.replace(/[^\w\s]/gi, ''));
+                        var user = msg.guild.members.get(params.replace(/[^\w\s]/gi, ''));
                         if(user != null){
                             user.kick().then(member => {
                                 msg.channel.sendMessage("User " + user + " has been kicked from the server.");
@@ -339,7 +339,7 @@ exports.commands = {
                 description: "Bans the specified user from the server.",
                 process: function(bot, msg, params, choice){
                     if (msg.member.hasPermission("BAN_MEMBERS")){
-                        var user = msg.guild.members.find('id', params.replace(/[^\w\s]/gi, ''));
+                        var user = msg.guild.members.get(params.replace(/[^\w\s]/gi, ''));
                         if(user != null){
                             user.ban(7).then(member => {
                                 msg.channel.sendMessage("User " + user + " has been banned from the server.");
