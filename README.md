@@ -9,7 +9,7 @@ Use this [invite link](https://discordapp.com/oauth2/authorize?client_id=1829897
 
 ### Have a question for me, the creator?
 
-Find Discord user **Woofie Woof | Ian#9944**.
+Find Discord user **Woofie Woof | Ian:feet:#9944**.
 
 # Features
 The bot's commands are divided in different "modules", each serving a different purpose. These are outlined below:
