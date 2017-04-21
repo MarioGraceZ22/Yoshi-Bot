@@ -631,12 +631,10 @@ exports.commands = {
                 usage: "!woof",
                 description: "Returns a random woof image.",
                 process: function(bot, msg, params, choice){
-                    request("http://random.dog/", function (error, response, body) {
+                    request("http://random.dog/woof", function (error, response, body) {
                         if (!error && response.statusCode == 200) {
                             if (typeof (body) != "undefined") {
-                                woofThing = body.substring(50);
-                                woofThing = woofThing.substring(0, woofThing.indexOf("'"));
-                                msg.channel.sendMessage("http://random.dog/" + woofThing);
+                                msg.channel.sendMessage("http://random.dog/" + body);
                             }
                             else {
                                 msg.channel.sendMessage("Things are going wrong all over.");
