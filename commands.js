@@ -162,7 +162,7 @@ exports.commands = {
                 usage: "!ping",
                 description: "I'll respond with a \"pong.\" Useful for checking if I'm alive.",
                 process: function(bot, msg, params, choice){
-                    msg.channel.sendMessage("Pong!");
+                    msg.channel.sendMessage("Pong!").then(m => m.edit(`Pong! | Took ${m.createdTimestamp - msg.createdTimestamp}ms`)) //This will show how fast the bot is responding
                 }
             },
 
