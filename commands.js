@@ -354,6 +354,23 @@ exports.commands = {
                     }
                 }
             },
+		
+	    "idban": {
+                usage: "!ban <ID to ban>",
+                description: "Bans a user by their ID",
+                process: function(bot, msg, params, choice){
+                    if(!msg.guild.member(bot.user).hasPermission("BAN_MEMBERS")){
+			    return msg.channel.send("Sorry but I do not have permission to ban members.")
+		    }
+		    if(!msg.guild.member(msg.author).hasPermission("BAN_MEMBERS")){
+			    return msg.channel.send("You do not have permission to ban members.")
+		    }
+		    let guild = msg.guild;
+		    guild.ban(`params[0]`)
+		    msg.channel.send(`Successfully banned the ID: ${params[0]}`)
+
+                }
+            },
 
             "config": {
                 usage: "<setting to configure> <parameter> (Ex. !config prefix ^)",
