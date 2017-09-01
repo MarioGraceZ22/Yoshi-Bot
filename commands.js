@@ -162,7 +162,7 @@ exports.commands = {
                 usage: "!ping",
                 description: "I'll respond with a \"pong.\" Useful for checking if I'm alive.",
                 process: function(bot, msg, params, choice){
-                    msg.channel.sendMessage("Pong!").then(m => m.edit(`Pong! | Took ${m.createdTimestamp - msg.createdTimestamp}ms`)) //This will show how fast the bot is responding
+                    msg.channel.send("Pong!").then(m => m.edit(`Pong! | Took ${m.createdTimestamp - msg.createdTimestamp}ms`)) //This will show how fast the bot is responding
                 }
             },
 
@@ -171,7 +171,7 @@ exports.commands = {
                 description: "Shuts down the bot.",
                 process: function(bot, msg, params, choice){
                     if (msg.author.id === "110932722322505728") {
-                        msg.channel.sendMessage("Goodbye, everyone!").then(message => {
+                        msg.channel.send("Goodbye, everyone!").then(message => {
                             bot.destroy();
                         });
                     }
@@ -189,10 +189,10 @@ exports.commands = {
                         if(bot.voiceConnection){
                             bot.voiceConnection.destroy();
                         }
-                        msg.channel.sendMessage("Checking for updates...");
+                        msg.channel.send("Checking for updates...");
                         simpleGit().pull(function(error, update) {
                             if(update && update.summary.changes) {
-                                msg.channel.sendMessage("Be right back!").then(message => {
+                                msg.channel.send("Be right back!").then(message => {
                                     exec('node YoshiBot.js', (error, stdout, stderr) => {
                                         if (error) {
                                             console.error(`exec error: ${error}`);
@@ -205,7 +205,7 @@ exports.commands = {
                                 }).catch(console.log);
                             }
                             else{
-                                msg.channel.sendMessage("Already up to date.");
+                                msg.channel.send("Already up to date.");
                                 console.log(error);
                             }
                         });
@@ -224,7 +224,7 @@ exports.commands = {
                         if(bot.voiceConnection){
                             bot.voiceConnection.destroy();
                         }
-                        msg.channel.sendMessage("Be right back!").then(message => {
+                        msg.channel.send("Be right back!").then(message => {
                             exec('node YoshiBot.js', (error, stdout, stderr) => {
                                 if (error) {
                                     console.error(`exec error: ${error}`);
@@ -248,15 +248,15 @@ exports.commands = {
                             if(!isNaN(params)){
                                 msg.channel.fetchMessages({before: msg.id, limit: params}).then(messages => {
                                     msg.channel.bulkDelete(messages);
-                                    msg.channel.sendMessage(params + " messages successfully deleted!");
+                                    msg.channel.send(params + " messages successfully deleted!");
                                 }).catch(console.log);
                             }
                             else{
-                                    msg.channel.sendMessage("That's not a number, silly.");
+                                    msg.channel.send("That's not a number, silly.");
                             }
                         }
                         else{
-                            msg.channel.sendMessage("I need to know how many messages to delete, buddy.");
+                            msg.channel.send("I need to know how many messages to delete, buddy.");
                         }
                     }
                     else{
@@ -272,7 +272,7 @@ exports.commands = {
                     if (msg.member.hasPermission('MANAGE_ROLES_OR_PERMISSIONS')){
                         var options = params.split(" ");
                         if(options.length < 3){
-                            msg.channel.sendMessage("The amount of parameters you gave me is incorrect. Usage: `!role <give or take> <user> <role name>`");
+                            msg.channel.send("The amount of parameters you gave me is incorrect. Usage: `!role <give or take> <user> <role name>`");
                             return;
                         }
 
@@ -287,24 +287,24 @@ exports.commands = {
                             if(role !== null){
                                 if(options[0] == "give"){
                                     user.addRole(role.id).then(member => {
-                                        msg.channel.sendMessage("User " + user + " now has the role **" + roleString.trim() + "**.");
+                                        msg.channel.send("User " + user + " now has the role **" + roleString.trim() + "**.");
                                     }).catch(console.error);
                                 }
                                 else if(options[0] == "take"){
                                     user.removeRole(role.id).then(member => {
-                                        msg.channel.sendMessage("User " + user + " no longer has the role **" + roleString.trim() + "**.");
+                                        msg.channel.send("User " + user + " no longer has the role **" + roleString.trim() + "**.");
                                     }).catch(console.error);
                                 }
                                 else{
-                                    msg.channel.sendMessage(confusResponses[choice]);
+                                    msg.channel.send(confusResponses[choice]);
                                 }
                             }
                             else{
-                                msg.channel.sendMessage("\"" + roleString.trim() + "\" might not be a role in this server.");
+                                msg.channel.send("\"" + roleString.trim() + "\" might not be a role in this server.");
                             }
                         }
                         else{
-                            msg.channel.sendMessage("Sorry, I am unable to find the user \"" + options[1] + "\".");
+                            msg.channel.send("Sorry, I am unable to find the user \"" + options[1] + "\".");
                         }
                     }
                     else{
@@ -321,11 +321,11 @@ exports.commands = {
                         var user = msg.guild.members.get(params.replace(/[^\w\s]/gi, ''));
                         if(user != null){
                             user.kick().then(member => {
-                                msg.channel.sendMessage("User " + user + " has been kicked from the server.");
+                                msg.channel.send("User " + user + " has been kicked from the server.");
                             }).catch(console.error);
                         }
                         else{
-                            msg.channel.sendMessage("Sorry, I am unable to find the user \"" + params + "\".");
+                            msg.channel.send("Sorry, I am unable to find the user \"" + params + "\".");
                         }
                     }
                     else{
@@ -342,11 +342,11 @@ exports.commands = {
                         var user = msg.guild.members.get(params.replace(/[^\w\s]/gi, ''));
                         if(user != null){
                             user.ban(7).then(member => {
-                                msg.channel.sendMessage("User " + user + " has been banned from the server.");
+                                msg.channel.send("User " + user + " has been banned from the server.");
                             }).catch(console.error);
                         }
                         else{
-                            msg.channel.sendMessage("Sorry, I am unable to find the user \"" + params + "\".");
+                            msg.channel.send("Sorry, I am unable to find the user \"" + params + "\".");
                         }
                     }
                     else{
@@ -360,7 +360,7 @@ exports.commands = {
                 description: "Allows you to configure different settings about the bot for your server, such as a prefix for commands, logging, and welcome messages.",
                 process: function(bot, msg, params, choice){
                 	if(msg.channel.type == "dm"){
-                		msg.channel.sendMessage("You cannot change the settings for these Direct Messages (for now).");
+                		msg.channel.send("You cannot change the settings for these Direct Messages (for now).");
                 		return;
                 	}
                 	let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
@@ -372,12 +372,12 @@ exports.commands = {
                             helpString += "`!config prefix <special character>`: Customizes the prefix to use for commands in your server. Cannot be a number or a letter.\n";
                             helpString += "`!config logging <(enable|disable)/channel> [channel link]`: Enables logging (deleted/edited messages) or sets the logging channel. A logging channel must be set to enable.\n";
                             helpString += "`!config welcome <(enable|disable)/channel/message> [channel link/message]`: Enables welcome messages for new users, sets the channel to say welcomes in, or sets the welcome message.\n";
-                            msg.channel.sendMessage(helpString);
+                            msg.channel.send(helpString);
                         }
                         else if(firstOption == "prefix"){
                             prefix = params.substring(params.indexOf(" ") + 1).trim();
                             if(prefix.length > 2){
-                                msg.channel.sendMessage("Okay, buddy, I don't think having a prefix that long would be a good idea. Just saying.");
+                                msg.channel.send("Okay, buddy, I don't think having a prefix that long would be a good idea. Just saying.");
                                 return;
                             }
                             var regex = /^[^\w\s]+$/;
@@ -387,10 +387,10 @@ exports.commands = {
                                 if (err) throw err;
                                   console.log('It\'s saved!');
                                 });
-                                msg.channel.sendMessage("The prefix for this server has been successfully updated to `" + prefix + "`.");
+                                msg.channel.send("The prefix for this server has been successfully updated to `" + prefix + "`.");
                             }
                             else{
-                            	msg.channel.sendMessage("Remember, you can only use special characters for the server prefix. Examples: `!`,`$`,`^`,`.`,`,`,`!!`,`!%`, etc.");
+                            	msg.channel.send("Remember, you can only use special characters for the server prefix. Examples: `!`,`$`,`^`,`.`,`,`,`!!`,`!%`, etc.");
                             }
                         }
                         else if(firstOption == "logging"){
@@ -403,10 +403,10 @@ exports.commands = {
 	                                if (err) throw err;
 	                                  console.log('It\'s saved!');
 	                                });
-	                                msg.channel.sendMessage("Message logging has been **enabled** in this server.");
+	                                msg.channel.send("Message logging has been **enabled** in this server.");
 	                                return;
                             	}
-                            	msg.channel.sendMessage("To enable message logging, first **set a logging channel** with `!config logging channel <channel link>`.")
+                            	msg.channel.send("To enable message logging, first **set a logging channel** with `!config logging channel <channel link>`.")
                             }
                             else if(otherOptions[0] == "disable"){
                             	serversInfo[msg.guild.id].logging_enabled = false;
@@ -414,7 +414,7 @@ exports.commands = {
                                 if (err) throw err;
                                   console.log('It\'s saved!');
                                 });
-                            	msg.channel.sendMessage("Message logging has been **disabled** in this server.");
+                            	msg.channel.send("Message logging has been **disabled** in this server.");
                             }
                             else if(otherOptions[0] == "channel"){
                             	var channelRegex = /^<#[0-9]+>$/;
@@ -424,13 +424,13 @@ exports.commands = {
 	                                if (err) throw err;
 	                                  console.log('It\'s saved!');
 	                                });
-	                                msg.channel.sendMessage("The logging channel for this server has been successfully updated to " + otherOptions[1] + ".");
+	                                msg.channel.send("The logging channel for this server has been successfully updated to " + otherOptions[1] + ".");
 	                                return;
                             	}
-                            	msg.channel.sendMessage("I couldn't parse that as a channel link. Remember, a channel link looks like `#channel_name`.");
+                            	msg.channel.send("I couldn't parse that as a channel link. Remember, a channel link looks like `#channel_name`.");
                             }
                             else{
-                            	msg.channel.sendMessage(confusResponses[choice]);
+                            	msg.channel.send(confusResponses[choice]);
                             }
                         }
                         else if(firstOption == "welcome"){
@@ -443,10 +443,10 @@ exports.commands = {
 	                                if (err) throw err;
 	                                  console.log('It\'s saved!');
 	                                });
-	                                msg.channel.sendMessage("New member welcomes have been **enabled** in this server.");
+	                                msg.channel.send("New member welcomes have been **enabled** in this server.");
 	                                return;
                                 }
-                                msg.channel.sendMessage("To enable new member welcomes, first **set a welcome channel** with `!config welcome channel <channel link>` **and then set a welcome message** with `!config welcome message <message>`.");
+                                msg.channel.send("To enable new member welcomes, first **set a welcome channel** with `!config welcome channel <channel link>` **and then set a welcome message** with `!config welcome message <message>`.");
                             }
                             else if(otherOptions[0] == "disable"){
                             	serversInfo[msg.guild.id].welcome_enabled = false;
@@ -454,7 +454,7 @@ exports.commands = {
                                 if (err) throw err;
                                   console.log('It\'s saved!');
                                 });
-                            	msg.channel.sendMessage("New member welcomes have been **disabled** in this server.");
+                            	msg.channel.send("New member welcomes have been **disabled** in this server.");
                             }
                             else if(otherOptions[0] == "channel"){
                             	var channelRegex = /^<#[0-9]+>$/;
@@ -464,10 +464,10 @@ exports.commands = {
 	                                if (err) throw err;
 	                                  console.log('It\'s saved!');
 	                                });
-	                                msg.channel.sendMessage("The welcoming channel for this server has been successfully updated to " + otherOptions[1] + ".");
+	                                msg.channel.send("The welcoming channel for this server has been successfully updated to " + otherOptions[1] + ".");
 	                                return;
                             	}
-                            	msg.channel.sendMessage("I couldn't parse that as a channel link. Remember, a channel link looks like `#channel_name`.");
+                            	msg.channel.send("I couldn't parse that as a channel link. Remember, a channel link looks like `#channel_name`.");
                             }
                             else if(otherOptions[0] == "message"){
                             	otherOptions[0] = "";
@@ -478,15 +478,15 @@ exports.commands = {
                                 if (err) throw err;
                                   console.log('It\'s saved!');
                                 });
-                                msg.channel.sendMessage("The welcome message for this server has been successfully updated to: \n```" + welcomeMessage.substring(1) + "```");
+                                msg.channel.send("The welcome message for this server has been successfully updated to: \n```" + welcomeMessage.substring(1) + "```");
                                 return;
                             }
                             else{
-                            	msg.channel.sendMessage(confusResponses[choice]);
+                            	msg.channel.send(confusResponses[choice]);
                             }
                         }
                         else{
-                            msg.channel.sendMessage("Oh, let me give you a hand with that! Get started with `!config help` to learn about it! :3");
+                            msg.channel.send("Oh, let me give you a hand with that! Get started with `!config help` to learn about it! :3");
                         }
                     }
                     else{
@@ -499,7 +499,7 @@ exports.commands = {
                 usage: "lel",
                 description: "This is a testing space. It will change periodically as I need to test new things.",
                 process: function(bot, msg, params, choice){
-                    msg.channel.sendMessage("Currently, I do not have a function for this command.");
+                    msg.channel.send("Currently, I do not have a function for this command.");
                 }
             }
         }
@@ -519,7 +519,7 @@ exports.commands = {
                         tagestosplit[i] = tagestosplit[i].trim();
                         tagestosplit[i] = tagestosplit[i].replace(/\s/g, "_");
                         if(estoBanList.indexOf(tagestosplit[i]) != -1){
-                            msg.channel.sendMessage("No. Stop it.");
+                            msg.channel.send("No. Stop it.");
                             return;
                         }
                     }
@@ -532,7 +532,7 @@ exports.commands = {
                     else {
                         tagesto += "+rating:safe";
                         if ((tagesto.indexOf("rating:explicit") != -1) || (tagesto.indexOf("penis") != -1) || (tagesto.indexOf("pussy") != -1) || (tagesto.indexOf("anus") != -1) || (tagesto.indexOf("dick") != -1) || tagesto.indexOf("rating:questionable") != -1 || tagesto.indexOf("genitalia") != -1 || tagesto.indexOf("genitals") != -1 || tagesto.indexOf("genital") != -1 || tagesto.indexOf("vagina") != -1 || tagesto.indexOf("cunt") != -1 || tagesto.indexOf("vaginal") != -1 || tagesto.indexOf("vaginal_penetration") != -1 || tagesto.indexOf("sex") != -1 || tagesto.indexOf("fuck") != -1 || tagesto.indexOf("intercourse") != -1 || tagesto.indexOf("cock") != -1) {
-                            msg.channel.sendFile("C:/Users/Ian/Documents/GitHub/Yoshi-Bot/bruh.jpg", "bruh.jpg", "That content isn't appropiate for this channel. Go be naughty elsewhere.");
+                            msg.channel.send("That content isn't appropiate for this channel. Go be naughty elsewhere.", {files:[{attachment: __dirname + bruh.jpg}]});
                             return;
                         }
                     }
@@ -548,17 +548,17 @@ exports.commands = {
                         if (!error && response.statusCode == 200) {
                             var estoThing = JSON.parse(body);
                             if (typeof (estoThing[0]) != "undefined") {
-                                msg.channel.sendMessage(estoThing[0].file_url.toString());
-                                msg.channel.sendMessage("https://e621.net/post/show/" + estoThing[0].id.toString());
+                                msg.channel.send(estoThing[0].file_url.toString());
+                                msg.channel.send("https://e621.net/post/show/" + estoThing[0].id.toString());
                             }
                             else {
-                                msg.channel.sendMessage("No images found. Try different tags.")
+                                msg.channel.send("No images found. Try different tags.")
                             }
                         }
                         else {
                             console.log(error);
-                            msg.channel.sendMessage("The API isn't working and this is why I'm crashing.");
-                            msg.channel.sendMessage(error);
+                            msg.channel.send("The API isn't working and this is why I'm crashing.");
+                            msg.channel.send(error);
                         }
                     });
                 }
@@ -589,15 +589,15 @@ exports.commands = {
                         if (!error && response.statusCode == 200) {
                             var mlfwThing = JSON.parse(body);
                             if (typeof (mlfwThing.objects[0]) != "undefined") {
-                                msg.channel.sendMessage("http://mylittlefacewhen.com/" + mlfwThing.objects[0].image.toString());
+                                msg.channel.send("http://mylittlefacewhen.com/" + mlfwThing.objects[0].image.toString());
                             }
                             else {
-                                msg.channel.sendMessage("No images found. Try different tags.")
+                                msg.channel.send("No images found. Try different tags.")
                             }
                         }
                         else {
                             console.log(error);
-                            msg.channel.sendMessage(error);
+                            msg.channel.send(error);
                         }
                     });
                 }
@@ -611,17 +611,17 @@ exports.commands = {
                         if (!error && response.statusCode == 200) {
                             var srThing = JSON.parse(body);
                             if(typeof (srThing.data) !== "undefined"){
-                                msg.channel.sendMessage("I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
+                                msg.channel.send("I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
                             }
                             else {
                                 if (typeof(srThing[0].data.children[0].data.url) !== "undefined") {
-                                    msg.channel.sendMessage(srThing[0].data.children[0].data.url);
+                                    msg.channel.send(srThing[0].data.children[0].data.url);
                                 }
                             }
                         }
                         else {
                             console.log(error);
-                            msg.channel.sendMessage("I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
+                            msg.channel.send("I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
                         }
                     });
                 }
@@ -634,10 +634,10 @@ exports.commands = {
                     request("http://random.dog/woof", function (error, response, body) {
                         if (!error && response.statusCode == 200) {
                             if (typeof (body) != "undefined") {
-                                msg.channel.sendMessage("http://random.dog/" + body);
+                                msg.channel.send("http://random.dog/" + body);
                             }
                             else {
-                                msg.channel.sendMessage("Things are going wrong all over.");
+                                msg.channel.send("Things are going wrong all over.");
                             }
                         }
                     });
@@ -652,10 +652,10 @@ exports.commands = {
                         if (!error && response.statusCode == 200) {
                             var meowThing = JSON.parse(body);
                             if (typeof (meowThing.file) != "undefined") {
-                                msg.channel.sendMessage(meowThing.file);
+                                msg.channel.send(meowThing.file);
                             }
                             else {
-                                msg.channel.sendMessage("Things are going wrong all over.");
+                                msg.channel.send("Things are going wrong all over.");
                             }
                         }
                     });
@@ -672,7 +672,7 @@ exports.commands = {
                 usage: "!servers",
                 description: "List of servers I am in.",
                 process: function(bot, msg, params, choice){
-                    msg.channel.sendMessage("**I am currently serving in:** \n```\n" + bot.guilds.map(g=>g.name).join("\n") + "\n```");
+                    msg.channel.send("**I am currently serving in:** \n```\n" + bot.guilds.map(g=>g.name).join("\n") + "\n```");
                 }
             },
 
@@ -682,7 +682,7 @@ exports.commands = {
                 process: function(bot, msg, params, choice){
                     if (params) {
                         if (bot.users.find("username", params) != null) {
-                            msg.channel.sendMessage(bot.users.find("username", params).avatarURL);
+                            msg.channel.send(bot.users.find("username", params).avatarURL);
                         }
                         else {
                             var regst = /^[^\s]+/;
@@ -693,12 +693,12 @@ exports.commands = {
                             for (var i = 0; i < users.length ; i++) {
                                 if (regst.exec(users[i].username)[0] === params) {
                                     match = true;
-                                    msg.channel.sendMessage(users[i].avatarURL);
+                                    msg.channel.send(users[i].avatarURL);
                                     return;
                                 }
                                 else if (regend.exec(users[i].username)[0] === params) {
                                     match = true;
-                                    msg.channel.sendMessage(users[i].avatarURL);
+                                    msg.channel.send(users[i].avatarURL);
                                     return;
                                 }
                                 else {
@@ -709,12 +709,12 @@ exports.commands = {
                             for (var i = members.length - 1; i >= 0; i--) {
                             	if (members[i].nickname != null && regst.exec(members[i].nickname)[0] === params) {
                                     match = true;
-                                    msg.channel.sendMessage(members[i].user.avatarURL);
+                                    msg.channel.send(members[i].user.avatarURL);
                                     return;
                                 }
                                 else if (members[i].nickname != null && regend.exec(members[i].nickname)[0] === params) {
                                     match = true;
-                                    msg.channel.sendMessage(members[i].user.avatarURL);
+                                    msg.channel.send(members[i].user.avatarURL);
                                     return;
                                 }
                                 else {
@@ -722,12 +722,12 @@ exports.commands = {
                                 }
                             }
                             if (match === false) {
-                                msg.channel.sendMessage("I couldn't find the user you requested.");
+                                msg.channel.send("I couldn't find the user you requested.");
                             }
                         }
                     }
                     else {
-                        msg.channel.sendMessage(msg.author.avatarURL);
+                        msg.channel.send(msg.author.avatarURL);
                     }
                 }
             },
@@ -740,7 +740,7 @@ exports.commands = {
                     var randomChoice = Math.floor(Math.random() * options.length);
                     options[0] = " " + options[0];
 
-                    msg.channel.sendMessage("You must go with" + options[randomChoice] + ", " + msg.author + ".");
+                    msg.channel.send("You must go with" + options[randomChoice] + ", " + msg.author + ".");
                 }
             },
 
@@ -748,7 +748,7 @@ exports.commands = {
                 usage: "!kms",
                 description: "You asked for death.",
                 process: function(bot, msg, params, choice){
-                    msg.channel.sendMessage("You're dead, kiddo. ᕕ[•̀͜ʖ•́]︻̷┻̿═━一 ---", {tts: true});
+                    msg.channel.send("You're dead, kiddo. ᕕ[•̀͜ʖ•́]︻̷┻̿═━一 ---", {tts: true});
                 }
             },
 
@@ -760,7 +760,7 @@ exports.commands = {
                     var regMention = /^<[@\w]+>$/;
                     if(params == ""){
                         if(!userInfo[msg.author.id]){
-                            msg.channel.sendMessage("It appears to me that you don't have a profile set up yet! Get started with `!info help` c:");
+                            msg.channel.send("It appears to me that you don't have a profile set up yet! Get started with `!info help` c:");
                             return
                         }
 
@@ -792,12 +792,12 @@ exports.commands = {
                             }
                         }
                         help = help.substring(0, help.length - 2) + "`";
-                        msg.channel.sendMessage(help);
+                        msg.channel.send(help);
                     }
                     else if(regMention.exec(options[0]) != null){
                         user = msg.guild.members.get(options[0].replace(/[^\w\s]/gi, ''));
                         if(!userInfo[user.id]){
-                            msg.channel.sendMessage("It appears to me that this user does not have a profile set up yet.");
+                            msg.channel.send("It appears to me that this user does not have a profile set up yet.");
                             return;
                         }
 
@@ -830,12 +830,12 @@ exports.commands = {
 
                         infoString += "```";
 
-                        msg.channel.sendMessage(infoString);*/
+                        msg.channel.send(infoString);*/
                     }
                     else if(options[0] == "add"){
                         category = options[1].toLowerCase();
                         if(!infoCategories[category]){
-                            msg.channel.sendMessage("Silly, I don't think '" + category + "' is a category.");
+                            msg.channel.send("Silly, I don't think '" + category + "' is a category.");
                             return;
                         }
 
@@ -853,7 +853,7 @@ exports.commands = {
                         elementsString = elementsString.substring(0, elementsString.length - 2);
 
                         if(elementsString == ""){
-                        	msg.channel.sendMessage("You gave me no information here. Adding an empty field won't do much, don't you think?");
+                        	msg.channel.send("You gave me no information here. Adding an empty field won't do much, don't you think?");
                         	return;
                         }
 
@@ -867,13 +867,13 @@ exports.commands = {
                           if (err) throw err;
                           console.log('It\'s saved!');
                         });
-                        msg.channel.sendMessage("The category `" + category + "` has been updated successfully.");
+                        msg.channel.send("The category `" + category + "` has been updated successfully.");
                     }
                     else if(options[0] == "remove"){
                     	return;
                     }
                     else{
-                    	msg.channel.sendMessage(confusResponses[choice]);
+                    	msg.channel.send(confusResponses[choice]);
                     }
                 }
             },
@@ -889,10 +889,10 @@ exports.commands = {
                                 botResponse = "*The Magical 8 Ball answers...*\n";
                                 botResponse += "`Question:` **" + params + "**\n";
                                 botResponse += "`Answer:` **" + answer.magic.answer + "**";
-                                msg.channel.sendMessage(botResponse);
+                                msg.channel.send(botResponse);
                             }
                             else{
-                                msg.channel.sendMessage("Whoops, I couldn't turn into an 8 Ball: " + error);
+                                msg.channel.send("Whoops, I couldn't turn into an 8 Ball: " + error);
                             }
                         });
                     }
@@ -904,7 +904,7 @@ exports.commands = {
                 description: "Allows you to chat with Yoshi-Bot! Aren't you itching to talk to someone? Here's your chance.",
                 process: function(bot, msg, params, choice){
                     CleverBot.ask(params, function (err, response) {
-                        msg.channel.sendMessage(msg.author + ": " + response);
+                        msg.channel.send(msg.author + ": " + response);
                     });
                 }
             }
@@ -922,11 +922,11 @@ exports.commands = {
                     var voiceConnections = bot.voiceConnections.array();
                     if (voiceConnections.length == 0) {
                         if(msg.member.voiceChannel == null){
-                            msg.channel.sendMessage("You have to be in a voice channel before I can join it.");
+                            msg.channel.send("You have to be in a voice channel before I can join it.");
                         }
                         else{
                             msg.member.voiceChannel.join();
-                            msg.channel.sendMessage("Voice channel joined.");
+                            msg.channel.send("Voice channel joined.");
                         }
                     }
                     else {
@@ -934,13 +934,13 @@ exports.commands = {
                         console.log(voiceConnections[0].channel.guild.id);
                         for(connection = 0; connection < voiceConnections.length; connection++){
                             if(msg.guild.id == voiceConnections[connection].channel.guild.id){
-                                msg.channel.sendMessage("I'm already in a voice channel.");
+                                msg.channel.send("I'm already in a voice channel.");
                                 flag = 1;
                             }
                         }
                         if(flag == 0){
                             msg.member.voiceChannel.join();
-                            msg.channel.sendMessage("Voice channel joined.");
+                            msg.channel.send("Voice channel joined.");
                         }
                     }
                 }
@@ -961,32 +961,32 @@ exports.commands = {
                     if(flag){
                         var youTubeRegex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
                         if(youTubeRegex.exec(params) == null){
-                            msg.channel.sendMessage("I cannot parse that as a YouTube link, sorry. Try with a different one.");
+                            msg.channel.send("I cannot parse that as a YouTube link, sorry. Try with a different one.");
                             return;
                         }
                         try{
-                        	msg.channel.sendMessage("Playing that for you in just a sec...");
+                        	msg.channel.send("Playing that for you in just a sec...");
 	                    	stream = ytdl(params, {filter : 'audioonly'});
 	                    	connection.playStream(stream, { seek: 0, volume: 0.75});
                         }
                         catch(err){
-                        	msg.channel.sendMessage("Error: ```" + err + "```");
+                        	msg.channel.send("Error: ```" + err + "```");
                         }
                     }
                     else{
-                    	msg.channel.sendMessage("I'm not in a voice channel in this server. Join one and use !voice before you can use !play.")
+                    	msg.channel.send("I'm not in a voice channel in this server. Join one and use !voice before you can use !play.")
                     }
                     /*if (msg.content.length > 5) {
                             if (bot.internal.voiceConnection) {
                                 var songName = msg.content.substring(6, msg.content.length);
                                 var connection = bot.internal.voiceConnection;
                                 var filePath = "https://api.soundcloud.com/tracks/194566340/stream";
-                                msg.channel.sendMessage("Playing that for you in a sec...");
+                                msg.channel.send("Playing that for you in a sec...");
                                 connection.playRawStream(filePath, {volume: 0.3});
                             }
                         }
                         else {
-                            msg.channel.sendMessage("I'm already in the voice channel. Give me something to play.");
+                            msg.channel.send("I'm already in the voice channel. Give me something to play.");
                         }*/
                 }
             },
@@ -999,7 +999,7 @@ exports.commands = {
             		params = parseFloat(params);
             		console.log(params);
             		if(params == NaN){
-            			msg.channel.sendMessage("That's not a number, silly.");
+            			msg.channel.send("That's not a number, silly.");
             		}
             		for(connection = 0; connection < voiceConnections.length; connection++){
                         if(msg.guild.id == voiceConnections[connection].channel.guild.id){
@@ -1013,15 +1013,15 @@ exports.commands = {
                     	if(flag){
                     		if(params <= 1.0 && params >= 0.25){
                     			serverConnection.player.dispatcher.setVolume(params);
-                    			msg.channel.sendMessage("Volume was set to: **" + params + "**");
+                    			msg.channel.send("Volume was set to: **" + params + "**");
                     			return;
                     		}
-                    		msg.channel.sendMessage("Make sure the volume value you're sending is between 0.25 and 1.0");
+                    		msg.channel.send("Make sure the volume value you're sending is between 0.25 and 1.0");
                     		return;
                     	}
                     }
 
-                    msg.channel.sendMessage("I don't think anything is playing right now. I can't really change the volume of nothingness.");
+                    msg.channel.send("I don't think anything is playing right now. I can't really change the volume of nothingness.");
             	}
             },
 
@@ -1035,12 +1035,12 @@ exports.commands = {
                             console.log(error);
                           }
                           else {
-                            msg.channel.sendMessage("https://www.youtube.com/watch?v=" + result.items[0].id.videoId);
+                            msg.channel.send("https://www.youtube.com/watch?v=" + result.items[0].id.videoId);
                           }
                         });
                     }
                     else{
-                        msg.channel.sendMessage("Give me some search terms to look for, silly.");
+                        msg.channel.send("Give me some search terms to look for, silly.");
                     }
                 }
             }
