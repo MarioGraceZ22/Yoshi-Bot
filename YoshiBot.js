@@ -56,7 +56,7 @@ bot.on("ready", function () {
     console.log("New and rehauled Yoshi-Bot online and ready to serve!");
     var users = bot.users.array();
 
-    games = ["with " + users.length + " users!", "with over 500 lines of code!", "with eggs and ham!", "with Ian's sanity!", "in Yoshi's Island!", "Dunkin' Nose Simulator", "Super Smash Brothers"]
+    games = ["with " + users.length + " users!", "with over 1000 lines of code!", "with eggs and ham!", "with Ian's sanity!", "in Yoshi's Island!", "Dunkin' Nose Simulator", "Super Smash Brothers"]
     randGame = Math.floor(Math.random() * games.length);
     bot.user.setGame(games[randGame]);
 });
