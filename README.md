@@ -9,7 +9,7 @@ Use this [invite link](https://discordapp.com/oauth2/authorize?client_id=1829897
 
 ### Have a question for me, the creator?
 
-Find Discord user **Fiery Woof 🔥#9944** (or send a message somewhere containing the following `<@110932722322505728>` and contact me through the created tag).
+Find Discord user **Woofie Woof 🐾#9944** (or send a message somewhere containing the following `<@110932722322505728>` and contact me through the created tag).
 
 # Features
 The bot's commands are divided in different "modules", each serving a different purpose. These are outlined below:
