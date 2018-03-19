@@ -1043,6 +1043,7 @@ exports.commands = {
                                     searchResult.setURL("https://www.youtube.com/watch?v=" + result.items[item].id.videoId);
                                     searchResult.setTimestamp(result.items[item].snippet.publishedAt);
                                     searchResult.setDescription(result.items[item].snippet.description);
+                                    searchResult.setThumbnail(result.items[item].snippet.thumbnails.default.url);
                                     msg.channel.sendEmbed(searchResult);
                                 }
                             }
