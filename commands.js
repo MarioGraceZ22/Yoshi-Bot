@@ -60,7 +60,7 @@ try{
 	var ytdl = require('ytdl-core');
 }
 catch(e){
-	console.log("You know, streaming audio isn't too important... but if you care, we need yt-dl core.");
+	console.log("You know, streaming audio isn't too important... but if you care, we need ytdl-core.");
 }
 
 try {
@@ -1029,14 +1029,23 @@ exports.commands = {
                 usage: "<search terms> (Ex. !yt PFUDOR)",
                 description: "Returns the first YouTube video in a search based on the input query.",
                 process: function(bot, msg, params, choice){
-                     if(params){
-                        yt.search(params, 1, function(error, result) {
-                          if (error) {
-                            console.log(error);
-                          }
-                          else {
-                            msg.channel.send("https://www.youtube.com/watch?v=" + result.items[0].id.videoId);
-                          }
+                    if(params){
+                        yt.search(params, 5, function(error, result) {
+                            if (error) {
+                                console.log(error);
+                            }
+                            else {
+                                for(item in result.items){
+                                    var searchResult = new Discord.RichEmbed();
+                                    searchResult.setColor("#E9003A");
+                                    searchResult.setTitle(result.items[item].snippet.title);
+                                    searchResult.setAuthor(result.items[item].snippet.channelTitle);
+                                    searchResult.setURL("https://www.youtube.com/watch?v=" + result.items[item].id.videoId);
+                                    searchResult.setTimestamp(result.items[item].snippet.publishedAt);
+                                    searchResult.setDescription(result.items[item].snippet.description);
+                                    msg.channel.sendEmbed(searchResult);
+                                }
+                            }
                         });
                     }
                     else{
